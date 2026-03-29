@@ -6,10 +6,32 @@
 </head>
 <body>
 <h1>Asset Management Service</h1>
-<p>Welcome to the main page.</p>
-<p>
-    <a th:href="@{/bank-accounts}">Go to Bank Accounts</a>
-</p>
+<p>Select an asset type:</p>
+
+<h2>Financial Assets</h2>
+<ul>
+    <li><a th:href="@{/bank-accounts}">Bank Accounts</a></li>
+    <li><a th:href="@{/bonds}">Bonds</a></li>
+    <li><a th:href="@{/stocks}">Stocks</a></li>
+</ul>
+
+<h2>Tangible Assets</h2>
+<ul>
+    <li><a th:href="@{/cash}">Cash</a></li>
+    <li><a th:href="@{/inventories}">Inventory</a></li>
+    <li><a th:href="@{/machineries}">Machinery</a></li>
+    <li><a th:href="@{/real-estates}">Real Estate</a></li>
+    <li><a th:href="@{/vehicles}">Vehicles</a></li>
+</ul>
+
+<h2>Intangible Assets</h2>
+<ul>
+    <li><a th:href="@{/brands}">Brands</a></li>
+    <li><a th:href="@{/copyrights}">Copyrights</a></li>
+    <li><a th:href="@{/patents}">Patents</a></li>
+    <li><a th:href="@{/reputations}">Reputations</a></li>
+    <li><a th:href="@{/trademarks}">Trademarks</a></li>
+</ul>
 </body>
 </html>
 
