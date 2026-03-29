@@ -1,27 +1,38 @@
 # AGENTS.md
 
 ## Repo snapshot
-- This repository is currently a **minimal Spring Boot scaffold**: the only Java sources are `src/main/java/com/sdr/ams/AssetManagementServiceApplication.java` and `src/test/java/com/sdr/ams/AssetManagementServiceApplicationTests.java`.
-- The package root is `com.sdr.ams`; keep new Spring components under this package so `@SpringBootApplication` component scanning continues to find them.
-- `pom.xml` defines the intended stack: **Spring Boot 4.0.5**, **Java 25**, Spring MVC (`spring-boot-starter-webmvc`), Thymeleaf, Spring Data JPA, H2, plus the matching test starters.
-- `src/main/resources/application.yaml` only sets `spring.application.name: asset-management-service`; there are no environment-specific profiles or datasource settings yet.
+- The project started as a minimal scaffold and now contains a first implemented MVC/JPA slice for Bank Accounts.
+- Keep all new Spring components under `com.sdr.ams` so `@SpringBootApplication` scanning continues to work.
+- `pom.xml` stack remains: **Spring Boot 4.0.5**, **Java 25**, Spring MVC, Thymeleaf, Spring Data JPA, and H2.
+- Shared entity base is `src/main/java/com/sdr/ams/model/core/CoreEntity.java` (`id`, `name`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy`).
 
-## Architecture cues from the scaffold
-- There are **no controllers, entities, repositories, services, templates, or static assets yet**. Do not assume an existing layered architecture beyond standard Spring Boot conventions.
-- The dependency set suggests a future flow of **MVC controller -> Thymeleaf view and/or HTTP endpoint -> JPA repository -> H2-backed persistence**, but this is not implemented yet.
-- `src/main/resources/templates/` and `src/main/resources/static/` exist as the conventional locations for server-rendered views and web assets; add files there only if you are actually introducing MVC pages/static content.
-- The single test uses `@SpringBootTest` (`AssetManagementServiceApplicationTests`) to boot the full application context; mirror that only for integration-level checks, not for every unit of logic.
+## Architecture cues from current implementation
+- Implemented flow is `controller -> service -> repository -> JPA/H2`:
+  - `src/main/java/com/sdr/ams/controller/BankAccountController.java`
+  - `src/main/java/com/sdr/ams/service/BankAccountService.java`
+  - `src/main/java/com/sdr/ams/repository/BankAccountRepository.java`
+  - `src/main/java/com/sdr/ams/model/financial/BankAccount.java`
+- Home page entrypoint is `GET /` in `src/main/java/com/sdr/ams/controller/HomeController.java` with template `src/main/resources/templates/index.html`.
+- Bank account CRUD pages are:
+  - `src/main/resources/templates/bank-accounts/list.html`
+  - `src/main/resources/templates/bank-accounts/form.html`
+- Asset entities are grouped by domain package under `src/main/java/com/sdr/ams/model/` (`financial`, `tangible`, `intangible`) and currently extend `CoreEntity`.
+- Use the Bank Account slice as the reference pattern when adding CRUD for other asset types.
 
 ## Developer workflow
 - Preferred build entrypoint is the Maven wrapper in the repo root: on Windows use `./mvnw.cmd test`, `./mvnw.cmd spring-boot:run`, and `./mvnw.cmd package`.
 - On this machine, the wrapper fails until Java is installed and `JAVA_HOME` is set correctly; document or preserve that prerequisite when adjusting setup instructions.
 - There is no Gradle build, Docker setup, or custom script layer in the repo today; keep commands Maven-native unless you add the supporting files.
-- `HELP.md` is the standard Spring Initializr help page, and `.gitignore` even ignores `HELP.md`; use `pom.xml` and source layout as the authoritative description of the project.
+- Runtime config lives in `src/main/resources/application.yaml`: in-memory H2 datasource (`jdbc:h2:mem:assetdb`), `spring.jpa.hibernate.ddl-auto: update`, SQL logging enabled, and H2 console at `/h2-console`.
+- `HELP.md` is the standard Spring Initializr help page, and `.gitignore` ignores `HELP.md`; use `pom.xml` and source layout as the authoritative description of the project.
 
 ## Conventions worth preserving
 - Match the existing package naming and keep code under `src/main/java` / `src/test/java` with the same `com.sdr.ams` root.
 - If you add persistence code, prefer the existing JPA/H2 stack already declared in `pom.xml` instead of introducing a second persistence approach.
 - If you add web UI, prefer Thymeleaf templates because the starter and test support are already present.
-- Keep changes small and scaffold-aligned: since the repo is mostly empty, explain any new package structure in the PR/commit and update `README.md` if you introduce the first real modules.
+- Follow current layer split when adding features: `controller`, `service`, `repository`, `model`.
+- Keep MVC flows PRG-style (POST then redirect), matching `BankAccountController`.
+- New asset entities should extend `CoreEntity` and define explicit `@Entity` + `@Table`.
+- Existing tests include full-context (`AssetManagementServiceApplicationTests`) and MVC-slice (`HomeControllerWebMvcTest`); mirror this split for new tests.
 - `pom.xml` intentionally contains empty metadata elements (`<license/>`, `<developers/>`, `<scm/>`, etc.) to override parent inheritance from Spring Boot; do not delete them unless you want inherited metadata back.
 
