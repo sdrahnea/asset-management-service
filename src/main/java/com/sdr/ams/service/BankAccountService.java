@@ -2,7 +2,7 @@ package com.sdr.ams.service;
 
 import java.util.List;
 
-import com.sdr.ams.financial.BankAccount;
+import com.sdr.ams.model.financial.BankAccount;
 import com.sdr.ams.repository.BankAccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

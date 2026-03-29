@@ -1,4 +1,4 @@
-package com.sdr.ams.core;
+package com.sdr.ams.model.core;
 
 import java.time.Instant;
 

@@ -1,6 +1,6 @@
-package com.sdr.ams.intangible;
+package com.sdr.ams.model.intangible;
 
-import com.sdr.ams.core.CoreEntity;
+import com.sdr.ams.model.core.CoreEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

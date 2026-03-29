@@ -1,6 +1,6 @@
 package com.sdr.ams.controller;
 
-import com.sdr.ams.financial.BankAccount;
+import com.sdr.ams.model.financial.BankAccount;
 import com.sdr.ams.service.BankAccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
