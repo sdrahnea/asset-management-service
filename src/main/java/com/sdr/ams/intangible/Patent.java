@@ -1,4 +1,10 @@
 package com.sdr.ams.intangible;
 
-public class Patent {
+import com.sdr.ams.core.CoreEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "patent")
+public class Patent  extends CoreEntity {
 }

@@ -1,4 +1,10 @@
 package com.sdr.ams.intangible;
 
-public class Trademark {
+import com.sdr.ams.core.CoreEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "trademark")
+public class Trademark extends CoreEntity {
 }

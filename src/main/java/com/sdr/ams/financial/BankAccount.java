@@ -6,6 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "bank_accounts")
+@Table(name = "bank_account")
 public class BankAccount extends CoreEntity {
 }
