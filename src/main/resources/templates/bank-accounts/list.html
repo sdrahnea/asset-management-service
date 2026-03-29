@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Bank Accounts</title>
+</head>
+<body>
+<h1>Bank Accounts</h1>
+
+<p>
+	<a th:href="@{/bank-accounts/new}">Create Bank Account</a>
+	|
+	<a th:href="@{/}">Back to Home</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%;">
+	<thead>
+	<tr>
+		<th style="border: 1px solid #ccc; padding: 6px;">ID</th>
+		<th style="border: 1px solid #ccc; padding: 6px;">Name</th>
+		<th style="border: 1px solid #ccc; padding: 6px;">Created By</th>
+		<th style="border: 1px solid #ccc; padding: 6px;">Created At</th>
+		<th style="border: 1px solid #ccc; padding: 6px;">Updated By</th>
+		<th style="border: 1px solid #ccc; padding: 6px;">Updated At</th>
+		<th style="border: 1px solid #ccc; padding: 6px;">Actions</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr th:if="${#lists.isEmpty(bankAccounts)}">
+		<td colspan="7" style="border: 1px solid #ccc; padding: 6px;">No bank accounts found.</td>
+	</tr>
+	<tr th:each="account : ${bankAccounts}">
+		<td style="border: 1px solid #ccc; padding: 6px;" th:text="${account.id}">1</td>
+		<td style="border: 1px solid #ccc; padding: 6px;" th:text="${account.name}">Operating Account</td>
+		<td style="border: 1px solid #ccc; padding: 6px;" th:text="${account.createdBy}">system</td>
+		<td style="border: 1px solid #ccc; padding: 6px;" th:text="${account.createdAt}">2026-01-01T00:00:00Z</td>
+		<td style="border: 1px solid #ccc; padding: 6px;" th:text="${account.updatedBy}">system</td>
+		<td style="border: 1px solid #ccc; padding: 6px;" th:text="${account.updatedAt}">2026-01-01T00:00:00Z</td>
+		<td style="border: 1px solid #ccc; padding: 6px;">
+			<a th:href="@{/bank-accounts/{id}/edit(id=${account.id})}">Edit</a>
+			<form th:action="@{/bank-accounts/{id}/delete(id=${account.id})}" method="post" style="display:inline">
+				<button type="submit">Delete</button>
+			</form>
+		</td>
+	</tr>
+	</tbody>
+</table>
+</body>
+</html>
+

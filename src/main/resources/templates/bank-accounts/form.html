@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Edit Bank Account' : 'Create Bank Account'">Bank Account Form</title>
+</head>
+<body>
+<h1 th:text="${isEdit} ? 'Edit Bank Account' : 'Create Bank Account'">Bank Account Form</h1>
+
+<form th:action="${isEdit} ? @{/bank-accounts/{id}(id=${bankAccount.id})} : @{/bank-accounts}" th:object="${bankAccount}" method="post">
+    <div>
+        <label for="name">Name</label>
+        <input id="name" type="text" th:field="*{name}" required>
+    </div>
+
+    <div>
+        <label for="createdBy">Created By</label>
+        <input id="createdBy" type="text" th:field="*{createdBy}" required>
+    </div>
+
+    <div>
+        <label for="updatedBy">Updated By</label>
+        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
+    </div>
+
+    <div>
+        <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
+        <a th:href="@{/bank-accounts}">Cancel</a>
+    </div>
+</form>
+</body>
+</html>
+
