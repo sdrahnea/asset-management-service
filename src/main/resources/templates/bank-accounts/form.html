@@ -6,29 +6,149 @@
 </head>
 <body>
 <h1 th:text="${isEdit} ? 'Edit Bank Account' : 'Create Bank Account'">Bank Account Form</h1>
-
-<form th:action="${isEdit} ? @{/bank-accounts/{id}(id=${bankAccount.id})} : @{/bank-accounts}" th:object="${bankAccount}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<p>
+    <a th:href="@{/bank-accounts}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
+<form th:action="${isEdit} ? @{/bank-accounts/{id}(id=${bankAccount.id})} : @{/bank-accounts}"
+      th:object="${bankAccount}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
-
     <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
+        <label for="name">Account Holder Name *</label><br>
+        <input id="name" type="text" th:field="*{name}" required maxlength="255">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
     </div>
-
     <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
+        <label for="accountType">Account Type *</label><br>
+        <select id="accountType" th:field="*{accountType}" required>
+            <option value="">Select account type</option>
+            <option th:each="type : ${accountTypes}" th:value="${type}" th:text="${type}">CURRENT</option>
+        </select>
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('accountType')}" th:errors="*{accountType}">Type error</div>
     </div>
-
     <div>
+        <label for="bankName">Bank Name *</label><br>
+        <input id="bankName" type="text" th:field="*{bankName}" required maxlength="200">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}">Bank name error</div>
+    </div>
+    <div>
+        <label for="branchName">Branch Name</label><br>
+        <input id="branchName" type="text" th:field="*{branchName}" maxlength="200">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('branchName')}" th:errors="*{branchName}">Branch error</div>
+    </div>
+    <div>
+        <label for="iban">IBAN *</label><br>
+        <input id="iban" type="text" th:field="*{iban}" required maxlength="34">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('iban')}" th:errors="*{iban}">IBAN error</div>
+    </div>
+    <div>
+        <label for="swiftCode">SWIFT/BIC</label><br>
+        <input id="swiftCode" type="text" th:field="*{swiftCode}" maxlength="11">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('swiftCode')}" th:errors="*{swiftCode}">SWIFT error</div>
+    </div>
+    <div>
+        <label for="localAccountNumber">Local Account Number</label><br>
+        <input id="localAccountNumber" type="text" th:field="*{localAccountNumber}" maxlength="64">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('localAccountNumber')}" th:errors="*{localAccountNumber}">Local account error</div>
+    </div>
+    <div>
+        <label for="currency">Currency (ISO) *</label><br>
+        <input id="currency" type="text" th:field="*{currency}" required maxlength="3">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('currency')}" th:errors="*{currency}">Currency error</div>
+    </div>
+    <div>
+        <label for="status">Status *</label><br>
+        <select id="status" th:field="*{status}" required>
+            <option value="">Select status</option>
+            <option th:each="value : ${statuses}" th:value="${value}" th:text="${value}">ACTIVE</option>
+        </select>
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Status error</div>
+    </div>
+    <div>
+        <label for="ownershipType">Ownership Type *</label><br>
+        <select id="ownershipType" th:field="*{ownershipType}" required>
+            <option value="">Select ownership type</option>
+            <option th:each="value : ${ownershipTypes}" th:value="${value}" th:text="${value}">INDIVIDUAL</option>
+        </select>
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('ownershipType')}" th:errors="*{ownershipType}">Ownership error</div>
+    </div>
+    <div>
+        <label for="openedAt">Date Opened</label><br>
+        <input id="openedAt" type="date" th:field="*{openedAt}">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('openedAt')}" th:errors="*{openedAt}">Opened date error</div>
+    </div>
+    <div id="closedAtRow" th:style="${bankAccount.status != null and bankAccount.status.name() == 'CLOSED'} ? '' : 'display:none;'">
+        <label for="closedAt">Date Closed</label><br>
+        <input id="closedAt" type="date" th:field="*{closedAt}">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('closedAt')}" th:errors="*{closedAt}">Closed date error</div>
+    </div>
+    <div>
+        <label for="accountPurpose">Account Purpose</label><br>
+        <input id="accountPurpose" type="text" th:field="*{accountPurpose}" maxlength="255">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('accountPurpose')}" th:errors="*{accountPurpose}">Purpose error</div>
+    </div>
+    <div>
+        <label for="assessmentScore">Assessment Score</label><br>
+        <input id="assessmentScore" type="number" th:field="*{assessmentScore}" step="0.01" min="0">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('assessmentScore')}" th:errors="*{assessmentScore}">Score error</div>
+    </div>
+    <div>
+        <label for="verificationStatus">Verification Status</label><br>
+        <input id="verificationStatus" type="text" th:field="*{verificationStatus}" maxlength="50">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('verificationStatus')}" th:errors="*{verificationStatus}">Verification error</div>
+    </div>
+    <div>
+        <label for="lastReviewDate">Last Review Date</label><br>
+        <input id="lastReviewDate" type="date" th:field="*{lastReviewDate}">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('lastReviewDate')}" th:errors="*{lastReviewDate}">Review date error</div>
+    </div>
+    <div>
+        <label for="linkedEntity">Linked Entity</label><br>
+        <input id="linkedEntity" type="text" th:field="*{linkedEntity}" maxlength="255">
+        <div style="color: #b00020;" th:if="${#fields.hasErrors('linkedEntity')}" th:errors="*{linkedEntity}">Linked entity error</div>
+    </div>
+    <hr>
+    <div>
+        <label for="createdAt">Created At</label><br>
+        <input id="createdAt" type="text" th:value="${bankAccount.createdAt}" readonly>
+    </div>
+    <div>
+        <label for="createdBy">Created By</label><br>
+        <input id="createdBy" type="text" th:value="${bankAccount.createdBy}" readonly>
+    </div>
+    <div>
+        <label for="updatedAt">Updated At</label><br>
+        <input id="updatedAt" type="text" th:value="${bankAccount.updatedAt}" readonly>
+    </div>
+    <div>
+        <label for="updatedBy">Updated By</label><br>
+        <input id="updatedBy" type="text" th:value="${bankAccount.updatedBy}" readonly>
+    </div>
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
         <a th:href="@{/bank-accounts}">Cancel</a>
     </div>
 </form>
+<script>
+    (function () {
+        var statusField = document.getElementById('status');
+        var closedAtRow = document.getElementById('closedAtRow');
+        var closedAtInput = document.getElementById('closedAt');
+        function syncClosedAtVisibility() {
+            var isClosed = statusField && statusField.value === 'CLOSED';
+            closedAtRow.style.display = isClosed ? '' : 'none';
+            if (!isClosed && closedAtInput) {
+                closedAtInput.value = '';
+            }
+        }
+        if (statusField) {
+            statusField.addEventListener('change', syncClosedAtVisibility);
+            syncClosedAtVisibility();
+        }
+    }());
+</script>
 </body>
 </html>
-
-
