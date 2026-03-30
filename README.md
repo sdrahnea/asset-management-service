@@ -1,46 +1,115 @@
 # Asset Management Service
 
-Asset Management Service is an early-stage Spring Boot application intended to model and manage multiple classes of assets in a single system.
+[![Java](https://img.shields.io/badge/Java-25-blue.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.5-6DB33F.svg)](https://spring.io/projects/spring-boot)
+[![Maven](https://img.shields.io/badge/Build-Maven-C71A36.svg)](https://maven.apache.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Intended Domain Scope
+Asset Management Service is a Spring Boot application for managing asset inventories across financial, tangible, and intangible domains with a server-rendered MVC experience.
 
-The planned implementation focuses on three major asset categories:
+## Product Overview
 
-- **Tangible Assets**: physical items such as cash, real estate, machinery, inventory, and vehicles.
-- **Intangible Assets**: non-physical resources that hold value, including intellectual property (patents, trademarks), copyrights, and brand reputation.
-- **Financial Assets**: investments and monetary holdings such as stocks, bonds, and bank accounts.
+The platform organizes assets into three business-facing categories:
 
-## Planned Implementation Focus
+- **Financial Assets**: bank accounts, stocks, and bonds
+- **Tangible Assets**: cash, inventory, machinery, real estate, and vehicles
+- **Intangible Assets**: brands, patents, trademarks, copyrights, and reputation
 
-Based on the current Maven configuration, the intended implementation direction is:
+Current implementation includes CRUD web flows for these entities with Thymeleaf views, Spring Data JPA persistence, and H2 in-memory storage for local development.
 
-- **Spring MVC** for HTTP endpoints and/or server-rendered flows
-- **Thymeleaf** for HTML views if a web UI is introduced
-- **Spring Data JPA** for persistence
-- **H2** for local development and early-stage persistence
+## Tech Stack
 
-This suggests a likely application flow of controller -> service -> repository -> database as the project grows, but that structure is not implemented yet.
+- **Spring Boot 4.0.5**
+- **Java 25**
+- **Spring MVC + Thymeleaf** for web UI
+- **Spring Data JPA + H2** for persistence
+- **Maven Wrapper** for build/test/run
 
-## Current Repository State
+## Architecture (Compact)
 
-The repository is still a minimal scaffold. At the moment it contains:
+```mermaid
+flowchart LR
+	User[Browser User] --> Home[HomeController /]
+	Home --> AssetPages[Entity Controllers]
+	AssetPages --> Services[Service Layer]
+	Services --> Repos[Spring Data Repositories]
+	Repos --> H2[(H2 In-Memory DB)]
 
-- `src/main/java/com/sdr/ams/AssetManagementServiceApplication.java`
-- `src/test/java/com/sdr/ams/AssetManagementServiceApplicationTests.java`
-- `src/main/resources/application.yaml` with the application name set to `asset-management-service`
+	Core[CoreEntity] -.shared fields.-> AssetPages
+```
 
-There are currently no controllers, entities, repositories, services, templates, or static assets in the codebase.
+### Implemented MVC Pattern
 
-## Build and Run Prerequisites
+`controller -> service -> repository -> JPA/H2`
 
-- Use the Maven wrapper from the project root.
-- The project is configured for **Spring Boot 4.0.5** and **Java 25** in `pom.xml`.
-- On this machine, running the wrapper currently requires Java to be installed and `JAVA_HOME` to be set correctly.
+Reference slice:
+- `src/main/java/com/sdr/ams/controller/BankAccountController.java`
+- `src/main/java/com/sdr/ams/service/BankAccountService.java`
+- `src/main/java/com/sdr/ams/repository/BankAccountRepository.java`
+- `src/main/resources/templates/bank-accounts/`
 
-Example commands on Windows PowerShell:
+## Current Application Surface
+
+- Home page: `GET /`
+- Asset list pages linked from home (`/bank-accounts`, `/bonds`, `/stocks`, `/cash`, `/inventories`, `/machineries`, `/real-estates`, `/vehicles`, `/brands`, `/copyrights`, `/patents`, `/reputations`, `/trademarks`)
+- Per-entity CRUD pages with dedicated `list.html` and `form.html` templates
+
+## Planned Upload API (Example Contract)
+
+> Status: **Planned / not currently implemented in controllers**. The example below is a proposed contract for external integrations.
+
+### Request
+
+```http
+POST /api/uploads HTTP/1.1
+Content-Type: multipart/form-data; boundary=----AssetBoundary
+
+------AssetBoundary
+Content-Disposition: form-data; name="assetType"
+
+financial
+------AssetBoundary
+Content-Disposition: form-data; name="file"; filename="bank-accounts.csv"
+Content-Type: text/csv
+
+id,name,createdBy,updatedBy
+,Operating Account,system,system
+------AssetBoundary--
+```
+
+### Response (Example)
+
+```json
+{
+  "uploadId": "up_20260329_001",
+  "status": "accepted",
+  "assetType": "financial",
+  "receivedRecords": 1,
+  "message": "File received and queued for processing"
+}
+```
+
+## Build and Run
+
+Prerequisites:
+- Java installed (project targets **Java 25**)
+- `JAVA_HOME` configured
+
+Commands (Windows PowerShell):
 
 ```powershell
 ./mvnw.cmd test
 ./mvnw.cmd spring-boot:run
 ./mvnw.cmd package
 ```
+
+Useful local endpoints after startup:
+- App: `http://localhost:8080/`
+- H2 Console: `http://localhost:8080/h2-console`
+
+## Repository Notes
+
+- Shared base entity: `src/main/java/com/sdr/ams/model/core/CoreEntity.java`
+- Runtime config: `src/main/resources/application.yaml`
+- Baseline tests: `src/test/java/com/sdr/ams/AssetManagementServiceApplicationTests.java`, `src/test/java/com/sdr/ams/HomeControllerWebMvcTest.java`
+
