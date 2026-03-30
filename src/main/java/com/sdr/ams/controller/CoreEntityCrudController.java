@@ -19,12 +19,14 @@ public abstract class CoreEntityCrudController<T extends CoreEntity> {
     private final String singularTitle;
     private final String pluralTitle;
     private final String basePath;
+    private final String viewBasePath;
 
     protected CoreEntityCrudController(CoreEntityCrudService<T> service, String singularTitle, String pluralTitle, String basePath) {
         this.service = service;
         this.singularTitle = singularTitle;
         this.pluralTitle = pluralTitle;
         this.basePath = basePath;
+        this.viewBasePath = basePath.startsWith("/") ? basePath.substring(1) : basePath;
     }
 
     protected abstract T createEntity();
@@ -35,7 +37,7 @@ public abstract class CoreEntityCrudController<T extends CoreEntity> {
         model.addAttribute("singularTitle", singularTitle);
         model.addAttribute("pluralTitle", pluralTitle);
         model.addAttribute("basePath", basePath);
-        return "entities/list";
+        return viewBasePath + "/list";
     }
 
     @GetMapping("/new")
@@ -48,7 +50,7 @@ public abstract class CoreEntityCrudController<T extends CoreEntity> {
         model.addAttribute("singularTitle", singularTitle);
         model.addAttribute("pluralTitle", pluralTitle);
         model.addAttribute("basePath", basePath);
-        return "entities/form";
+        return viewBasePath + "/form";
     }
 
     @PostMapping
@@ -64,7 +66,7 @@ public abstract class CoreEntityCrudController<T extends CoreEntity> {
         model.addAttribute("singularTitle", singularTitle);
         model.addAttribute("pluralTitle", pluralTitle);
         model.addAttribute("basePath", basePath);
-        return "entities/form";
+        return viewBasePath + "/form";
     }
 
     @PostMapping("/{id}")
