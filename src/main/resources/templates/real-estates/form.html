@@ -2,33 +2,411 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Real Estate' : 'Create Real Estate'">Real Estate Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
-
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<h1 th:text="${isEdit} ? 'Edit Real Estate' : 'Create Real Estate'">Real Estate Form</h1>
+<p>
+    <a th:href="@{/real-estates}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    <span th:if="${isEdit}">
+        |
+        <a th:href="@{/real-estates/{id}(id=${realEstate.id})}">View Details</a>
+    </span>
+</p>
+<form th:action="${isEdit} ? @{/real-estates/{id}(id=${realEstate.id})} : @{/real-estates}"
+      th:object="${realEstate}"
+      method="post"
+      >
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 12px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
+    <fieldset>
+        <legend>Identity</legend>
+        <div>
+            <label for="title">Title *</label><br>
+            <input id="title" type="text" th:field="*{title}" required maxlength="255">
+            <div style="color:#b00020" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title error</div>
+        </div>
+        <div>
+            <label for="propertyType">Property Type *</label><br>
+            <select id="propertyType" th:field="*{propertyType}" required>
+                <option value="">Select property type</option>
+                <option th:each="option : ${propertyTypes}" th:value="${option}" th:text="${option}">LAND</option>
+            </select>
+            <div style="color:#b00020" th:if="${#fields.hasErrors('propertyType')}" th:errors="*{propertyType}">Property type error</div>
+        </div>
+        <div>
+            <label for="subType">Sub Type</label><br>
+            <input id="subType" type="text" th:field="*{subType}" maxlength="100">
+        </div>
+        <div>
+            <label for="description">Description</label><br>
+            <textarea id="description" th:field="*{description}" rows="3" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="yearBuilt">Year Built</label><br>
+            <input id="yearBuilt" type="number" th:field="*{yearBuilt}" min="0">
+        </div>
+        <div>
+            <label for="constructionType">Construction Type</label><br>
+            <select id="constructionType" th:field="*{constructionType}">
+                <option value="">Select construction type</option>
+                <option th:each="option : ${constructionTypes}" th:value="${option}" th:text="${option}">BRICK</option>
+            </select>
+        </div>
+        <div>
+            <label for="condition">Condition</label><br>
+            <select id="condition" th:field="*{condition}">
+                <option value="">Select condition</option>
+                <option th:each="option : ${conditions}" th:value="${option}" th:text="${option}">GOOD</option>
+            </select>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Location</legend>
+        <div>
+            <label for="address">Address *</label><br>
+            <input id="address" type="text" th:field="*{address}" required maxlength="255" style="width: 500px;">
+            <div style="color:#b00020" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Address error</div>
+        </div>
+        <div>
+            <label for="latitude">Latitude</label><br>
+            <input id="latitude" type="number" th:field="*{latitude}" step="0.0000001" min="-90" max="90">
+        </div>
+        <div>
+            <label for="longitude">Longitude</label><br>
+            <input id="longitude" type="number" th:field="*{longitude}" step="0.0000001" min="-180" max="180">
+        </div>
+        <div>
+            <label for="zoningType">Zoning Type</label><br>
+            <select id="zoningType" th:field="*{zoningType}">
+                <option value="">Select zoning type</option>
+                <option th:each="option : ${zoningTypes}" th:value="${option}" th:text="${option}">RESIDENTIAL</option>
+            </select>
+        </div>
+        <div>
+            <label for="landArea">Land Area *</label><br>
+            <input id="landArea" type="number" th:field="*{landArea}" required step="0.01" min="0">
+            <div style="color:#b00020" th:if="${#fields.hasErrors('landArea')}" th:errors="*{landArea}">Land area error</div>
+        </div>
+        <div>
+            <label for="landShape">Land Shape</label><br>
+            <select id="landShape" th:field="*{landShape}">
+                <option value="">Select land shape</option>
+                <option th:each="option : ${landShapes}" th:value="${option}" th:text="${option}">REGULAR</option>
+            </select>
+        </div>
+        <div>
+            <label for="topography">Topography</label><br>
+            <select id="topography" th:field="*{topography}">
+                <option value="">Select topography</option>
+                <option th:each="option : ${topographies}" th:value="${option}" th:text="${option}">FLAT</option>
+            </select>
+        </div>
+        <div>
+            <label for="accessRoadType">Access Road Type</label><br>
+            <select id="accessRoadType" th:field="*{accessRoadType}">
+                <option value="">Select access road type</option>
+                <option th:each="option : ${accessRoadTypes}" th:value="${option}" th:text="${option}">ASPHALT</option>
+            </select>
+        </div>
+        <div>
+            <span>Utilities Availability</span><br>
+            <label th:each="option : ${utilityOptions}" style="margin-right:12px; display:inline-block;">
+                <input type="checkbox" th:field="*{utilitiesAvailability}" th:value="${option}">
+                <span th:text="${option}">Electricity</span>
+            </label>
+        </div>
+    </fieldset>
+    <fieldset id="buildingSection">
+        <legend>Building</legend>
+        <div>
+            <label for="builtArea">Built Area</label><br>
+            <input id="builtArea" type="number" th:field="*{builtArea}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="usableArea">Usable Area</label><br>
+            <input id="usableArea" type="number" th:field="*{usableArea}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="floors">Floors</label><br>
+            <input id="floors" type="number" th:field="*{floors}" min="0">
+        </div>
+        <div>
+            <label for="rooms">Rooms</label><br>
+            <input id="rooms" type="number" th:field="*{rooms}" min="0">
+        </div>
+        <div>
+            <label for="bathrooms">Bathrooms</label><br>
+            <input id="bathrooms" type="number" th:field="*{bathrooms}" min="0">
+        </div>
+        <div>
+            <label for="balconies">Balconies</label><br>
+            <input id="balconies" type="number" th:field="*{balconies}" min="0">
+        </div>
+        <div>
+            <label for="heatingType">Heating Type</label><br>
+            <select id="heatingType" th:field="*{heatingType}">
+                <option value="">Select heating type</option>
+                <option th:each="option : ${heatingTypes}" th:value="${option}" th:text="${option}">CENTRAL</option>
+            </select>
+        </div>
+        <div>
+            <label for="energyEfficiencyClass">Energy Efficiency Class</label><br>
+            <select id="energyEfficiencyClass" th:field="*{energyEfficiencyClass}">
+                <option value="">Select class</option>
+                <option th:each="option : ${energyEfficiencyClasses}" th:value="${option}" th:text="${option}">A</option>
+            </select>
+        </div>
+        <div>
+            <label for="parking">Parking</label><br>
+            <input id="parking" type="text" th:field="*{parking}" maxlength="100">
+        </div>
+        <div>
+            <span>Amenities</span><br>
+            <label th:each="option : ${amenityOptions}" style="margin-right:12px; display:inline-block;">
+                <input type="checkbox" th:field="*{amenities}" th:value="${option}">
+                <span th:text="${option}">Elevator</span>
+            </label>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Legal</legend>
+        <div>
+            <label for="ownershipType">Ownership Type *</label><br>
+            <select id="ownershipType" th:field="*{ownershipType}" required>
+                <option value="">Select ownership type</option>
+                <option th:each="option : ${ownershipTypes}" th:value="${option}" th:text="${option}">INDIVIDUAL</option>
+            </select>
+        </div>
+        <div>
+            <label for="ownerName">Owner Name *</label><br>
+            <input id="ownerName" type="text" th:field="*{ownerName}" required maxlength="255">
+        </div>
+        <div>
+            <label for="cadastralNumber">Cadastral Number *</label><br>
+            <input id="cadastralNumber" type="text" th:field="*{cadastralNumber}" required maxlength="100">
+        </div>
+        <div>
+            <label for="landRegistryNumber">Land Registry Number *</label><br>
+            <input id="landRegistryNumber" type="text" th:field="*{landRegistryNumber}" required maxlength="100">
+        </div>
+        <div>
+            <label for="encumbrances">Encumbrances</label><br>
+            <textarea id="encumbrances" th:field="*{encumbrances}" rows="3" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="buildingPermits">Building Permits</label><br>
+            <textarea id="buildingPermits" th:field="*{buildingPermits}" rows="3" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="usageRestrictions">Usage Restrictions</label><br>
+            <textarea id="usageRestrictions" th:field="*{usageRestrictions}" rows="3" cols="80"></textarea>
+        </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
-
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
-
-    <div>
+    </fieldset>
+    <fieldset>
+        <legend>Financial</legend>
+        <div>
+            <label for="currentMarketValue">Current Market Value *</label><br>
+            <input id="currentMarketValue" type="number" th:field="*{currentMarketValue}" required step="0.01" min="0">
+        </div>
+        <div>
+            <label for="valuationDate">Valuation Date *</label><br>
+            <input id="valuationDate" type="date" th:field="*{valuationDate}" required>
+        </div>
+        <div>
+            <label for="purchasePrice">Purchase Price</label><br>
+            <input id="purchasePrice" type="number" th:field="*{purchasePrice}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="rentalIncome">Rental Income</label><br>
+            <input id="rentalIncome" type="number" th:field="*{rentalIncome}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="operatingCosts">Operating Costs</label><br>
+            <input id="operatingCosts" type="number" th:field="*{operatingCosts}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="taxes">Taxes</label><br>
+            <input id="taxes" type="number" th:field="*{taxes}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="insuranceValue">Insurance Value</label><br>
+            <input id="insuranceValue" type="number" th:field="*{insuranceValue}" step="0.01" min="0">
+        </div>
+        <div>
+            <label for="yieldIndicators">Yield Indicators (%)</label><br>
+            <input id="yieldIndicators" type="number" th:field="*{yieldIndicators}" step="0.01" readonly>
+        </div>
+        <div>
+            <label for="depreciationMethod">Depreciation Method</label><br>
+            <input id="depreciationMethod" type="text" th:field="*{depreciationMethod}" maxlength="100">
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Market</legend>
+        <div>
+            <label for="neighborhoodType">Neighborhood Type</label><br>
+            <select id="neighborhoodType" th:field="*{neighborhoodType}">
+                <option value="">Select neighborhood type</option>
+                <option th:each="option : ${neighborhoodTypes}" th:value="${option}" th:text="${option}">URBAN</option>
+            </select>
+        </div>
+        <div>
+            <label for="proximityToTransport">Proximity to Transport</label><br>
+            <textarea id="proximityToTransport" th:field="*{proximityToTransport}" rows="2" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="nearbyFacilities">Nearby Facilities</label><br>
+            <textarea id="nearbyFacilities" th:field="*{nearbyFacilities}" rows="2" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="marketTrends">Market Trends</label><br>
+            <textarea id="marketTrends" th:field="*{marketTrends}" rows="2" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="environmentalRisks">Environmental Risks</label><br>
+            <textarea id="environmentalRisks" th:field="*{environmentalRisks}" rows="2" cols="80"></textarea>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Lifecycle</legend>
+        <div>
+            <label for="maintenanceStatus">Maintenance Status</label><br>
+            <select id="maintenanceStatus" th:field="*{maintenanceStatus}">
+                <option value="">Select maintenance status</option>
+                <option th:each="option : ${maintenanceStatuses}" th:value="${option}" th:text="${option}">UNKNOWN</option>
+            </select>
+        </div>
+        <div id="renovationSection">
+            <div>
+                <label for="lastRenovationDate">Last Renovation Date</label><br>
+                <input id="lastRenovationDate" type="date" th:field="*{lastRenovationDate}">
+            </div>
+            <div>
+                <label for="renovationDetails">Renovation Details</label><br>
+                <textarea id="renovationDetails" th:field="*{renovationDetails}" rows="2" cols="80"></textarea>
+            </div>
+        </div>
+        <div>
+            <label for="structuralIssues">Structural Issues</label><br>
+            <textarea id="structuralIssues" th:field="*{structuralIssues}" rows="2" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="expectedCapex">Expected CAPEX</label><br>
+            <input id="expectedCapex" type="number" th:field="*{expectedCapex}" step="0.01" min="0">
+        </div>
+        <div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Risk</legend>
+        <div><label for="legalRiskScore">Legal Risk Score</label><br><input id="legalRiskScore" type="number" th:field="*{legalRiskScore}" step="0.01"></div>
+        <div><label for="marketRiskScore">Market Risk Score</label><br><input id="marketRiskScore" type="number" th:field="*{marketRiskScore}" step="0.01"></div>
+        <div><label for="structuralRiskScore">Structural Risk Score</label><br><input id="structuralRiskScore" type="number" th:field="*{structuralRiskScore}" step="0.01"></div>
+        <div><label for="environmentalRiskScore">Environmental Risk Score</label><br><input id="environmentalRiskScore" type="number" th:field="*{environmentalRiskScore}" step="0.01"></div>
+        <div><label for="overallAssessmentScore">Overall Assessment Score</label><br><input id="overallAssessmentScore" type="number" th:field="*{overallAssessmentScore}" step="0.01"></div>
+        <div><label for="complianceFlags">Compliance Flags</label><br><textarea id="complianceFlags" th:field="*{complianceFlags}" rows="2" cols="80"></textarea></div>
+    </fieldset>
+    <fieldset>
+        <legend>Metadata</legend>
+        <div>
+            <label for="dataSource">Data Source *</label><br>
+            <input id="dataSource" type="text" th:field="*{dataSource}" required maxlength="100">
+        </div>
+        <div>
+            <label for="responsibleAgent">Responsible Agent</label><br>
+            <input id="responsibleAgent" type="text" th:field="*{responsibleAgent}" maxlength="100">
+        </div>
+        <div>
+            <label for="tags">Tags</label><br>
+            <input id="tags" type="text" th:field="*{tags}" maxlength="500">
+        </div>
+        <div>
+            <label for="notes">Notes</label><br>
+            <textarea id="notes" th:field="*{notes}" rows="3" cols="80"></textarea>
+        </div>
+        <div>
+            <label for="createdAt">Created At</label><br>
+            <input id="createdAt" type="text" th:value="${realEstate.createdAt}" readonly>
+        </div>
+        <div>
+            <label for="updatedAt">Updated At</label><br>
+            <input id="updatedAt" type="text" th:value="${realEstate.updatedAt}" readonly>
+        </div>
+        <div>
+            <label for="createdBy">Created By</label><br>
+            <input id="createdBy" type="text" th:value="${realEstate.createdBy}" readonly>
+        </div>
+        <div>
+            <label for="updatedBy">Updated By</label><br>
+            <input id="updatedBy" type="text" th:value="${realEstate.updatedBy}" readonly>
+        </div>
+    </fieldset>
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/real-estates}">Cancel</a>
     </div>
 </form>
+<script>
+    (function () {
+        var propertyTypeField = document.getElementById('propertyType');
+        var buildingSection = document.getElementById('buildingSection');
+        var maintenanceStatusField = document.getElementById('maintenanceStatus');
+        var renovationSection = document.getElementById('renovationSection');
+        var purchasePriceField = document.getElementById('purchasePrice');
+        var rentalIncomeField = document.getElementById('rentalIncome');
+        var yieldIndicatorsField = document.getElementById('yieldIndicators');
+        function syncBuildingVisibility() {
+            var showBuilding = propertyTypeField && propertyTypeField.value !== 'LAND';
+            if (buildingSection) {
+                buildingSection.style.display = showBuilding ? '' : 'none';
+            }
+        }
+        function syncRenovationVisibility() {
+            var showRenovation = maintenanceStatusField && maintenanceStatusField.value !== '' && maintenanceStatusField.value !== 'UNKNOWN';
+            if (renovationSection) {
+                renovationSection.style.display = showRenovation ? '' : 'none';
+            }
+        }
+        function syncYieldIndicators() {
+            if (!purchasePriceField || !rentalIncomeField || !yieldIndicatorsField) {
+                return;
+            }
+            var purchasePrice = parseFloat(purchasePriceField.value || '0');
+            var rentalIncome = parseFloat(rentalIncomeField.value || '0');
+            if (purchasePrice > 0 && rentalIncome >= 0) {
+                yieldIndicatorsField.value = ((rentalIncome * 100) / purchasePrice).toFixed(2);
+            } else if (!yieldIndicatorsField.readOnly) {
+                yieldIndicatorsField.value = '';
+            } else if (purchasePrice === 0 || isNaN(purchasePrice) || isNaN(rentalIncome)) {
+                yieldIndicatorsField.value = '';
+            }
+        }
+        if (propertyTypeField) {
+            propertyTypeField.addEventListener('change', syncBuildingVisibility);
+            syncBuildingVisibility();
+        }
+        if (maintenanceStatusField) {
+            maintenanceStatusField.addEventListener('change', syncRenovationVisibility);
+            syncRenovationVisibility();
+        }
+        if (purchasePriceField) {
+            purchasePriceField.addEventListener('input', syncYieldIndicators);
+        }
+        if (rentalIncomeField) {
+            rentalIncomeField.addEventListener('input', syncYieldIndicators);
+        }
+        syncYieldIndicators();
+    }());
+</script>
 </body>
 </html>
+
+
+
 
 
