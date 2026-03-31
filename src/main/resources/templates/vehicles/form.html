@@ -2,33 +2,124 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Vehicle' : 'Create Vehicle'">Vehicle Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
+<h1 th:text="${isEdit} ? 'Edit Vehicle' : 'Create Vehicle'">Vehicle Form</h1>
+<p>
+    <a th:href="@{/vehicles}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
 
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<form th:action="${isEdit} ? @{/vehicles/{id}(id=${vehicle.id})} : @{/vehicles}" th:object="${vehicle}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
+    <h3>Identity</h3>
+    <div><label>Vehicle ID *</label><br><input type="text" th:field="*{vehicleId}" required maxlength="100"><div style="color:#b00020" th:errors="*{vehicleId}"></div></div>
+    <div><label>VIN *</label><br><input type="text" th:field="*{vin}" required maxlength="17"><div style="color:#b00020" th:errors="*{vin}"></div></div>
+    <div><label>License Plate *</label><br><input type="text" th:field="*{licensePlate}" required maxlength="20"><div style="color:#b00020" th:errors="*{licensePlate}"></div></div>
+    <div><label>Vehicle Type *</label><br><select th:field="*{vehicleType}" required><option value="">Select</option><option th:each="v : ${vehicleTypes}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{vehicleType}"></div></div>
+    <div><label>Make *</label><br><input type="text" th:field="*{make}" required maxlength="100"><div style="color:#b00020" th:errors="*{make}"></div></div>
+    <div><label>Model *</label><br><input type="text" th:field="*{model}" required maxlength="100"><div style="color:#b00020" th:errors="*{model}"></div></div>
+    <div><label>Trim / Variant</label><br><input type="text" th:field="*{trimVariant}" maxlength="100"></div>
+    <div><label>Year of Manufacture *</label><br><input type="number" th:field="*{yearOfManufacture}" required min="1900" step="1"><div style="color:#b00020" th:errors="*{yearOfManufacture}"></div></div>
+    <div><label>Body Type</label><br><input type="text" th:field="*{bodyType}" maxlength="100"></div>
+    <div><label>Color</label><br><input type="text" th:field="*{color}" maxlength="50"></div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
+    <h3>Technical</h3>
+    <div><label>Engine Type *</label><br><select th:field="*{engineType}" required><option value="">Select</option><option th:each="v : ${engineTypes}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{engineType}"></div></div>
+    <div><label>Engine Capacity</label><br><input type="text" th:field="*{engineCapacity}" maxlength="50"></div>
+    <div><label>Power Output</label><br><input type="text" th:field="*{powerOutput}" maxlength="50"></div>
+    <div><label>Torque</label><br><input type="text" th:field="*{torque}" maxlength="50"></div>
+    <div><label>Transmission</label><br><select th:field="*{transmission}"><option value="">Select</option><option th:each="v : ${transmissions}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Drivetrain</label><br><select th:field="*{drivetrain}"><option value="">Select</option><option th:each="v : ${drivetrains}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Fuel Consumption</label><br><input type="text" th:field="*{fuelConsumption}" maxlength="100"></div>
+    <div><label>Battery Capacity</label><br><input type="text" th:field="*{batteryCapacity}" maxlength="50"></div>
+    <div><label>Range (km)</label><br><input type="number" th:field="*{electricRangeKm}" min="0" step="1"></div>
+    <div><label>Emission Standard</label><br><input type="text" th:field="*{emissionStandard}" maxlength="30"></div>
+    <div><label>Dimensions</label><br><input type="text" th:field="*{dimensions}" maxlength="100"></div>
+    <div><label>Gross Weight</label><br><input type="number" th:field="*{grossWeight}" step="0.01" min="0"></div>
+    <div><label>Payload Capacity</label><br><input type="number" th:field="*{payloadCapacity}" step="0.01" min="0"></div>
 
-    <div>
+    <h3>Registration and Legal</h3>
+    <div><label>Registration Country</label><br><input type="text" th:field="*{registrationCountry}" maxlength="100"></div>
+    <div><label>Registration Date</label><br><input type="date" th:field="*{registrationDate}"></div>
+    <div><label>Registration Status</label><br><select th:field="*{registrationStatus}"><option value="">Select</option><option th:each="v : ${registrationStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Inspection Status</label><br><select th:field="*{inspectionStatus}"><option value="">Select</option><option th:each="v : ${verificationStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Inspection Expiry Date</label><br><input type="date" th:field="*{inspectionExpiryDate}"></div>
+    <div><label>Insurance Status</label><br><select th:field="*{insuranceStatus}"><option value="">Select</option><option th:each="v : ${verificationStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Insurance Expiry Date</label><br><input type="date" th:field="*{insuranceExpiryDate}"></div>
+    <div><label>Tax Status</label><br><select th:field="*{taxStatus}"><option value="">Select</option><option th:each="v : ${taxStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Homologation Documents</label><br><textarea th:field="*{homologationDocuments}" rows="2"></textarea></div>
+    <div><label>Compliance Certificates</label><br><textarea th:field="*{complianceCertificates}" rows="2"></textarea></div>
+
+    <h3>Ownership and Usage</h3>
+    <div><label>Owner Name / Entity</label><br><input type="text" th:field="*{ownerName}" maxlength="255"></div>
+    <div><label>Ownership Type</label><br><select th:field="*{ownershipType}"><option value="">Select</option><option th:each="v : ${ownershipTypes}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Leasing Details</label><br><textarea th:field="*{leasingDetails}" rows="2"></textarea></div>
+    <div><label>Usage Category</label><br><select th:field="*{usageCategory}"><option value="">Select</option><option th:each="v : ${usageCategories}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Current Mileage</label><br><input type="number" th:field="*{currentMileage}" min="0" step="1"></div>
+    <div><label>Average Annual Mileage</label><br><input type="number" th:field="*{averageAnnualMileage}" min="0" step="1"></div>
+    <div><label>Operating Region</label><br><select th:field="*{operatingRegion}"><option value="">Select</option><option th:each="v : ${operatingRegions}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Driver Assignments</label><br><textarea th:field="*{driverAssignments}" rows="2"></textarea></div>
+
+    <h3>Maintenance</h3>
+    <div><label>Condition Status</label><br><select th:field="*{conditionStatus}"><option value="">Select</option><option th:each="v : ${conditionStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Maintenance Schedule</label><br><select th:field="*{maintenanceSchedule}"><option value="">Select</option><option th:each="v : ${maintenanceSchedules}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Last Service Date</label><br><input type="date" th:field="*{lastServiceDate}"></div>
+    <div><label>Next Service Due</label><br><input type="date" th:field="*{nextServiceDue}"></div>
+    <div><label>Service History</label><br><textarea th:field="*{serviceHistory}" rows="3"></textarea></div>
+    <div><label>Accident History</label><br><textarea th:field="*{accidentHistory}" rows="3"></textarea></div>
+    <div><label>Fault Codes</label><br><textarea th:field="*{faultCodes}" rows="2"></textarea></div>
+    <div><label>Warranty Status</label><br><input type="text" th:field="*{warrantyStatus}" maxlength="100"></div>
+
+    <h3>Financial</h3>
+    <div><label>Purchase Price</label><br><input type="number" th:field="*{purchasePrice}" step="0.01" min="0"></div>
+    <div><label>Purchase Date</label><br><input type="date" th:field="*{purchaseDate}"></div>
+    <div><label>Current Market Value</label><br><input type="number" th:field="*{currentMarketValue}" step="0.01" min="0"></div>
+    <div><label>Valuation Date</label><br><input type="date" th:field="*{valuationDate}"></div>
+    <div><label>Depreciation Method</label><br><select th:field="*{depreciationMethod}"><option value="">Select</option><option th:each="v : ${depreciationMethods}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Depreciation Rate (%)</label><br><input type="number" th:field="*{depreciationRate}" step="0.01" min="0" max="100"></div>
+    <div><label>Operating Costs</label><br><input type="number" th:field="*{operatingCosts}" step="0.01" min="0"></div>
+    <div><label>Insurance Cost</label><br><input type="number" th:field="*{insuranceCost}" step="0.01" min="0"></div>
+    <div><label>Tax Cost</label><br><input type="number" th:field="*{taxCost}" step="0.01" min="0"></div>
+
+    <h3>Risk and Assessment</h3>
+    <div><label>Mechanical Risk Score</label><br><input type="number" th:field="*{mechanicalRiskScore}" step="0.01" min="0"></div>
+    <div><label>Accident Risk Score</label><br><input type="number" th:field="*{accidentRiskScore}" step="0.01" min="0"></div>
+    <div><label>Operational Risk Score</label><br><input type="number" th:field="*{operationalRiskScore}" step="0.01" min="0"></div>
+    <div><label>Compliance Risk Score</label><br><input type="number" th:field="*{complianceRiskScore}" step="0.01" min="0"></div>
+    <div><label>Environmental Impact Score</label><br><input type="number" th:field="*{environmentalImpactScore}" step="0.01" min="0"></div>
+    <div><label>Overall Assessment Score</label><br><input type="number" th:field="*{overallAssessmentScore}" step="0.01" min="0"></div>
+    <div><label>Compliance Flags</label><br><textarea th:field="*{complianceFlags}" rows="2"></textarea></div>
+
+    <h3>Evidence</h3>
+    <div><label>Registration Documents</label><br><textarea th:field="*{registrationDocuments}" rows="2"></textarea></div>
+    <div><label>Insurance Documents</label><br><textarea th:field="*{insuranceDocuments}" rows="2"></textarea></div>
+    <div><label>Inspection Reports</label><br><textarea th:field="*{inspectionReports}" rows="2"></textarea></div>
+    <div><label>Service Invoices</label><br><textarea th:field="*{serviceInvoices}" rows="2"></textarea></div>
+    <div><label>Accident Reports</label><br><textarea th:field="*{accidentReports}" rows="2"></textarea></div>
+    <div><label>Photos</label><br><textarea th:field="*{photos}" rows="2"></textarea></div>
+    <div><label>Internal Notes</label><br><textarea th:field="*{internalNotes}" rows="3"></textarea></div>
+
+    <h3>Metadata</h3>
+    <div><label>Data Source *</label><br><input type="text" th:field="*{dataSource}" required maxlength="100"><div style="color:#b00020" th:errors="*{dataSource}"></div></div>
+    <div><label>Responsible Agent</label><br><input type="text" th:field="*{responsibleAgent}" maxlength="100"></div>
+    <div><label>Notes</label><br><textarea th:field="*{notes}" rows="3"></textarea></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${vehicle.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${vehicle.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${vehicle.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${vehicle.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/vehicles}">Cancel</a>
     </div>
 </form>
 </body>
 </html>
-
-

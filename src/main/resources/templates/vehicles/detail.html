@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicle Details</title>
+</head>
+<body>
+<h1>Vehicle Details</h1>
+<p>
+    <a th:href="@{/vehicles}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/vehicles/{id}/edit(id=${vehicle.id})}">Edit</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Vehicle ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.vehicleId}">VH-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">VIN</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.vin}">VIN</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">License Plate</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.licensePlate}">B123XYZ</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Vehicle Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.vehicleType}">CAR</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Make / Model</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.make + ' ' + vehicle.model}">BMW X5</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Engine Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.engineType}">DIESEL</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Registration</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.registrationStatus}">ACTIVE</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Ownership Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.ownershipType}">COMPANY</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Current Mileage</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.currentMileage}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Current Market Value</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.currentMarketValue}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Valuation Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.valuationDate}">2026-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Overall Assessment Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.overallAssessmentScore}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Data Source</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.dataSource}">manual-entry</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.createdAt}">2026-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${vehicle.updatedAt}">2026-01-01</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+
