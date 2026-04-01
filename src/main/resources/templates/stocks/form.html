@@ -2,33 +2,116 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Stock' : 'Create Stock'">Stock Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
+<h1 th:text="${isEdit} ? 'Edit Stock' : 'Create Stock'">Stock Form</h1>
+<p>
+    <a th:href="@{/stocks}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
 
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<form th:action="${isEdit} ? @{/stocks/{id}(id=${stock.id})} : @{/stocks}" th:object="${stock}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
+    <h3>Identity and Classification</h3>
+    <div><label>Stock ID *</label><br><input type="text" th:field="*{stockId}" required maxlength="100"><div style="color:#b00020" th:errors="*{stockId}"></div></div>
+    <div><label>Ticker Symbol *</label><br><input type="text" th:field="*{tickerSymbol}" required maxlength="20"><div style="color:#b00020" th:errors="*{tickerSymbol}"></div></div>
+    <div><label>Exchange *</label><br><input type="text" th:field="*{exchange}" required maxlength="30"><div style="color:#b00020" th:errors="*{exchange}"></div></div>
+    <div><label>ISIN</label><br><input type="text" th:field="*{isin}" maxlength="12"><div style="color:#b00020" th:errors="*{isin}"></div></div>
+    <div><label>CUSIP / SEDOL</label><br><input type="text" th:field="*{cusip}" maxlength="20"><div style="color:#b00020" th:errors="*{cusip}"></div></div>
+    <div><label>Company Name *</label><br><input type="text" th:field="*{companyName}" required maxlength="255"><div style="color:#b00020" th:errors="*{companyName}"></div></div>
+    <div><label>Industry</label><br><input type="text" th:field="*{industry}" maxlength="120"></div>
+    <div><label>Sector</label><br><input type="text" th:field="*{sector}" maxlength="120"></div>
+    <div><label>Country of Listing</label><br><input type="text" th:field="*{countryOfListing}" maxlength="100"></div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
+    <h3>Market Data</h3>
+    <div><label>Current Price</label><br><input type="number" th:field="*{currentPrice}" min="0" step="0.0001"><div style="color:#b00020" th:errors="*{currentPrice}"></div></div>
+    <div><label>Open Price</label><br><input type="number" th:field="*{openPrice}" min="0" step="0.0001"></div>
+    <div><label>Close Price</label><br><input type="number" th:field="*{closePrice}" min="0" step="0.0001"></div>
+    <div><label>Day High</label><br><input type="number" th:field="*{dayHigh}" min="0" step="0.0001"></div>
+    <div><label>Day Low</label><br><input type="number" th:field="*{dayLow}" min="0" step="0.0001"></div>
+    <div><label>52-Week High</label><br><input type="number" th:field="*{fiftyTwoWeekHigh}" min="0" step="0.0001"></div>
+    <div><label>52-Week Low</label><br><input type="number" th:field="*{fiftyTwoWeekLow}" min="0" step="0.0001"></div>
+    <div><label>Volume</label><br><input type="number" th:field="*{volume}" min="0" step="1"></div>
+    <div><label>Average Volume</label><br><input type="number" th:field="*{averageVolume}" min="0" step="1"></div>
+    <div><label>Market Cap</label><br><input type="number" th:field="*{marketCap}" min="0" step="0.01"></div>
+    <div><label>Beta</label><br><input type="number" th:field="*{beta}" step="0.0001"></div>
+    <div><label>Price Change</label><br><input type="number" th:field="*{priceChange}" step="0.0001"></div>
+    <div><label>Price Change Percent</label><br><input type="number" th:field="*{priceChangePercent}" step="0.0001"></div>
 
-    <div>
+    <h3>Financial Fundamentals</h3>
+    <div><label>EPS</label><br><input type="number" th:field="*{earningsPerShare}" step="0.0001"></div>
+    <div><label>P/E</label><br><input type="number" th:field="*{priceToEarnings}" min="0" step="0.0001"></div>
+    <div><label>P/B</label><br><input type="number" th:field="*{priceToBook}" min="0" step="0.0001"></div>
+    <div><label>Dividend Yield</label><br><input type="number" th:field="*{dividendYield}" min="0" step="0.0001"></div>
+    <div><label>Dividend Per Share</label><br><input type="number" th:field="*{dividendPerShare}" min="0" step="0.0001"></div>
+    <div><label>Payout Ratio</label><br><input type="number" th:field="*{payoutRatio}" min="0" step="0.0001"></div>
+    <div><label>Revenue</label><br><input type="number" th:field="*{revenue}" step="0.01"></div>
+    <div><label>Net Income</label><br><input type="number" th:field="*{netIncome}" step="0.01"></div>
+    <div><label>Operating Margin</label><br><input type="number" th:field="*{operatingMargin}" step="0.0001"></div>
+    <div><label>Profit Margin</label><br><input type="number" th:field="*{profitMargin}" step="0.0001"></div>
+    <div><label>ROE</label><br><input type="number" th:field="*{returnOnEquity}" step="0.0001"></div>
+    <div><label>ROA</label><br><input type="number" th:field="*{returnOnAssets}" step="0.0001"></div>
+    <div><label>Debt to Equity</label><br><input type="number" th:field="*{debtToEquity}" step="0.0001"></div>
+
+    <h3>Corporate and Governance</h3>
+    <div><label>Company Type</label><br><select th:field="*{companyType}"><option value="">Select</option><option th:each="value : ${companyTypes}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Board Members</label><br><textarea th:field="*{boardMembers}" rows="2"></textarea></div>
+    <div><label>Executive Team</label><br><textarea th:field="*{executiveTeam}" rows="2"></textarea></div>
+    <div><label>Major Shareholders</label><br><textarea th:field="*{majorShareholders}" rows="2"></textarea></div>
+    <div><label>Ownership Structure</label><br><textarea th:field="*{ownershipStructure}" rows="2"></textarea></div>
+    <div><label>Corporate Governance Score</label><br><input type="number" th:field="*{corporateGovernanceScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Regulatory Flags</label><br><textarea th:field="*{regulatoryFlags}" rows="2"></textarea></div>
+
+    <h3>Corporate Actions and Context</h3>
+    <div><label>Dividend Announcements</label><br><textarea th:field="*{dividendAnnouncements}" rows="2"></textarea></div>
+    <div><label>Earnings Reports</label><br><textarea th:field="*{earningsReports}" rows="2"></textarea></div>
+    <div><label>Stock Splits</label><br><textarea th:field="*{stockSplits}" rows="2"></textarea></div>
+    <div><label>Mergers / Acquisitions</label><br><textarea th:field="*{mergersAcquisitions}" rows="2"></textarea></div>
+    <div><label>Spin-offs</label><br><textarea th:field="*{spinOffs}" rows="2"></textarea></div>
+    <div><label>Share Buybacks</label><br><textarea th:field="*{shareBuybacks}" rows="2"></textarea></div>
+    <div><label>Guidance Updates</label><br><textarea th:field="*{guidanceUpdates}" rows="2"></textarea></div>
+    <div><label>Notable News Events</label><br><textarea th:field="*{notableNewsEvents}" rows="3"></textarea></div>
+    <div><label>Industry Trends</label><br><textarea th:field="*{industryTrends}" rows="2"></textarea></div>
+    <div><label>Macroeconomic Indicators</label><br><textarea th:field="*{macroeconomicIndicators}" rows="2"></textarea></div>
+    <div><label>Competitive Position</label><br><select th:field="*{competitivePosition}"><option value="">Select</option><option th:each="value : ${competitivePositions}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Geopolitical Exposure</label><br><textarea th:field="*{geopoliticalExposure}" rows="2"></textarea></div>
+    <div><label>Supply Chain Risks</label><br><textarea th:field="*{supplyChainRisks}" rows="2"></textarea></div>
+
+    <h3>Risk and Assessment</h3>
+    <div><label>Volatility Score</label><br><input type="number" th:field="*{volatilityScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Liquidity Risk Score</label><br><input type="number" th:field="*{liquidityRiskScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Financial Health Score</label><br><input type="number" th:field="*{financialHealthScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Market Risk Score</label><br><input type="number" th:field="*{marketRiskScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Governance Risk Score</label><br><input type="number" th:field="*{governanceRiskScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Overall Assessment Score</label><br><input type="number" th:field="*{overallAssessmentScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Compliance Flags</label><br><textarea th:field="*{complianceFlags}" rows="2"></textarea></div>
+
+    <h3>Evidence and Metadata</h3>
+    <div><label>Financial Reports</label><br><textarea th:field="*{financialReports}" rows="2"></textarea></div>
+    <div><label>Analyst Reports</label><br><textarea th:field="*{analystReports}" rows="2"></textarea></div>
+    <div><label>News References</label><br><textarea th:field="*{newsReferences}" rows="2"></textarea></div>
+    <div><label>Regulatory Filings</label><br><textarea th:field="*{regulatoryFilings}" rows="2"></textarea></div>
+    <div><label>Internal Notes</label><br><textarea th:field="*{internalNotes}" rows="3"></textarea></div>
+    <div><label>Data Source *</label><br><input type="text" th:field="*{dataSource}" required maxlength="100"><div style="color:#b00020" th:errors="*{dataSource}"></div></div>
+    <div><label>Responsible Agent</label><br><input type="text" th:field="*{responsibleAgent}" maxlength="100"></div>
+    <div><label>Tags</label><br><input type="text" th:field="*{tags}" maxlength="500"></div>
+    <div><label>Notes</label><br><textarea th:field="*{notes}" rows="3"></textarea></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${stock.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${stock.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${stock.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${stock.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/stocks}">Cancel</a>
     </div>
 </form>
 </body>
 </html>
-
-

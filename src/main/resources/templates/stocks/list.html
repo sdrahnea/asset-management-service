@@ -2,43 +2,69 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${pluralTitle}">Assets</title>
+    <title>Stocks</title>
 </head>
 <body>
-<h1 th:text="${pluralTitle}">Assets</h1>
-
+<h1>Stocks</h1>
 <p>
-    <a th:href="@{|${basePath}/new|}" th:text="${'Create ' + singularTitle}">Create</a>
+    <a th:href="@{/stocks/new}">Create Stock</a>
     |
     <a th:href="@{/}">Back to Home</a>
 </p>
 
+<form th:action="@{/stocks}" method="get" style="margin-bottom: 12px;">
+    <label for="tickerSymbol">Ticker</label>
+    <input id="tickerSymbol" name="tickerSymbol" type="text" th:value="${selectedTickerSymbol}" maxlength="20">
+
+    <label for="exchange">Exchange</label>
+    <input id="exchange" name="exchange" type="text" th:value="${selectedExchange}" maxlength="30">
+
+    <label for="sector">Sector</label>
+    <input id="sector" name="sector" type="text" th:value="${selectedSector}" maxlength="120">
+
+    <label for="companyType">Company Type</label>
+    <select id="companyType" name="companyType">
+        <option value="">All</option>
+        <option th:each="value : ${companyTypes}" th:value="${value}" th:text="${value}" th:selected="${selectedCompanyType == value}">PUBLIC</option>
+    </select>
+
+    <button type="submit">Filter</button>
+    <a th:href="@{/stocks}">Reset</a>
+</form>
+
 <table style="border-collapse: collapse; width: 100%;">
     <thead>
     <tr>
-        <th style="border: 1px solid #ccc; padding: 6px;">ID</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Name</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Created By</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Created At</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Updated By</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Updated At</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Stock ID</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Ticker</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Exchange</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Company</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Sector</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Current Price</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Market Cap</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Assessment</th>
         <th style="border: 1px solid #ccc; padding: 6px;">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${#lists.isEmpty(items)}">
-        <td colspan="7" style="border: 1px solid #ccc; padding: 6px;">No records found.</td>
+    <tr th:if="${#lists.isEmpty(stocks)}">
+        <td colspan="9" style="border: 1px solid #ccc; padding: 6px;">No stocks found.</td>
     </tr>
-    <tr th:each="item : ${items}">
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.id}">1</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.name}">Name</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.createdBy}">system</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.createdAt}">2026-01-01T00:00:00Z</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.updatedBy}">system</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.updatedAt}">2026-01-01T00:00:00Z</td>
+    <tr th:each="stock : ${stocks}">
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.stockId}">STK-001</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.tickerSymbol}">AAPL</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.exchange}">NASDAQ</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.companyName}">Apple Inc.</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.sector}">Technology</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.currentPrice}">150.00</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.marketCap}">2000000000</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${stock.overallAssessmentScore}">85</td>
         <td style="border: 1px solid #ccc; padding: 6px;">
-            <a th:href="@{|${basePath}/${item.id}/edit|}">Edit</a>
-            <form th:action="@{|${basePath}/${item.id}/delete|}" method="post" style="display:inline">
+            <a th:href="@{/stocks/{id}(id=${stock.id})}">View</a>
+            |
+            <a th:href="@{/stocks/{id}/edit(id=${stock.id})}">Edit</a>
+            |
+            <form th:action="@{/stocks/{id}/delete(id=${stock.id})}" method="post" style="display:inline">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -47,5 +73,3 @@
 </table>
 </body>
 </html>
-
-

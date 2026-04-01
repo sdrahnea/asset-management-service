@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Details</title>
+</head>
+<body>
+<h1>Stock Details</h1>
+<p>
+    <a th:href="@{/stocks}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/stocks/{id}/edit(id=${stock.id})}">Edit</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Stock ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.stockId}">STK-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Ticker</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.tickerSymbol}">AAPL</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Exchange</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.exchange}">NASDAQ</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Company Name</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.companyName}">Apple Inc.</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Sector</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.sector}">Technology</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Current Price</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.currentPrice}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Day Range</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.dayLow + ' - ' + stock.dayHigh}">0 - 0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">52-Week Range</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.fiftyTwoWeekLow + ' - ' + stock.fiftyTwoWeekHigh}">0 - 0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Market Cap</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.marketCap}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">P/E</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.priceToEarnings}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Dividend Yield</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.dividendYield}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Company Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.companyType}">PUBLIC</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Competitive Position</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.competitivePosition}">LEADER</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Overall Assessment Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.overallAssessmentScore}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Data Source</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.dataSource}">manual-entry</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.createdAt}">2026-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${stock.updatedAt}">2026-01-01</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+
