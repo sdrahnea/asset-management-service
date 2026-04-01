@@ -2,43 +2,76 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${pluralTitle}">Assets</title>
+    <title>Trademarks</title>
 </head>
 <body>
-<h1 th:text="${pluralTitle}">Assets</h1>
-
+<h1>Trademarks</h1>
 <p>
-    <a th:href="@{|${basePath}/new|}" th:text="${'Create ' + singularTitle}">Create</a>
+    <a th:href="@{/trademarks/new}">Create Trademark</a>
     |
     <a th:href="@{/}">Back to Home</a>
 </p>
 
+<form th:action="@{/trademarks}" method="get" style="margin-bottom: 12px;">
+    <label for="markType">Mark Type</label>
+    <select id="markType" name="markType">
+        <option value="">All</option>
+        <option th:each="v : ${markTypes}" th:value="${v}" th:text="${v}" th:selected="${selectedMarkType == v}">WORDMARK</option>
+    </select>
+
+    <label for="legalStatus">Legal Status</label>
+    <select id="legalStatus" name="legalStatus">
+        <option value="">All</option>
+        <option th:each="v : ${legalStatuses}" th:value="${v}" th:text="${v}" th:selected="${selectedLegalStatus == v}">FILED</option>
+    </select>
+
+    <label for="ownerType">Owner Type</label>
+    <select id="ownerType" name="ownerType">
+        <option value="">All</option>
+        <option th:each="v : ${ownerTypes}" th:value="${v}" th:text="${v}" th:selected="${selectedOwnerType == v}">CORPORATION</option>
+    </select>
+
+    <label for="licensingStatus">Licensing</label>
+    <select id="licensingStatus" name="licensingStatus">
+        <option value="">All</option>
+        <option th:each="v : ${licensingStatuses}" th:value="${v}" th:text="${v}" th:selected="${selectedLicensingStatus == v}">NOT_LICENSED</option>
+    </select>
+
+    <button type="submit">Filter</button>
+    <a th:href="@{/trademarks}">Reset</a>
+</form>
+
 <table style="border-collapse: collapse; width: 100%;">
     <thead>
     <tr>
-        <th style="border: 1px solid #ccc; padding: 6px;">ID</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Name</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Created By</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Created At</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Updated By</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Updated At</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Trademark ID</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Mark Name</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Mark Type</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Owner</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Application Number</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Legal Status</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Expiration Date</th>
         <th style="border: 1px solid #ccc; padding: 6px;">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${#lists.isEmpty(items)}">
-        <td colspan="7" style="border: 1px solid #ccc; padding: 6px;">No records found.</td>
+    <tr th:if="${#lists.isEmpty(trademarks)}">
+        <td colspan="8" style="border: 1px solid #ccc; padding: 6px;">No trademarks found.</td>
     </tr>
-    <tr th:each="item : ${items}">
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.id}">1</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.name}">Name</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.createdBy}">system</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.createdAt}">2026-01-01T00:00:00Z</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.updatedBy}">system</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.updatedAt}">2026-01-01T00:00:00Z</td>
+    <tr th:each="trademark : ${trademarks}">
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.trademarkId}">TM-001</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.markName}">Brand Name</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.markType}">WORDMARK</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.ownerName}">Company</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.applicationNumber}">APP-001</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.legalStatus}">FILED</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${trademark.expirationDate}">2030-01-01</td>
         <td style="border: 1px solid #ccc; padding: 6px;">
-            <a th:href="@{|${basePath}/${item.id}/edit|}">Edit</a>
-            <form th:action="@{|${basePath}/${item.id}/delete|}" method="post" style="display:inline">
+            <a th:href="@{/trademarks/{id}(id=${trademark.id})}">View</a>
+            |
+            <a th:href="@{/trademarks/{id}/edit(id=${trademark.id})}">Edit</a>
+            |
+            <form th:action="@{/trademarks/{id}/delete(id=${trademark.id})}" method="post" style="display:inline">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -47,5 +80,3 @@
 </table>
 </body>
 </html>
-
-

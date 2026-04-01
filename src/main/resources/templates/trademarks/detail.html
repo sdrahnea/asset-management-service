@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trademark Details</title>
+</head>
+<body>
+<h1>Trademark Details</h1>
+<p>
+    <a th:href="@{/trademarks}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/trademarks/{id}/edit(id=${trademark.id})}">Edit</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+    <tbody>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Trademark ID</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.trademarkId}">TM-001</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Mark Name</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.markName}">Brand</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Mark Type</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.markType}">WORDMARK</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Owner</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.ownerName + ' (' + trademark.ownerType + ')'}">Owner</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Application Number</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.applicationNumber}">APP-001</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Application Date</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.applicationDate}">2026-01-01</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Registration Number</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.registrationNumber}">REG-001</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Legal Status</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.legalStatus}">FILED</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Jurisdictions Filed</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.jurisdictionsFiled}">RO, EU</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Usage Status</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.usageStatus}">IN_USE</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Licensing Status</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.licensingStatus}">NOT_LICENSED</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Valuation</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.valuation}">0</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Overall Assessment Score</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.overallAssessmentScore}">0</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Compliance Flags</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.complianceFlags}">None</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Data Source</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.dataSource}">manual-entry</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Created At</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.createdAt}">2026-01-01</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Updated At</th><td style="border:1px solid #ccc;padding:6px;" th:text="${trademark.updatedAt}">2026-01-01</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+

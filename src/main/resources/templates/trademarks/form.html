@@ -2,33 +2,105 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Trademark' : 'Create Trademark'">Trademark Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
+<h1 th:text="${isEdit} ? 'Edit Trademark' : 'Create Trademark'">Trademark Form</h1>
+<p>
+    <a th:href="@{/trademarks}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
 
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<form th:action="${isEdit} ? @{/trademarks/{id}(id=${trademark.id})} : @{/trademarks}" th:object="${trademark}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
+    <h3>Identity</h3>
+    <div><label>Trademark ID *</label><br><input type="text" th:field="*{trademarkId}" required maxlength="100"><div style="color:#b00020" th:errors="*{trademarkId}"></div></div>
+    <div><label>Mark Name *</label><br><input type="text" th:field="*{markName}" required maxlength="255"><div style="color:#b00020" th:errors="*{markName}"></div></div>
+    <div><label>Mark Type *</label><br><select th:field="*{markType}" required><option value="">Select</option><option th:each="v : ${markTypes}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{markType}"></div></div>
+    <div><label>Mark Description</label><br><textarea th:field="*{markDescription}" rows="2"></textarea></div>
+    <div><label>Nice Classes</label><br><input type="text" th:field="*{niceClasses}" maxlength="500"></div>
+    <div><label>Vienna Codes</label><br><input type="text" th:field="*{viennaCodes}" maxlength="500"></div>
+    <div><label>Industry Sector</label><br><input type="text" th:field="*{industrySector}" maxlength="200"></div>
+    <div><label>Tags</label><br><input type="text" th:field="*{tags}" maxlength="500"></div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
+    <h3>Ownership</h3>
+    <div><label>Owner Name *</label><br><input type="text" th:field="*{ownerName}" required maxlength="255"><div style="color:#b00020" th:errors="*{ownerName}"></div></div>
+    <div><label>Owner Type *</label><br><select th:field="*{ownerType}" required><option value="">Select</option><option th:each="v : ${ownerTypes}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{ownerType}"></div></div>
+    <div><label>Owner Address</label><br><input type="text" th:field="*{ownerAddress}" maxlength="500"></div>
+    <div><label>Representative / Attorney</label><br><input type="text" th:field="*{representative}" maxlength="255"></div>
+    <div><label>Assignment History</label><br><textarea th:field="*{assignmentHistory}" rows="2"></textarea></div>
+    <div><label>Co-Owners</label><br><textarea th:field="*{coOwners}" rows="2"></textarea></div>
 
-    <div>
+    <h3>Legal Lifecycle</h3>
+    <div><label>Application Number *</label><br><input type="text" th:field="*{applicationNumber}" required maxlength="100"><div style="color:#b00020" th:errors="*{applicationNumber}"></div></div>
+    <div><label>Application Date *</label><br><input type="date" th:field="*{applicationDate}" required><div style="color:#b00020" th:errors="*{applicationDate}"></div></div>
+    <div><label>Registration Number</label><br><input type="text" th:field="*{registrationNumber}" maxlength="100"></div>
+    <div><label>Registration Date</label><br><input type="date" th:field="*{registrationDate}"></div>
+    <div><label>Priority Claimed</label><br><input type="checkbox" th:field="*{priorityClaimed}"></div>
+    <div><label>Priority Number</label><br><input type="text" th:field="*{priorityNumber}" maxlength="100"></div>
+    <div><label>Priority Date</label><br><input type="date" th:field="*{priorityDate}"></div>
+    <div><label>Legal Status *</label><br><select th:field="*{legalStatus}" required><option value="">Select</option><option th:each="v : ${legalStatuses}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{legalStatus}"></div></div>
+    <div><label>Expiration Date</label><br><input type="date" th:field="*{expirationDate}"></div>
+    <div><label>Renewal History</label><br><textarea th:field="*{renewalHistory}" rows="2"></textarea></div>
+    <div><label>Oppositions</label><br><textarea th:field="*{oppositions}" rows="2"></textarea></div>
+    <div><label>Cancellation Actions</label><br><textarea th:field="*{cancellationActions}" rows="2"></textarea></div>
+
+    <h3>Geographic Coverage</h3>
+    <div><label>Jurisdictions Filed</label><br><textarea th:field="*{jurisdictionsFiled}" rows="2"></textarea></div>
+    <div><label>Jurisdictions Registered</label><br><textarea th:field="*{jurisdictionsRegistered}" rows="2"></textarea></div>
+    <div><label>International Filing System</label><br><select th:field="*{internationalFilingSystem}"><option value="">Select</option><option th:each="v : ${internationalFilingSystems}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Regional Designations</label><br><input type="text" th:field="*{regionalDesignations}" maxlength="500"></div>
+
+    <h3>Rights and Usage</h3>
+    <div><label>Goods and Services</label><br><textarea th:field="*{goodsAndServices}" rows="3"></textarea></div>
+    <div><label>Usage Status</label><br><select th:field="*{usageStatus}"><option value="">Select</option><option th:each="v : ${usageStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>First Use Date</label><br><input type="date" th:field="*{firstUseDate}"></div>
+    <div><label>First Use in Commerce Date</label><br><input type="date" th:field="*{firstUseInCommerceDate}"></div>
+    <div><label>Specimen / Proof of Use</label><br><textarea th:field="*{specimen}" rows="2"></textarea></div>
+    <div><label>Limitations / Disclaimers</label><br><textarea th:field="*{limitations}" rows="2"></textarea></div>
+    <div><label>Coexistence Agreements</label><br><textarea th:field="*{coexistenceAgreements}" rows="2"></textarea></div>
+
+    <h3>Financial</h3>
+    <div><label>Licensing Status</label><br><select th:field="*{licensingStatus}"><option value="">Select</option><option th:each="v : ${licensingStatuses}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Licensees</label><br><textarea th:field="*{licensees}" rows="2"></textarea></div>
+    <div><label>Royalty Income</label><br><input type="number" th:field="*{royaltyIncome}" step="0.01" min="0"></div>
+    <div><label>Valuation</label><br><input type="number" th:field="*{valuation}" step="0.01" min="0"></div>
+    <div><label>Maintenance Costs</label><br><input type="number" th:field="*{maintenanceCosts}" step="0.01" min="0"></div>
+    <div><label>Commercial Importance</label><br><select th:field="*{commercialImportance}"><option value="">Select</option><option th:each="v : ${commercialImportances}" th:value="${v}" th:text="${v}"></option></select></div>
+
+    <h3>Risk and Assessment</h3>
+    <div><label>Distinctiveness Score</label><br><select th:field="*{distinctivenessScore}"><option value="">Select</option><option th:each="v : ${distinctivenessScores}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Litigation Risk Score</label><br><input type="number" th:field="*{litigationRiskScore}" step="0.01" min="0" max="100"></div>
+    <div><label>Infringement Risk Score</label><br><input type="number" th:field="*{infringementRiskScore}" step="0.01" min="0" max="100"></div>
+    <div><label>Market Relevance Score</label><br><input type="number" th:field="*{marketRelevanceScore}" step="0.01" min="0" max="100"></div>
+    <div><label>Renewal Risk Score</label><br><input type="number" th:field="*{renewalRiskScore}" step="0.01" min="0" max="100"></div>
+    <div><label>Overall Assessment Score</label><br><input type="number" th:field="*{overallAssessmentScore}" step="0.01" min="0" max="100"></div>
+    <div><label>Compliance Flags</label><br><textarea th:field="*{complianceFlags}" rows="2"></textarea></div>
+
+    <h3>Evidence and Metadata</h3>
+    <div><label>Official Documents</label><br><textarea th:field="*{officialDocuments}" rows="2"></textarea></div>
+    <div><label>Representations</label><br><textarea th:field="*{representations}" rows="2"></textarea></div>
+    <div><label>Search Reports</label><br><textarea th:field="*{searchReports}" rows="2"></textarea></div>
+    <div><label>Legal Opinions</label><br><textarea th:field="*{legalOpinions}" rows="2"></textarea></div>
+    <div><label>Internal Notes</label><br><textarea th:field="*{internalNotes}" rows="2"></textarea></div>
+    <div><label>Data Source *</label><br><input type="text" th:field="*{dataSource}" required maxlength="100"><div style="color:#b00020" th:errors="*{dataSource}"></div></div>
+    <div><label>Responsible Agent</label><br><input type="text" th:field="*{responsibleAgent}" maxlength="100"></div>
+    <div><label>Notes</label><br><textarea th:field="*{notes}" rows="2"></textarea></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${trademark.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${trademark.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${trademark.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${trademark.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/trademarks}">Cancel</a>
     </div>
 </form>
 </body>
 </html>
-
-
