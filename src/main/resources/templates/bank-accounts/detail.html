@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Account Details</title>
+</head>
+<body>
+<h1>Bank Account Details</h1>
+<p>
+    <a th:href="@{/bank-accounts}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/bank-accounts/{id}/edit(id=${bankAccount.id})}">Edit</a>
+</p>
+<table style="border-collapse: collapse; width: 100%; max-width: 900px;">
+    <tbody>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Name</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.name}">Account Name</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">IBAN</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.iban}">RO00BANK0000000000000000</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Bank Name</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.bankName}">Bank Name</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Branch Name</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.branchName}">Main Branch</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">SWIFT/BIC</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.swiftCode}">BANKROBU</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Local Account Number</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.localAccountNumber}">123456</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Account Type</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.accountType}">CURRENT</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Currency</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.currency}">EUR</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Status</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.status}">ACTIVE</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Ownership Type</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.ownershipType}">INDIVIDUAL</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Opened At</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.openedAt}">2026-01-01</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Closed At</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.closedAt}">2026-01-10</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Account Purpose</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.accountPurpose}">Business operations</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Assessment Score</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.assessmentScore}">0.00</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Verification Status</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.verificationStatus}">Verified</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Last Review Date</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.lastReviewDate}">2026-01-15</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Linked Entity</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.linkedEntity}">Project Atlas</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Created At</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.createdAt}">2026-01-01T00:00:00Z</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Created By</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.createdBy}">system</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Updated At</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.updatedAt}">2026-01-01T00:00:00Z</td></tr>
+    <tr><th style="border: 1px solid #ccc; padding: 6px; text-align: left;">Updated By</th><td style="border: 1px solid #ccc; padding: 6px;" th:text="${bankAccount.updatedBy}">system</td></tr>
+    </tbody>
+</table>
+</body>
+</html>

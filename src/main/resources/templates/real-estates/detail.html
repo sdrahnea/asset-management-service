@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Details</title>
+</head>
+<body>
+<h1>Real Estate Details</h1>
+<p>
+    <a th:href="@{/real-estates}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/real-estates/{id}/edit(id=${realEstate.id})}">Edit</a>
+</p>
+<section>
+    <h2>Identity</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Title</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.title}">Title</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Property Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.propertyType}">LAND</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Sub Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.subType}">Sub type</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Description</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.description}">Description</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Year Built</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.yearBuilt}">2020</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Construction Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.constructionType}">BRICK</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Condition</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.condition}">GOOD</td></tr>
+    </table>
+</section>
+<section>
+    <h2>Location</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Address</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.address}">Address</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Latitude</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.latitude}">0.0</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Longitude</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.longitude}">0.0</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Zoning Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.zoningType}">RESIDENTIAL</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Land Area</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.landArea}">1000.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Land Shape</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.landShape}">REGULAR</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Topography</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.topography}">FLAT</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Access Road Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.accessRoadType}">ASPHALT</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Utilities</th><td style="border:1px solid #ccc; padding:6px;"><span th:each="utility, iter : ${realEstate.utilitiesAvailability}"><span th:text="${utility}">Electricity</span><span th:if="${!iter.last}">, </span></span></td></tr>
+    </table>
+    <div th:if="${realEstate.latitude != null and realEstate.longitude != null}" style="margin-top: 12px;">
+        <h3>Map</h3>
+        <iframe
+            width="600"
+            height="350"
+            style="border:1px solid #ccc;"
+            loading="lazy"
+            th:src="'https://www.openstreetmap.org/export/embed.html?layer=mapnik&marker=' + ${realEstate.latitude} + ',' + ${realEstate.longitude}">
+        </iframe>
+    </div>
+</section>
+<section>
+    <h2>Building</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Built Area</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.builtArea}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Usable Area</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.usableArea}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Floors</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.floors}">0</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Rooms</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.rooms}">0</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Bathrooms</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.bathrooms}">0</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Balconies</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.balconies}">0</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Heating Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.heatingType}">CENTRAL</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Energy Efficiency Class</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.energyEfficiencyClass}">A</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Parking</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.parking}">Garage</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Amenities</th><td style="border:1px solid #ccc; padding:6px;"><span th:each="amenity, iter : ${realEstate.amenities}"><span th:text="${amenity}">Elevator</span><span th:if="${!iter.last}">, </span></span></td></tr>
+    </table>
+</section>
+<section>
+    <h2>Legal</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Ownership Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.ownershipType}">COMPANY</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Owner Name</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.ownerName}">Owner</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Cadastral Number</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.cadastralNumber}">CAD123</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Land Registry Number</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.landRegistryNumber}">REG123</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Encumbrances</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.encumbrances}">None</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Building Permits</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.buildingPermits}">Permit list</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Usage Restrictions</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.usageRestrictions}">Restrictions</td></tr>
+    </table>
+    <div>
+        <h3>Property Documents</h3>
+        <ul>
+            <li th:if="${realEstate.propertyDocuments.isEmpty()}">No property documents uploaded.</li>
+            <li th:each="doc : ${realEstate.propertyDocuments}">
+                <a th:href="@{/real-estates/files/{fileName}(fileName=${doc})}" th:text="${doc}">document.pdf</a>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+    <h2>Financial</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Current Market Value</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.currentMarketValue}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Valuation Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.valuationDate}">2026-03-30</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Purchase Price</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.purchasePrice}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Rental Income</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.rentalIncome}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Operating Costs</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.operatingCosts}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Taxes</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.taxes}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Insurance Value</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.insuranceValue}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Yield Indicators</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.yieldIndicators}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Depreciation Method</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.depreciationMethod}">Method</td></tr>
+    </table>
+</section>
+<section>
+    <h2>Market</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Neighborhood Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.neighborhoodType}">URBAN</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Proximity to Transport</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.proximityToTransport}">Transport</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Nearby Facilities</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.nearbyFacilities}">Facilities</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Market Trends</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.marketTrends}">Trends</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Environmental Risks</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.environmentalRisks}">Risks</td></tr>
+    </table>
+</section>
+<section>
+    <h2>Lifecycle</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Maintenance Status</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.maintenanceStatus}">UNKNOWN</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Last Renovation Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.lastRenovationDate}">2026-03-30</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Renovation Details</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.renovationDetails}">Details</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Structural Issues</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.structuralIssues}">Issues</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Expected CAPEX</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.expectedCapex}">0.00</td></tr>
+    </table>
+    <div>
+        <h3>Inspection Reports</h3>
+        <ul>
+            <li th:if="${realEstate.inspectionReports.isEmpty()}">No inspection reports uploaded.</li>
+            <li th:each="doc : ${realEstate.inspectionReports}">
+                <a th:href="@{/real-estates/files/{fileName}(fileName=${doc})}" th:text="${doc}">report.pdf</a>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+    <h2>Risk</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Legal Risk Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.legalRiskScore}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Market Risk Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.marketRiskScore}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Structural Risk Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.structuralRiskScore}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Environmental Risk Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.environmentalRiskScore}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Overall Assessment Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.overallAssessmentScore}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Compliance Flags</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.complianceFlags}">Flags</td></tr>
+    </table>
+</section>
+<section>
+    <h2>Metadata</h2>
+    <table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Data Source</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.dataSource}">manual-entry</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Responsible Agent</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.responsibleAgent}">agent</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Tags</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.tags}">tags</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Notes</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.notes}">notes</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.createdAt}">2026-03-30T00:00:00Z</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created By</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.createdBy}">system</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.updatedAt}">2026-03-30T00:00:00Z</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated By</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.updatedBy}">system</td></tr>
+    </table>
+</section>
+</body>
+</html>
+
