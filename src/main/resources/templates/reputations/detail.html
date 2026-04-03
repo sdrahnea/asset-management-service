@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reputation Details</title>
+</head>
+<body>
+<h1>Reputation Details</h1>
+<p>
+    <a th:href="@{/reputations}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/reputations/{id}/edit(id=${reputation.id})}">Edit</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 1000px;">
+    <tbody>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Reputation ID</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.reputationId}">REP-001</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Entity</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.entityType + ' / ' + reputation.entityId}">COMPANY / ENT-001</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Display Name</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.displayName}">Acme Corp</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Geographic Scope</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.geographicScope}">GLOBAL</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Public Sentiment</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.publicSentiment}">45</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Customer Feedback Score</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.customerFeedbackScore}">78</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Media Coverage</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.mediaCoverageTone + ' (' + reputation.mediaCoverageVolume + ')'}">POSITIVE (100)</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Event</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.eventType + ' / ' + reputation.eventDate}">AWARD / 2026-01-01</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Reputation Score</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.reputationScore}">82</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Risk Score</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.riskScore}">24</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Trend</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.trendDirection}">IMPROVING</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Competitive Position</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.competitivePosition}">LEADER</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Compliance Flags</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.complianceFlags}">None</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Data Source</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.dataSource}">manual-entry</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Created At</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.createdAt}">2026-01-01</td></tr>
+    <tr><th style="text-align:left;border:1px solid #ccc;padding:6px;">Updated At</th><td style="border:1px solid #ccc;padding:6px;" th:text="${reputation.updatedAt}">2026-01-01</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+

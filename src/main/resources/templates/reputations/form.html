@@ -2,33 +2,86 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Reputation' : 'Create Reputation'">Reputation Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
+<h1 th:text="${isEdit} ? 'Edit Reputation' : 'Create Reputation'">Reputation Form</h1>
+<p>
+    <a th:href="@{/reputations}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
 
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<form th:action="${isEdit} ? @{/reputations/{id}(id=${reputation.id})} : @{/reputations}" th:object="${reputation}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
+    <h3>Identity and Context</h3>
+    <div><label>Reputation ID *</label><br><input type="text" th:field="*{reputationId}" required maxlength="100"><div style="color:#b00020" th:errors="*{reputationId}"></div></div>
+    <div><label>Entity Type *</label><br><select th:field="*{entityType}" required><option value="">Select</option><option th:each="v : ${entityTypes}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{entityType}"></div></div>
+    <div><label>Entity ID *</label><br><input type="text" th:field="*{entityId}" required maxlength="100"><div style="color:#b00020" th:errors="*{entityId}"></div></div>
+    <div><label>Display Name *</label><br><input type="text" th:field="*{displayName}" required maxlength="255"><div style="color:#b00020" th:errors="*{displayName}"></div></div>
+    <div><label>Industry</label><br><input type="text" th:field="*{industry}" maxlength="200"></div>
+    <div><label>Geographic Scope</label><br><select th:field="*{geographicScope}"><option value="">Select</option><option th:each="v : ${geographicScopes}" th:value="${v}" th:text="${v}"></option></select></div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
+    <h3>Reputation Signals</h3>
+    <div><label>Public Sentiment</label><br><input type="number" th:field="*{publicSentiment}" min="-100" max="100" step="0.01"></div>
+    <div><label>Social Media Sentiment</label><br><input type="number" th:field="*{socialMediaSentiment}" min="-100" max="100" step="0.01"></div>
+    <div><label>Customer Feedback Score</label><br><input type="number" th:field="*{customerFeedbackScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Employee Feedback Score</label><br><input type="number" th:field="*{employeeFeedbackScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Stakeholder Feedback</label><br><textarea th:field="*{stakeholderFeedback}" rows="2"></textarea></div>
+    <div><label>Media Coverage Volume</label><br><input type="number" th:field="*{mediaCoverageVolume}" min="0" step="1"></div>
+    <div><label>Media Coverage Tone</label><br><select th:field="*{mediaCoverageTone}"><option value="">Select</option><option th:each="v : ${mediaCoverageTones}" th:value="${v}" th:text="${v}"></option></select></div>
 
-    <div>
+    <h3>Reputation Event</h3>
+    <div><label>Event Type</label><br><select th:field="*{eventType}"><option value="">Select</option><option th:each="v : ${eventTypes}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Event Date</label><br><input type="date" th:field="*{eventDate}"></div>
+    <div><label>Event Description</label><br><textarea th:field="*{eventDescription}" rows="2"></textarea></div>
+    <div><label>Event Impact Score</label><br><input type="number" th:field="*{eventImpactScore}" min="-100" max="100" step="0.01"></div>
+    <div><label>Event Source</label><br><input type="text" th:field="*{eventSource}" maxlength="500"></div>
+
+    <h3>Indicators</h3>
+    <div><label>Reputation Score</label><br><input type="number" th:field="*{reputationScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Trust Score</label><br><input type="number" th:field="*{trustScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Credibility Score</label><br><input type="number" th:field="*{credibilityScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Risk Score</label><br><input type="number" th:field="*{riskScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Volatility Index</label><br><input type="number" th:field="*{volatilityIndex}" min="0" max="100" step="0.01"></div>
+    <div><label>Trend Direction</label><br><select th:field="*{trendDirection}"><option value="">Select</option><option th:each="v : ${trendDirections}" th:value="${v}" th:text="${v}"></option></select></div>
+
+    <h3>Risk and Context</h3>
+    <div><label>Legal Issues</label><br><textarea th:field="*{legalIssues}" rows="2"></textarea></div>
+    <div><label>Ethical Concerns</label><br><textarea th:field="*{ethicalConcerns}" rows="2"></textarea></div>
+    <div><label>Compliance Flags</label><br><textarea th:field="*{complianceFlags}" rows="2"></textarea></div>
+    <div><label>Crisis History</label><br><textarea th:field="*{crisisHistory}" rows="2"></textarea></div>
+    <div><label>Recovery Performance</label><br><textarea th:field="*{recoveryPerformance}" rows="2"></textarea></div>
+    <div><label>Market Reputation Benchmark</label><br><textarea th:field="*{marketReputationBenchmark}" rows="2"></textarea></div>
+    <div><label>Competitive Position</label><br><select th:field="*{competitivePosition}"><option value="">Select</option><option th:each="v : ${competitivePositions}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Cultural Factors</label><br><textarea th:field="*{culturalFactors}" rows="2"></textarea></div>
+    <div><label>Regulatory Environment</label><br><select th:field="*{regulatoryEnvironment}"><option value="">Select</option><option th:each="v : ${regulatoryEnvironments}" th:value="${v}" th:text="${v}"></option></select></div>
+
+    <h3>Evidence and Metadata</h3>
+    <div><label>References</label><br><textarea th:field="*{referencesData}" rows="2"></textarea></div>
+    <div><label>Review Samples</label><br><textarea th:field="*{reviewSamples}" rows="2"></textarea></div>
+    <div><label>Media Articles</label><br><textarea th:field="*{mediaArticles}" rows="2"></textarea></div>
+    <div><label>Survey Data</label><br><textarea th:field="*{surveyData}" rows="2"></textarea></div>
+    <div><label>Internal Notes</label><br><textarea th:field="*{internalNotes}" rows="2"></textarea></div>
+    <div><label>Data Source *</label><br><input type="text" th:field="*{dataSource}" required maxlength="100"><div style="color:#b00020" th:errors="*{dataSource}"></div></div>
+    <div><label>Responsible Agent</label><br><input type="text" th:field="*{responsibleAgent}" maxlength="100"></div>
+    <div><label>Tags</label><br><input type="text" th:field="*{tags}" maxlength="500"></div>
+    <div><label>Notes</label><br><textarea th:field="*{notes}" rows="2"></textarea></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${reputation.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${reputation.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${reputation.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${reputation.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/reputations}">Cancel</a>
     </div>
 </form>
 </body>
 </html>
-
 
