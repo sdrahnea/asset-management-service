@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Patent Details</title>
+</head>
+<body>
+<h1>Patent Details</h1>
+<p>
+    <a th:href="@{/patents}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/patents/{id}/edit(id=${patent.id})}">Edit</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Patent ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.patentId}">PAT-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Title</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.title}">Autonomous System</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Patent Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.patentType}">UTILITY</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Technology Field</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.technologyField}">Software</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Assignee / Owner</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.assigneeOwner}">SDR Corp</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Application Number</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.applicationNumber}">APP-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Application Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.applicationDate}">2026-04-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Publication Number</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.publicationNumber}">PUB-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Grant Number</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.grantNumber}">GR-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Legal Status</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.legalStatus}">PENDING</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Jurisdictions</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.jurisdictions}">US, EP</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Patent Family ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.patentFamilyId}">FAM-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Valuation</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.valuation}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Licensing Revenue</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.licensingRevenue}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Infringement Risk</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.infringementRisk}">LOW</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Patent Strength Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.patentStrengthScore}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Official Documents</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.officialDocuments}">-</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Supporting Documents</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.supportingDocuments}">-</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Data Source</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.dataSource}">manual-entry</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Responsible Analyst</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.responsibleAnalyst}">analyst</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.createdAt}">2026-04-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${patent.updatedAt}">2026-04-01</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+

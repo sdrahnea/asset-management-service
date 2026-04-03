@@ -2,33 +2,106 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Patent' : 'Create Patent'">Patent Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
+<h1 th:text="${isEdit} ? 'Edit Patent' : 'Create Patent'">Patent Form</h1>
+<p>
+    <a th:href="@{/patents}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
 
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<form th:action="${isEdit} ? @{/patents/{id}(id=${patent.id})} : @{/patents}" th:object="${patent}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
+    <h3>Identity and Classification</h3>
+    <div><label>Patent ID *</label><br><input type="text" th:field="*{patentId}" required maxlength="100"><div style="color:#b00020" th:errors="*{patentId}"></div></div>
+    <div><label>Title *</label><br><input type="text" th:field="*{title}" required maxlength="255"><div style="color:#b00020" th:errors="*{title}"></div></div>
+    <div><label>Abstract / Summary</label><br><textarea th:field="*{abstractSummary}" rows="3"></textarea></div>
+    <div><label>Patent Type *</label><br><select th:field="*{patentType}" required><option value="">Select</option><option th:each="v : ${patentTypes}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{patentType}"></div></div>
+    <div><label>Technology Field</label><br><input type="text" th:field="*{technologyField}" maxlength="150"></div>
+    <div><label>IPC / CPC Codes</label><br><input type="text" th:field="*{ipcCpcCodes}" maxlength="500"></div>
+    <div><label>Keywords / Tags</label><br><input type="text" th:field="*{keywordsTags}" maxlength="500"></div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
+    <h3>Inventorship and Ownership</h3>
+    <div><label>Inventors</label><br><textarea th:field="*{inventors}" rows="2"></textarea></div>
+    <div><label>Assignee / Owner *</label><br><input type="text" th:field="*{assigneeOwner}" required maxlength="255"><div style="color:#b00020" th:errors="*{assigneeOwner}"></div></div>
+    <div><label>Ownership Percentage</label><br><input type="number" th:field="*{ownershipPercentage}" min="0" max="100" step="0.01"></div>
+    <div><label>Assignment History</label><br><textarea th:field="*{assignmentHistory}" rows="2"></textarea></div>
+    <div><label>Country of Origin</label><br><input type="text" th:field="*{countryOfOrigin}" maxlength="100"></div>
 
-    <div>
+    <h3>Legal Filing and Registration</h3>
+    <div><label>Application Number *</label><br><input type="text" th:field="*{applicationNumber}" required maxlength="100"><div style="color:#b00020" th:errors="*{applicationNumber}"></div></div>
+    <div><label>Application Date *</label><br><input type="date" th:field="*{applicationDate}" required><div style="color:#b00020" th:errors="*{applicationDate}"></div></div>
+    <div><label>Publication Number</label><br><input type="text" th:field="*{publicationNumber}" maxlength="100"></div>
+    <div><label>Publication Date</label><br><input type="date" th:field="*{publicationDate}"></div>
+    <div><label>Grant Number</label><br><input type="text" th:field="*{grantNumber}" maxlength="100"></div>
+    <div><label>Grant Date</label><br><input type="date" th:field="*{grantDate}"></div>
+    <div><label>Priority Numbers</label><br><input type="text" th:field="*{priorityNumbers}" maxlength="500"></div>
+    <div><label>Priority Dates</label><br><input type="text" th:field="*{priorityDates}" maxlength="500"></div>
+    <div><label>Jurisdictions</label><br><input type="text" th:field="*{jurisdictions}" maxlength="1000"></div>
+    <div><label>Patent Family ID</label><br><input type="text" th:field="*{patentFamilyId}" maxlength="100"></div>
+
+    <h3>Rights, Claims, and Scope</h3>
+    <div><label>Claims</label><br><textarea th:field="*{claimsText}" rows="3"></textarea></div>
+    <div><label>Description / Specification</label><br><textarea th:field="*{descriptionSpecification}" rows="4"></textarea></div>
+    <div><label>Drawings / Diagrams References</label><br><textarea th:field="*{drawingsReferences}" rows="2"></textarea></div>
+    <div><label>Scope of Protection</label><br><textarea th:field="*{scopeOfProtection}" rows="2"></textarea></div>
+    <div><label>Limitations / Disclaimers</label><br><textarea th:field="*{limitationsDisclaimers}" rows="2"></textarea></div>
+    <div><label>Legal Status *</label><br><select th:field="*{legalStatus}" required><option value="">Select</option><option th:each="v : ${legalStatuses}" th:value="${v}" th:text="${v}"></option></select><div style="color:#b00020" th:errors="*{legalStatus}"></div></div>
+
+    <h3>Geographic Coverage</h3>
+    <div><label>Countries Filed</label><br><textarea th:field="*{countriesFiled}" rows="2"></textarea></div>
+    <div><label>Countries Granted</label><br><textarea th:field="*{countriesGranted}" rows="2"></textarea></div>
+    <div><label>Regional System</label><br><select th:field="*{regionalSystem}"><option value="">Select</option><option th:each="v : ${regionalSystems}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>National Phase Entries</label><br><input type="text" th:field="*{nationalPhaseEntries}" maxlength="500"></div>
+
+    <h3>Financial and Commercial</h3>
+    <div><label>Filing Fees</label><br><input type="number" th:field="*{filingFees}" min="0" step="0.01"></div>
+    <div><label>Maintenance / Renewal Fees</label><br><input type="number" th:field="*{maintenanceRenewalFees}" min="0" step="0.01"></div>
+    <div><label>Licensing Revenue</label><br><input type="number" th:field="*{licensingRevenue}" min="0" step="0.01"></div>
+    <div><label>Royalty Rates (%)</label><br><input type="number" th:field="*{royaltyRates}" min="0" max="100" step="0.01"></div>
+    <div><label>Valuation</label><br><input type="number" th:field="*{valuation}" min="0" step="0.01"></div>
+    <div><label>Cost of Prosecution</label><br><input type="number" th:field="*{costOfProsecution}" min="0" step="0.01"></div>
+
+    <h3>Lifecycle and Maintenance</h3>
+    <div><label>Renewal Dates</label><br><textarea th:field="*{renewalDates}" rows="2"></textarea></div>
+    <div><label>Maintenance Fee Schedule</label><br><textarea th:field="*{maintenanceFeeSchedule}" rows="2"></textarea></div>
+    <div><label>Legal Deadlines</label><br><textarea th:field="*{legalDeadlines}" rows="2"></textarea></div>
+    <div><label>Opposition / Litigation History</label><br><textarea th:field="*{oppositionLitigationHistory}" rows="3"></textarea></div>
+    <div><label>Expiry Date</label><br><input type="date" th:field="*{expiryDate}"></div>
+
+    <h3>Risk and Assessment</h3>
+    <div><label>Infringement Risk</label><br><select th:field="*{infringementRisk}"><option value="">Select</option><option th:each="v : ${infringementRisks}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>FTO Concerns</label><br><textarea th:field="*{ftoConcerns}" rows="2"></textarea></div>
+    <div><label>Blocking Potential</label><br><select th:field="*{blockingPotential}"><option value="">Select</option><option th:each="v : ${blockingPotentials}" th:value="${v}" th:text="${v}"></option></select></div>
+    <div><label>Technological Relevance Score</label><br><input type="number" th:field="*{technologicalRelevanceScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Market Relevance Score</label><br><input type="number" th:field="*{marketRelevanceScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Patent Strength Score</label><br><input type="number" th:field="*{patentStrengthScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Citations Received</label><br><input type="number" th:field="*{citationsReceived}" min="0" step="1"></div>
+    <div><label>Citations Made</label><br><input type="number" th:field="*{citationsMade}" min="0" step="1"></div>
+
+    <h3>Documentation and Metadata</h3>
+    <div><label>Official Documents</label><br><textarea th:field="*{officialDocuments}" rows="2"></textarea></div>
+    <div><label>Supporting Documents</label><br><textarea th:field="*{supportingDocuments}" rows="2"></textarea></div>
+    <div><label>Data Source *</label><br><input type="text" th:field="*{dataSource}" required maxlength="100"><div style="color:#b00020" th:errors="*{dataSource}"></div></div>
+    <div><label>Responsible Analyst</label><br><input type="text" th:field="*{responsibleAnalyst}" maxlength="100"></div>
+    <div><label>Notes / Comments</label><br><textarea th:field="*{notesComments}" rows="3"></textarea></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${patent.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${patent.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${patent.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${patent.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/patents}">Cancel</a>
     </div>
 </form>
 </body>
 </html>
-
 
