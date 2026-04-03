@@ -3,27 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-section { border: 1px solid #ddd; padding: 15px; margin: 20px 0; background-color: #f9f9f9; }
+        .form-section h3 { margin-top: 0; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        textarea { min-height: 90px; resize: vertical; }
+        .readonly { background-color: #e9ecef; cursor: not-allowed; }
+        .error { color: #b00020; font-size: 0.9em; }
+        button { padding: 10px 20px; }
+    </style>
 </head>
 <body>
 <h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
 
 <form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+    <div class="form-section">
+        <h3>Core Work Identification</h3>
+
+        <div class="form-group">
+            <label for="copyrightId">Copyright ID *</label>
+            <input id="copyrightId" type="text" th:field="*{copyrightId}" required>
+            <span class="error" th:if="${#fields.hasErrors('copyrightId')}" th:errors="*{copyrightId}"></span>
+        </div>
+        <div class="form-group"><label for="title">Title *</label><input id="title" type="text" th:field="*{title}" required></div>
+        <div class="form-group">
+            <label for="workType">Type of Work *</label>
+            <select id="workType" th:field="*{workType}" required>
+                <option value="">-- Select Work Type --</option>
+                <option th:each="wt : ${T(com.sdr.ams.model.intangible.Copyright.WorkType).values()}" th:value="${wt}" th:text="${wt}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="descriptionAbstract">Description / Abstract</label><textarea id="descriptionAbstract" th:field="*{descriptionAbstract}"></textarea></div>
+        <div class="form-group"><label for="versionEdition">Version or Edition</label><input id="versionEdition" type="text" th:field="*{versionEdition}"></div>
+        <div class="form-group"><label for="creationDate">Creation Date</label><input id="creationDate" type="date" th:field="*{creationDate}"></div>
+        <div class="form-group"><label for="publicationReleaseDate">Publication / Release Date</label><input id="publicationReleaseDate" type="date" th:field="*{publicationReleaseDate}"></div>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
+    <div class="form-section">
+        <h3>Ownership and Authorship</h3>
+
+        <div class="form-group"><label for="authors">Author(s) *</label><textarea id="authors" th:field="*{authors}" required></textarea></div>
+        <div class="form-group"><label for="copyrightOwners">Copyright Owner(s) *</label><textarea id="copyrightOwners" th:field="*{copyrightOwners}" required></textarea></div>
+        <div class="form-group"><label for="ownershipPercentage">Ownership Percentage</label><input id="ownershipPercentage" type="number" step="0.01" th:field="*{ownershipPercentage}"></div>
+        <div class="form-group"><label for="moralRightsHolder">Moral Rights Holder</label><input id="moralRightsHolder" type="text" th:field="*{moralRightsHolder}"></div>
+        <div class="form-group"><label for="countryOfOrigin">Country of Origin *</label><input id="countryOfOrigin" type="text" th:field="*{countryOfOrigin}" required></div>
     </div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
+    <div class="form-section">
+        <h3>Legal Copyright Metadata</h3>
+
+        <div class="form-group"><label for="copyrightNotice">Copyright Notice</label><input id="copyrightNotice" type="text" th:field="*{copyrightNotice}"></div>
+        <div class="form-group"><label for="registrationNumber">Registration Number</label><input id="registrationNumber" type="text" th:field="*{registrationNumber}"></div>
+        <div class="form-group"><label for="registrationAuthority">Registration Authority</label><input id="registrationAuthority" type="text" th:field="*{registrationAuthority}"></div>
+        <div class="form-group"><label for="registrationDate">Registration Date</label><input id="registrationDate" type="date" th:field="*{registrationDate}"></div>
+        <div class="form-group">
+            <label for="copyrightStatus">Copyright Status *</label>
+            <select id="copyrightStatus" th:field="*{copyrightStatus}" required>
+                <option value="">-- Select Status --</option>
+                <option th:each="st : ${T(com.sdr.ams.model.intangible.Copyright.CopyrightStatus).values()}" th:value="${st}" th:text="${st}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="protectionStartDate">Protection Start Date</label><input id="protectionStartDate" type="date" th:field="*{protectionStartDate}"></div>
+        <div class="form-group"><label for="protectionEndDate">Protection End Date</label><input id="protectionEndDate" type="date" th:field="*{protectionEndDate}"></div>
+        <div class="form-group"><label for="jurisdictionsCovered">Jurisdictions Covered</label><input id="jurisdictionsCovered" type="text" th:field="*{jurisdictionsCovered}"></div>
     </div>
 
-    <div>
+    <div class="form-section">
+        <h3>Rights and Restrictions</h3>
+
+        <div class="form-group"><label for="rightsGranted">Rights Granted</label><textarea id="rightsGranted" th:field="*{rightsGranted}"></textarea></div>
+        <div class="form-group"><label for="rightsReserved">Rights Reserved</label><textarea id="rightsReserved" th:field="*{rightsReserved}"></textarea></div>
+        <div class="form-group"><label for="usageRestrictions">Usage Restrictions</label><textarea id="usageRestrictions" th:field="*{usageRestrictions}"></textarea></div>
+        <div class="form-group">
+            <label for="exclusivityType">Exclusivity</label>
+            <select id="exclusivityType" th:field="*{exclusivityType}">
+                <option value="">-- Select Exclusivity --</option>
+                <option th:each="ex : ${T(com.sdr.ams.model.intangible.Copyright.ExclusivityType).values()}" th:value="${ex}" th:text="${ex}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="derivativeWorksAllowed">Derivative Works Allowed</label>
+            <select id="derivativeWorksAllowed" th:field="*{derivativeWorksAllowed}">
+                <option value="">-- Select --</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+        <div class="form-group"><label for="drmProtectionMeasures">DRM / Technical Protection Measures</label><textarea id="drmProtectionMeasures" th:field="*{drmProtectionMeasures}"></textarea></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Licensing and Agreements</h3>
+
+        <div class="form-group">
+            <label for="licenseType">License Type</label>
+            <select id="licenseType" th:field="*{licenseType}">
+                <option value="">-- Select License Type --</option>
+                <option th:each="lt : ${T(com.sdr.ams.model.intangible.Copyright.LicenseType).values()}" th:value="${lt}" th:text="${lt}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="licensees">Licensee(s)</label><textarea id="licensees" th:field="*{licensees}"></textarea></div>
+        <div class="form-group"><label for="licenseStartDate">License Start Date</label><input id="licenseStartDate" type="date" th:field="*{licenseStartDate}"></div>
+        <div class="form-group"><label for="licenseEndDate">License End Date</label><input id="licenseEndDate" type="date" th:field="*{licenseEndDate}"></div>
+        <div class="form-group"><label for="permittedUses">Permitted Uses</label><textarea id="permittedUses" th:field="*{permittedUses}"></textarea></div>
+        <div class="form-group"><label for="royaltyTerms">Royalty Terms</label><textarea id="royaltyTerms" th:field="*{royaltyTerms}"></textarea></div>
+        <div class="form-group"><label for="contractReferences">Contract References</label><input id="contractReferences" type="text" th:field="*{contractReferences}"></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Financial and Commercial Information</h3>
+
+        <div class="form-group"><label for="royaltyRate">Royalty Rate (%)</label><input id="royaltyRate" type="number" step="0.01" th:field="*{royaltyRate}"></div>
+        <div class="form-group"><label for="revenueGenerated">Revenue Generated</label><input id="revenueGenerated" type="number" step="0.01" th:field="*{revenueGenerated}"></div>
+        <div class="form-group"><label for="advancePayments">Advance Payments</label><input id="advancePayments" type="number" step="0.01" th:field="*{advancePayments}"></div>
+        <div class="form-group"><label for="licensingFees">Licensing Fees</label><input id="licensingFees" type="number" step="0.01" th:field="*{licensingFees}"></div>
+        <div class="form-group"><label for="valuation">Valuation</label><input id="valuation" type="number" step="0.01" th:field="*{valuation}"></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Assessment and Risk Indicators</h3>
+
+        <div class="form-group">
+            <label for="infringementRisk">Infringement Risk</label>
+            <select id="infringementRisk" th:field="*{infringementRisk}">
+                <option value="">-- Select Risk --</option>
+                <option th:each="rk : ${T(com.sdr.ams.model.intangible.Copyright.RiskLevel).values()}" th:value="${rk}" th:text="${rk}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ownershipDisputesRisk">Ownership Disputes Risk</label>
+            <select id="ownershipDisputesRisk" th:field="*{ownershipDisputesRisk}">
+                <option value="">-- Select Risk --</option>
+                <option th:each="rk : ${T(com.sdr.ams.model.intangible.Copyright.RiskLevel).values()}" th:value="${rk}" th:text="${rk}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="expirationRisk">Expiration Risk</label>
+            <select id="expirationRisk" th:field="*{expirationRisk}">
+                <option value="">-- Select Risk --</option>
+                <option th:each="rk : ${T(com.sdr.ams.model.intangible.Copyright.RiskLevel).values()}" th:value="${rk}" th:text="${rk}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="complianceFlags">Compliance Flags</label><textarea id="complianceFlags" th:field="*{complianceFlags}"></textarea></div>
+        <div class="form-group"><label for="marketRelevanceScore">Market Relevance Score</label><input id="marketRelevanceScore" type="number" step="0.01" th:field="*{marketRelevanceScore}"></div>
+        <div class="form-group"><label for="portfolioImpactScore">Portfolio Impact Score</label><input id="portfolioImpactScore" type="number" step="0.01" th:field="*{portfolioImpactScore}"></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Operational Metadata</h3>
+
+        <div class="form-group"><label for="sourceOfInformation">Source of Information *</label><input id="sourceOfInformation" type="text" th:field="*{sourceOfInformation}" required></div>
+        <div class="form-group"><label for="responsibleReviewer">Responsible Reviewer</label><input id="responsibleReviewer" type="text" th:field="*{responsibleReviewer}"></div>
+        <div class="form-group"><label for="documentReferences">Document References</label><textarea id="documentReferences" th:field="*{documentReferences}"></textarea></div>
+        <div class="form-group"><label for="tagsCategories">Tags / Categories</label><input id="tagsCategories" type="text" th:field="*{tagsCategories}"></div>
+        <div class="form-group"><label for="notes">Notes</label><textarea id="notes" th:field="*{notes}"></textarea></div>
+
+        <div class="form-group"><label for="createdBy">Created By</label><input id="createdBy" type="text" th:field="*{createdBy}"></div>
+        <div class="form-group"><label for="updatedBy">Updated By</label><input id="updatedBy" type="text" th:field="*{updatedBy}"></div>
+        <div class="form-group"><label for="createdAt">Created At</label><input id="createdAt" type="text" th:value="${item.createdAt}" class="readonly" readonly></div>
+        <div class="form-group"><label for="updatedAt">Updated At</label><input id="updatedAt" type="text" th:value="${item.updatedAt}" class="readonly" readonly></div>
+    </div>
+
+    <div class="form-group">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
         <a th:href="@{|${basePath}|}">Cancel</a>
     </div>

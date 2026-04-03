@@ -19,7 +19,7 @@
 
 ### Intangible (`com.sdr.ams.model.intangible`)
 - Rich: `Trademark`
-- Generic: `Brand`, `Copyright`, `Patent`, `Reputation`
+- Generic: `Brand`, `Copyright` (now with full spec), `Patent`, `Reputation`
 
 ## Architecture patterns in this repo
 - Generic tier uses `CoreEntityCrudController<T>` + `CoreEntityCrudService<T>` + plain `JpaRepository<T, Long>`.
@@ -29,7 +29,7 @@
   - uniqueness checks via `existsXxx(..., excludeId)` queries
   - templates: `list.html`, `form.html`, `detail.html`
 - Rich examples: `BankAccount`, `RealEstate`, `Vehicle`, `Trademark`, `Stock`.
-- `@AttributeOverride` remaps `name` for domain IDs in `Vehicle`, `Trademark`, `Stock`, `Machinery`, and `Inventory`.
+- `@AttributeOverride` remaps `name` for domain IDs in `Vehicle`, `Trademark`, `Stock`, `Machinery`, `Inventory`, and `Copyright`.
 
 ## Service-layer conventions (important)
 - Normalization before validation is expected (trim, uppercase identifiers, empty -> null).
@@ -59,6 +59,7 @@
 - `Stock`: now rich/spec-based (not stub), supports filtering + detail page + uniqueness on stock ID, ticker per exchange, ISIN, CUSIP; uses `@AttributeOverride` for stockId.
 - `Inventory`: comprehensive asset model aligned to machinery spec sections (identity, technical, location, maintenance, financial, compliance, risk, metadata); uses `@AttributeOverride` for inventoryId; uniqueness on inventoryId and serialNumber.
 - `Machinery`: comprehensive asset model with identity, technical specs, location, maintenance, financial, compliance, and risk fields; uses `@AttributeOverride` for machineId; uniqueness on machineId and serialNumber.
+- `Copyright`: comprehensive rights-management model covering work identity, ownership, legal metadata, rights/restrictions, licensing, financial indicators, risk scoring, and operational metadata; uses `@AttributeOverride` for copyrightId; uniqueness on copyrightId and registrationNumber.
 
 ## Known codebase caveats
 - `RealEstateController#delete` currently redirects to `/bank-accounts` (actual behavior in code).
