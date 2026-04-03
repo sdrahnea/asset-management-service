@@ -3,27 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-section { border: 1px solid #ddd; padding: 15px; margin: 20px 0; background-color: #f9f9f9; }
+        .form-section h3 { margin-top: 0; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        textarea { min-height: 90px; resize: vertical; }
+        .readonly { background-color: #e9ecef; cursor: not-allowed; }
+        .error { color: #b00020; font-size: 0.9em; }
+        button { padding: 10px 20px; }
+    </style>
 </head>
 <body>
 <h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
 
 <form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+    <div class="form-section">
+        <h3>Identity and Classification</h3>
+
+        <div class="form-group">
+            <label for="inventoryId">Inventory ID *</label>
+            <input id="inventoryId" type="text" th:field="*{inventoryId}" required>
+            <span class="error" th:if="${#fields.hasErrors('inventoryId')}" th:errors="*{inventoryId}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category *</label>
+            <select id="category" th:field="*{category}" required>
+                <option value="">-- Select Category --</option>
+                <option th:each="cat : ${T(com.sdr.ams.model.tangible.Inventory.Category).values()}" th:value="${cat}" th:text="${cat}"></option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="subcategory">Subcategory</label>
+            <select id="subcategory" th:field="*{subcategory}">
+                <option value="">-- Select Subcategory --</option>
+                <option th:each="sub : ${T(com.sdr.ams.model.tangible.Inventory.Subcategory).values()}" th:value="${sub}" th:text="${sub}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="manufacturer">Manufacturer *</label>
+            <input id="manufacturer" type="text" th:field="*{manufacturer}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="model">Model *</label>
+            <input id="model" type="text" th:field="*{model}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="serialNumber">Serial Number *</label>
+            <input id="serialNumber" type="text" th:field="*{serialNumber}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="yearOfManufacture">Year of Manufacture *</label>
+            <input id="yearOfManufacture" type="number" th:field="*{yearOfManufacture}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="versionConfiguration">Version/Configuration</label>
+            <input id="versionConfiguration" type="text" th:field="*{versionConfiguration}">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" th:field="*{description}"></textarea>
+        </div>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
+    <div class="form-section">
+        <h3>Technical Specifications</h3>
+
+        <div class="form-group"><label for="powerRating">Power Rating</label><input id="powerRating" type="text" th:field="*{powerRating}"></div>
+        <div class="form-group"><label for="voltageElectricalRequirements">Voltage/Electrical Requirements</label><input id="voltageElectricalRequirements" type="text" th:field="*{voltageElectricalRequirements}"></div>
+        <div class="form-group"><label for="capacity">Capacity</label><input id="capacity" type="text" th:field="*{capacity}"></div>
+        <div class="form-group"><label for="dimensions">Dimensions</label><input id="dimensions" type="text" th:field="*{dimensions}"></div>
+        <div class="form-group"><label for="weight">Weight</label><input id="weight" type="number" step="0.01" th:field="*{weight}"></div>
+        <div class="form-group">
+            <label for="fuelType">Fuel Type</label>
+            <select id="fuelType" th:field="*{fuelType}">
+                <option value="">-- Select Fuel Type --</option>
+                <option th:each="ft : ${T(com.sdr.ams.model.tangible.Inventory.FuelType).values()}" th:value="${ft}" th:text="${ft}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="performanceMetrics">Performance Metrics</label><textarea id="performanceMetrics" th:field="*{performanceMetrics}"></textarea></div>
+        <div class="form-group"><label for="safetyClassCertifications">Safety Class/Certifications</label><input id="safetyClassCertifications" type="text" th:field="*{safetyClassCertifications}"></div>
+        <div class="form-group"><label for="operatingEnvironmentRequirements">Operating Environment Requirements</label><input id="operatingEnvironmentRequirements" type="text" th:field="*{operatingEnvironmentRequirements}"></div>
     </div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
+    <div class="form-section">
+        <h3>Location and Ownership</h3>
+
+        <div class="form-group"><label for="currentLocation">Current Location</label><input id="currentLocation" type="text" th:field="*{currentLocation}"></div>
+        <div class="form-group"><label for="previousLocations">Previous Locations</label><textarea id="previousLocations" th:field="*{previousLocations}"></textarea></div>
+        <div class="form-group"><label for="owner">Owner</label><input id="owner" type="text" th:field="*{owner}"></div>
+        <div class="form-group"><label for="custodian">Custodian</label><input id="custodian" type="text" th:field="*{custodian}"></div>
+        <div class="form-group">
+            <label for="usageType">Usage Type</label>
+            <select id="usageType" th:field="*{usageType}">
+                <option value="">-- Select Usage Type --</option>
+                <option th:each="ut : ${T(com.sdr.ams.model.tangible.Inventory.UsageType).values()}" th:value="${ut}" th:text="${ut}"></option>
+            </select>
+        </div>
     </div>
 
-    <div>
+    <div class="form-section">
+        <h3>Maintenance and Condition</h3>
+
+        <div class="form-group">
+            <label for="conditionStatus">Condition Status</label>
+            <select id="conditionStatus" th:field="*{conditionStatus}">
+                <option value="">-- Select Condition --</option>
+                <option th:each="cs : ${T(com.sdr.ams.model.tangible.Inventory.ConditionStatus).values()}" th:value="${cs}" th:text="${cs}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="operatingHours">Operating Hours</label><input id="operatingHours" type="number" th:field="*{operatingHours}"></div>
+        <div class="form-group">
+            <label for="maintenanceSchedule">Maintenance Schedule</label>
+            <select id="maintenanceSchedule" th:field="*{maintenanceSchedule}">
+                <option value="">-- Select Schedule --</option>
+                <option th:each="ms : ${T(com.sdr.ams.model.tangible.Inventory.MaintenanceSchedule).values()}" th:value="${ms}" th:text="${ms}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="lastMaintenanceDate">Last Maintenance Date</label><input id="lastMaintenanceDate" type="date" th:field="*{lastMaintenanceDate}"></div>
+        <div class="form-group"><label for="nextMaintenanceDue">Next Maintenance Due</label><input id="nextMaintenanceDue" type="date" th:field="*{nextMaintenanceDue}"></div>
+        <div class="form-group"><label for="maintenanceHistory">Maintenance History</label><textarea id="maintenanceHistory" th:field="*{maintenanceHistory}"></textarea></div>
+        <div class="form-group"><label for="warrantyStatus">Warranty Status</label><input id="warrantyStatus" type="text" th:field="*{warrantyStatus}"></div>
+        <div class="form-group"><label for="serviceProvider">Service Provider</label><input id="serviceProvider" type="text" th:field="*{serviceProvider}"></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Financial and Valuation</h3>
+
+        <div class="form-group"><label for="purchaseDate">Purchase Date</label><input id="purchaseDate" type="date" th:field="*{purchaseDate}"></div>
+        <div class="form-group"><label for="purchasePrice">Purchase Price</label><input id="purchasePrice" type="number" step="0.01" th:field="*{purchasePrice}"></div>
+        <div class="form-group"><label for="bookValue">Current Book Value</label><input id="bookValue" type="number" step="0.01" th:field="*{bookValue}"></div>
+        <div class="form-group">
+            <label for="depreciationMethod">Depreciation Method</label>
+            <select id="depreciationMethod" th:field="*{depreciationMethod}">
+                <option value="">-- Select Method --</option>
+                <option th:each="dm : ${T(com.sdr.ams.model.tangible.Inventory.DepreciationMethod).values()}" th:value="${dm}" th:text="${dm}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="depreciationRate">Depreciation Rate (%)</label><input id="depreciationRate" type="number" step="0.01" th:field="*{depreciationRate}"></div>
+        <div class="form-group"><label for="residualValue">Residual Value</label><input id="residualValue" type="number" step="0.01" th:field="*{residualValue}"></div>
+        <div class="form-group"><label for="insuranceValue">Insurance Value</label><input id="insuranceValue" type="number" step="0.01" th:field="*{insuranceValue}"></div>
+        <div class="form-group"><label for="operatingCost">Operating Cost</label><input id="operatingCost" type="number" step="0.01" th:field="*{operatingCost}"></div>
+        <div class="form-group"><label for="maintenanceCost">Maintenance Cost</label><input id="maintenanceCost" type="number" step="0.01" th:field="*{maintenanceCost}"></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Compliance and Documentation</h3>
+
+        <div class="form-group"><label for="certificates">Certificates</label><input id="certificates" type="text" th:field="*{certificates}"></div>
+        <div class="form-group"><label for="inspectionReports">Inspection Reports</label><textarea id="inspectionReports" th:field="*{inspectionReports}"></textarea></div>
+        <div class="form-group"><label for="operatingManuals">Operating Manuals</label><input id="operatingManuals" type="text" th:field="*{operatingManuals}"></div>
+        <div class="form-group"><label for="permitsLicenses">Permits/Licenses</label><input id="permitsLicenses" type="text" th:field="*{permitsLicenses}"></div>
+        <div class="form-group">
+            <label for="regulatoryClassification">Regulatory Classification</label>
+            <select id="regulatoryClassification" th:field="*{regulatoryClassification}">
+                <option value="">-- Select Classification --</option>
+                <option th:each="rc : ${T(com.sdr.ams.model.tangible.Inventory.RegulatoryClassification).values()}" th:value="${rc}" th:text="${rc}"></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3>Risk and Assessment Indicators</h3>
+
+        <div class="form-group"><label for="failureRiskScore">Failure Risk Score</label><input id="failureRiskScore" type="number" step="0.01" th:field="*{failureRiskScore}"></div>
+        <div class="form-group"><label for="safetyRiskScore">Safety Risk Score</label><input id="safetyRiskScore" type="number" step="0.01" th:field="*{safetyRiskScore}"></div>
+        <div class="form-group">
+            <label for="operationalCriticality">Operational Criticality</label>
+            <select id="operationalCriticality" th:field="*{operationalCriticality}">
+                <option value="">-- Select Criticality --</option>
+                <option th:each="oc : ${T(com.sdr.ams.model.tangible.Inventory.OperationalCriticality).values()}" th:value="${oc}" th:text="${oc}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="downtimeHours">Downtime Hours</label><input id="downtimeHours" type="number" th:field="*{downtimeHours}"></div>
+        <div class="form-group"><label for="utilizationRate">Utilization Rate (%)</label><input id="utilizationRate" type="number" step="0.01" th:field="*{utilizationRate}"></div>
+        <div class="form-group"><label for="environmentalImpactIndicators">Environmental Impact Indicators</label><input id="environmentalImpactIndicators" type="text" th:field="*{environmentalImpactIndicators}"></div>
+        <div class="form-group"><label for="complianceFlags">Compliance Flags</label><textarea id="complianceFlags" th:field="*{complianceFlags}"></textarea></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Metadata</h3>
+
+        <div class="form-group"><label for="dataSource">Data Source *</label><input id="dataSource" type="text" th:field="*{dataSource}" required></div>
+        <div class="form-group"><label for="responsibleAnalyst">Responsible Analyst</label><input id="responsibleAnalyst" type="text" th:field="*{responsibleAnalyst}"></div>
+        <div class="form-group"><label for="tagsLabels">Tags/Labels</label><input id="tagsLabels" type="text" th:field="*{tagsLabels}"></div>
+        <div class="form-group"><label for="notesComments">Notes/Comments</label><textarea id="notesComments" th:field="*{notesComments}"></textarea></div>
+
+        <div class="form-group"><label for="createdBy">Created By</label><input id="createdBy" type="text" th:field="*{createdBy}"></div>
+        <div class="form-group"><label for="updatedBy">Updated By</label><input id="updatedBy" type="text" th:field="*{updatedBy}"></div>
+        <div class="form-group"><label for="createdAt">Created At</label><input id="createdAt" type="text" th:value="${item.createdAt}" class="readonly" readonly></div>
+        <div class="form-group"><label for="updatedAt">Updated At</label><input id="updatedAt" type="text" th:value="${item.updatedAt}" class="readonly" readonly></div>
+    </div>
+
+    <div class="form-group">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
         <a th:href="@{|${basePath}|}">Cancel</a>
     </div>

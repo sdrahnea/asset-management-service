@@ -15,7 +15,7 @@
 
 ### Tangible (`com.sdr.ams.model.tangible`)
 - Rich: `RealEstate`, `Vehicle`
-- Generic: `Cash`, `Inventory`, `Machinery` (now with full spec)
+- Generic: `Cash`, `Inventory` (now with full spec), `Machinery` (now with full spec)
 
 ### Intangible (`com.sdr.ams.model.intangible`)
 - Rich: `Trademark`
@@ -29,7 +29,7 @@
   - uniqueness checks via `existsXxx(..., excludeId)` queries
   - templates: `list.html`, `form.html`, `detail.html`
 - Rich examples: `BankAccount`, `RealEstate`, `Vehicle`, `Trademark`, `Stock`.
-- `@AttributeOverride` remaps `name` for domain IDs in `Vehicle`, `Trademark`, and `Stock`.
+- `@AttributeOverride` remaps `name` for domain IDs in `Vehicle`, `Trademark`, `Stock`, `Machinery`, and `Inventory`.
 
 ## Service-layer conventions (important)
 - Normalization before validation is expected (trim, uppercase identifiers, empty -> null).
@@ -57,6 +57,7 @@
 - `Vehicle`: VIN and license-plate uniqueness (plate scoped by country), strong temporal validations; uses `@AttributeOverride` for vehicleId.
 - `Trademark`: application/registration uniqueness and lifecycle date ordering checks; uses `@AttributeOverride` for trademarkId.
 - `Stock`: now rich/spec-based (not stub), supports filtering + detail page + uniqueness on stock ID, ticker per exchange, ISIN, CUSIP; uses `@AttributeOverride` for stockId.
+- `Inventory`: comprehensive asset model aligned to machinery spec sections (identity, technical, location, maintenance, financial, compliance, risk, metadata); uses `@AttributeOverride` for inventoryId; uniqueness on inventoryId and serialNumber.
 - `Machinery`: comprehensive asset model with identity, technical specs, location, maintenance, financial, compliance, and risk fields; uses `@AttributeOverride` for machineId; uniqueness on machineId and serialNumber.
 
 ## Known codebase caveats

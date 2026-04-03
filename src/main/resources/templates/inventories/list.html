@@ -17,25 +17,31 @@
     <thead>
     <tr>
         <th style="border: 1px solid #ccc; padding: 6px;">ID</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Name</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Created By</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Created At</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Updated By</th>
-        <th style="border: 1px solid #ccc; padding: 6px;">Updated At</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Inventory ID</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Category</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Manufacturer</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Model</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Serial Number</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Year</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Condition</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Usage Type</th>
         <th style="border: 1px solid #ccc; padding: 6px;">Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:if="${#lists.isEmpty(items)}">
-        <td colspan="7" style="border: 1px solid #ccc; padding: 6px;">No records found.</td>
+        <td colspan="10" style="border: 1px solid #ccc; padding: 6px;">No records found.</td>
     </tr>
     <tr th:each="item : ${items}">
         <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.id}">1</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.name}">Name</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.createdBy}">system</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.createdAt}">2026-01-01T00:00:00Z</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.updatedBy}">system</td>
-        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.updatedAt}">2026-01-01T00:00:00Z</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.inventoryId}">INV-001</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.category}">INDUSTRIAL</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.manufacturer}">Manufacturer</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.model}">Model</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.serialNumber}">SN-001</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.yearOfManufacture}">2020</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.conditionStatus}">GOOD</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${item.usageType}">OWNED</td>
         <td style="border: 1px solid #ccc; padding: 6px;">
             <a th:href="@{|${basePath}/${item.id}/edit|}">Edit</a>
             <form th:action="@{|${basePath}/${item.id}/delete|}" method="post" style="display:inline">
