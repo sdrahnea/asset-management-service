@@ -3,27 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-section { border: 1px solid #ddd; padding: 15px; margin: 20px 0; background-color: #f9f9f9; }
+        .form-section h3 { margin-top: 0; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        textarea { min-height: 90px; resize: vertical; }
+        .readonly { background-color: #e9ecef; cursor: not-allowed; }
+        button { padding: 10px 20px; }
+    </style>
 </head>
 <body>
 <h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
 
 <form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+    <div class="form-section">
+        <h3>Core Cash Attributes</h3>
+        <div class="form-group"><label for="cashId">Cash ID *</label><input id="cashId" type="text" th:field="*{cashId}" required></div>
+        <div class="form-group"><label for="amount">Amount *</label><input id="amount" type="number" step="0.01" th:field="*{amount}" required></div>
+        <div class="form-group"><label for="currency">Currency *</label><input id="currency" type="text" th:field="*{currency}" required></div>
+        <div class="form-group"><label for="valuationDate">Valuation Date *</label><input id="valuationDate" type="date" th:field="*{valuationDate}" required></div>
+        <div class="form-group">
+            <label for="cashType">Cash Type *</label>
+            <select id="cashType" th:field="*{cashType}" required>
+                <option value="">-- Select Cash Type --</option>
+                <option th:each="ct : ${T(com.sdr.ams.model.tangible.Cash.CashType).values()}" th:value="${ct}" th:text="${ct}"></option>
+            </select>
+        </div>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
+    <div class="form-section">
+        <h3>Location and Ownership Details</h3>
+        <div class="form-group"><label for="holderOwner">Holder / Owner *</label><input id="holderOwner" type="text" th:field="*{holderOwner}" required></div>
+        <div class="form-group"><label for="holdingAccountReference">Holding Account Reference</label><input id="holdingAccountReference" type="text" th:field="*{holdingAccountReference}"></div>
+        <div class="form-group"><label for="institution">Institution</label><input id="institution" type="text" th:field="*{institution}"></div>
+        <div class="form-group"><label for="jurisdiction">Jurisdiction</label><input id="jurisdiction" type="text" th:field="*{jurisdiction}"></div>
     </div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
+    <div class="form-section">
+        <h3>Lifecycle and Movement Information</h3>
+        <div class="form-group"><label for="openingBalance">Opening Balance</label><input id="openingBalance" type="number" step="0.01" th:field="*{openingBalance}"></div>
+        <div class="form-group"><label for="closingBalance">Closing Balance</label><input id="closingBalance" type="number" step="0.01" th:field="*{closingBalance}"></div>
+        <div class="form-group"><label for="cashInflows">Cash Inflows</label><input id="cashInflows" type="number" step="0.01" th:field="*{cashInflows}"></div>
+        <div class="form-group"><label for="cashOutflows">Cash Outflows</label><input id="cashOutflows" type="number" step="0.01" th:field="*{cashOutflows}"></div>
+        <div class="form-group"><label for="netCashMovement">Net Cash Movement</label><input id="netCashMovement" type="number" step="0.01" th:field="*{netCashMovement}"></div>
+        <div class="form-group"><label for="cashForecastExpectedMovements">Cash Forecast / Expected Movements</label><input id="cashForecastExpectedMovements" type="number" step="0.01" th:field="*{cashForecastExpectedMovements}"></div>
+        <div class="form-group">
+            <label for="reconciliationStatus">Reconciliation Status</label>
+            <select id="reconciliationStatus" th:field="*{reconciliationStatus}">
+                <option value="">-- Select Status --</option>
+                <option th:each="rs : ${T(com.sdr.ams.model.tangible.Cash.ReconciliationStatus).values()}" th:value="${rs}" th:text="${rs}"></option>
+            </select>
+        </div>
     </div>
 
-    <div>
+    <div class="form-section">
+        <h3>Assessment and Risk Indicators</h3>
+        <div class="form-group"><label for="liquidityRatioCurrentAssets">Liquidity Input - Current Assets</label><input id="liquidityRatioCurrentAssets" type="number" step="0.01" th:field="*{liquidityRatioCurrentAssets}"></div>
+        <div class="form-group"><label for="liquidityRatioCurrentLiabilities">Liquidity Input - Current Liabilities</label><input id="liquidityRatioCurrentLiabilities" type="number" step="0.01" th:field="*{liquidityRatioCurrentLiabilities}"></div>
+        <div class="form-group">
+            <label for="cashConcentrationRisk">Cash Concentration Risk</label>
+            <select id="cashConcentrationRisk" th:field="*{cashConcentrationRisk}">
+                <option value="">-- Select Risk --</option>
+                <option th:each="rk : ${T(com.sdr.ams.model.tangible.Cash.RiskLevel).values()}" th:value="${rk}" th:text="${rk}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="counterpartyRisk">Counterparty Risk</label>
+            <select id="counterpartyRisk" th:field="*{counterpartyRisk}">
+                <option value="">-- Select Risk --</option>
+                <option th:each="rk : ${T(com.sdr.ams.model.tangible.Cash.RiskLevel).values()}" th:value="${rk}" th:text="${rk}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="cashVolatility">Cash Volatility</label>
+            <select id="cashVolatility" th:field="*{cashVolatility}">
+                <option value="">-- Select Risk --</option>
+                <option th:each="rk : ${T(com.sdr.ams.model.tangible.Cash.RiskLevel).values()}" th:value="${rk}" th:text="${rk}"></option>
+            </select>
+        </div>
+        <div class="form-group"><label for="complianceFlags">Compliance Flags</label><textarea id="complianceFlags" th:field="*{complianceFlags}"></textarea></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Operational Metadata</h3>
+        <div class="form-group"><label for="sourceOfData">Source of Data *</label><input id="sourceOfData" type="text" th:field="*{sourceOfData}" required></div>
+        <div class="form-group"><label for="responsibleAnalyst">Responsible Analyst</label><input id="responsibleAnalyst" type="text" th:field="*{responsibleAnalyst}"></div>
+        <div class="form-group"><label for="notesComments">Notes / Comments</label><textarea id="notesComments" th:field="*{notesComments}"></textarea></div>
+        <div class="form-group"><label for="tagsCategories">Tags / Categories</label><input id="tagsCategories" type="text" th:field="*{tagsCategories}"></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Optional Extensions</h3>
+        <div class="form-group"><label for="cashPoolingStructure">Cash Pooling Structure</label><input id="cashPoolingStructure" type="text" th:field="*{cashPoolingStructure}"></div>
+        <div class="form-group"><label for="intercompanyCashPositions">Intercompany Cash Positions</label><textarea id="intercompanyCashPositions" th:field="*{intercompanyCashPositions}"></textarea></div>
+        <div class="form-group"><label for="hedgingInformation">Hedging Information</label><textarea id="hedgingInformation" th:field="*{hedgingInformation}"></textarea></div>
+        <div class="form-group"><label for="cashAvailableForInvestment">Cash Available for Investment</label><input id="cashAvailableForInvestment" type="number" step="0.01" th:field="*{cashAvailableForInvestment}"></div>
+        <div class="form-group"><label for="settlementCash">Settlement Cash</label><input id="settlementCash" type="number" step="0.01" th:field="*{settlementCash}"></div>
+        <div class="form-group"><label for="marginCash">Margin Cash</label><input id="marginCash" type="number" step="0.01" th:field="*{marginCash}"></div>
+        <div class="form-group"><label for="cashSourceDocumentation">Cash Source Documentation</label><textarea id="cashSourceDocumentation" th:field="*{cashSourceDocumentation}"></textarea></div>
+        <div class="form-group"><label for="transactionLevelAmlFlags">Transaction-level AML Flags</label><textarea id="transactionLevelAmlFlags" th:field="*{transactionLevelAmlFlags}"></textarea></div>
+        <div class="form-group"><label for="restrictionsLegalHolds">Restrictions / Legal Holds</label><textarea id="restrictionsLegalHolds" th:field="*{restrictionsLegalHolds}"></textarea></div>
+    </div>
+
+    <div class="form-section">
+        <h3>Audit</h3>
+        <div class="form-group"><label for="createdBy">Created By</label><input id="createdBy" type="text" th:field="*{createdBy}"></div>
+        <div class="form-group"><label for="updatedBy">Updated By</label><input id="updatedBy" type="text" th:field="*{updatedBy}"></div>
+        <div class="form-group"><label for="createdAt">Created At</label><input id="createdAt" type="text" th:value="${item.createdAt}" class="readonly" readonly></div>
+        <div class="form-group"><label for="updatedAt">Updated At</label><input id="updatedAt" type="text" th:value="${item.updatedAt}" class="readonly" readonly></div>
+    </div>
+
+    <div class="form-group">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
         <a th:href="@{|${basePath}|}">Cancel</a>
     </div>
