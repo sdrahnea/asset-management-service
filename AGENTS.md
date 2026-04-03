@@ -15,7 +15,7 @@
 
 ### Tangible (`com.sdr.ams.model.tangible`)
 - Rich: `RealEstate`, `Vehicle`
-- Generic: `Cash`, `Inventory`, `Machinery`
+- Generic: `Cash`, `Inventory`, `Machinery` (now with full spec)
 
 ### Intangible (`com.sdr.ams.model.intangible`)
 - Rich: `Trademark`
@@ -54,9 +54,10 @@
 ## Current domain-specific notes
 - `BankAccount`: strict IBAN regex + checksum, SWIFT format validation, IBAN uniqueness, local-account uniqueness per bank+branch, closed-date rule.
 - `RealEstate`: large spec-based model with many enums and grouped fields; uniqueness on cadastral and land-registry numbers; optional upload fields were removed from model/UI.
-- `Vehicle`: VIN and license-plate uniqueness (plate scoped by country), strong temporal validations.
-- `Trademark`: application/registration uniqueness and lifecycle date ordering checks.
-- `Stock`: now rich/spec-based (not stub), supports filtering + detail page + uniqueness on stock ID, ticker per exchange, ISIN, CUSIP.
+- `Vehicle`: VIN and license-plate uniqueness (plate scoped by country), strong temporal validations; uses `@AttributeOverride` for vehicleId.
+- `Trademark`: application/registration uniqueness and lifecycle date ordering checks; uses `@AttributeOverride` for trademarkId.
+- `Stock`: now rich/spec-based (not stub), supports filtering + detail page + uniqueness on stock ID, ticker per exchange, ISIN, CUSIP; uses `@AttributeOverride` for stockId.
+- `Machinery`: comprehensive asset model with identity, technical specs, location, maintenance, financial, compliance, and risk fields; uses `@AttributeOverride` for machineId; uniqueness on machineId and serialNumber.
 
 ## Known codebase caveats
 - `RealEstateController#delete` currently redirects to `/bank-accounts` (actual behavior in code).
