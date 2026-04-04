@@ -19,7 +19,7 @@
 
 ### Intangible (`com.sdr.ams.model.intangible`)
 - Rich: `Trademark`
-- Generic: `Brand`, `Copyright` (now with full spec), `Patent`, `Reputation`
+- Generic: `Brand` (now with full spec), `Copyright` (now with full spec), `Patent`, `Reputation`
 
 ## Architecture patterns in this repo
 - Generic tier uses `CoreEntityCrudController<T>` + `CoreEntityCrudService<T>` + plain `JpaRepository<T, Long>`.
@@ -29,7 +29,7 @@
   - uniqueness checks via `existsXxx(..., excludeId)` queries
   - templates: `list.html`, `form.html`, `detail.html`
 - Rich examples: `BankAccount`, `RealEstate`, `Vehicle`, `Trademark`, `Stock`.
-- `@AttributeOverride` remaps `name` for domain IDs in `Vehicle`, `Trademark`, `Stock`, `Machinery`, `Inventory`, `Copyright`, and `Cash`.
+- `@AttributeOverride` remaps `name` for domain IDs in `Vehicle`, `Trademark`, `Stock`, `Machinery`, `Inventory`, `Copyright`, `Cash`, and `Brand`.
 
 ## Service-layer conventions (important)
 - Normalization before validation is expected (trim, uppercase identifiers, empty -> null).
@@ -61,6 +61,7 @@
 - `Inventory`: comprehensive asset model aligned to machinery spec sections (identity, technical, location, maintenance, financial, compliance, risk, metadata); uses `@AttributeOverride` for inventoryId; uniqueness on inventoryId and serialNumber.
 - `Machinery`: comprehensive asset model with identity, technical specs, location, maintenance, financial, compliance, and risk fields; uses `@AttributeOverride` for machineId; uniqueness on machineId and serialNumber.
 - `Copyright`: comprehensive rights-management model covering work identity, ownership, legal metadata, rights/restrictions, licensing, financial indicators, risk scoring, and operational metadata; uses `@AttributeOverride` for copyrightId; uniqueness on copyrightId and registrationNumber.
+- `Brand`: comprehensive brand-asset model with identity, legal/trademark attributes, market positioning, performance indicators, digital footprint, operational metadata, and optional financial metrics; uses `@AttributeOverride` for brandId; uniqueness on brandId and trademarkRegistrationNumber.
 
 ## Known codebase caveats
 - `RealEstateController#delete` currently redirects to `/bank-accounts` (actual behavior in code).
