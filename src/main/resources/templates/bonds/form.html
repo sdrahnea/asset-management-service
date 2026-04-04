@@ -2,33 +2,97 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
+    <title th:text="${isEdit} ? 'Edit Bond' : 'Create Bond'">Bond Form</title>
 </head>
 <body>
-<h1 th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</h1>
+<h1 th:text="${isEdit} ? 'Edit Bond' : 'Create Bond'">Bond Form</h1>
+<p>
+    <a th:href="@{/bonds}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
 
-<form th:action="${isEdit} ? @{|${basePath}/${item.id}|} : @{|${basePath}|}" th:object="${item}" method="post">
-    <div>
-        <label for="name">Name</label>
-        <input id="name" type="text" th:field="*{name}" required>
+<form th:action="${isEdit} ? @{/bonds/{id}(id=${bond.id})} : @{/bonds}" th:object="${bond}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
     </div>
 
-    <div>
-        <label for="createdBy">Created By</label>
-        <input id="createdBy" type="text" th:field="*{createdBy}" required>
-    </div>
+    <h3>Core Identification</h3>
+    <div><label>Bond ID *</label><br><input type="text" th:field="*{bondId}" required maxlength="100"><div style="color:#b00020" th:errors="*{bondId}"></div></div>
+    <div><label>Title *</label><br><input type="text" th:field="*{title}" required maxlength="255"><div style="color:#b00020" th:errors="*{title}"></div></div>
+    <div><label>ISIN</label><br><input type="text" th:field="*{isin}" maxlength="12"><div style="color:#b00020" th:errors="*{isin}"></div></div>
+    <div><label>CUSIP / SEDOL</label><br><input type="text" th:field="*{cusipSedol}" maxlength="20"><div style="color:#b00020" th:errors="*{cusipSedol}"></div></div>
+    <div><label>Issuer *</label><br><input type="text" th:field="*{issuer}" required maxlength="255"><div style="color:#b00020" th:errors="*{issuer}"></div></div>
+    <div><label>Issuer Country</label><br><input type="text" th:field="*{issuerCountry}" maxlength="100"></div>
+    <div><label>Bond Type *</label><br><select th:field="*{bondType}" required><option value="">Select</option><option th:each="value : ${bondTypes}" th:value="${value}" th:text="${value}"></option></select><div style="color:#b00020" th:errors="*{bondType}"></div></div>
 
-    <div>
-        <label for="updatedBy">Updated By</label>
-        <input id="updatedBy" type="text" th:field="*{updatedBy}" required>
-    </div>
+    <h3>Financial Characteristics</h3>
+    <div><label>Face Value</label><br><input type="number" th:field="*{faceValue}" min="0" step="0.01"><div style="color:#b00020" th:errors="*{faceValue}"></div></div>
+    <div><label>Coupon Type</label><br><select th:field="*{couponType}"><option value="">Select</option><option th:each="value : ${couponTypes}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Coupon Rate</label><br><input type="number" th:field="*{couponRate}" min="0" step="0.0001"><div style="color:#b00020" th:errors="*{couponRate}"></div></div>
+    <div><label>Coupon Frequency</label><br><select th:field="*{couponFrequency}"><option value="">Select</option><option th:each="value : ${couponFrequencies}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Coupon Calculation Method</label><br><select th:field="*{couponCalculationMethod}"><option value="">Select</option><option th:each="value : ${dayCountConventions}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Current Yield</label><br><input type="number" th:field="*{currentYield}" min="0" step="0.0001"></div>
+    <div><label>Yield to Maturity</label><br><input type="number" th:field="*{yieldToMaturity}" min="0" step="0.0001"></div>
+    <div><label>Yield to Call</label><br><input type="number" th:field="*{yieldToCall}" min="0" step="0.0001"></div>
+    <div><label>Currency *</label><br><input type="text" th:field="*{currency}" required maxlength="3"><div style="color:#b00020" th:errors="*{currency}"></div></div>
 
-    <div>
+    <h3>Lifecycle and Maturity</h3>
+    <div><label>Issue Date</label><br><input type="date" th:field="*{issueDate}"></div>
+    <div><label>Maturity Date</label><br><input type="date" th:field="*{maturityDate}"><div style="color:#b00020" th:errors="*{maturityDate}"></div></div>
+    <div><label>Call Date</label><br><input type="date" th:field="*{callDate}"></div>
+    <div><label>Put Date</label><br><input type="date" th:field="*{putDate}"></div>
+    <div><label>Amortization Schedule</label><br><textarea th:field="*{amortizationSchedule}" rows="2"></textarea></div>
+    <div><label>Redemption Type</label><br><select th:field="*{redemptionType}"><option value="">Select</option><option th:each="value : ${redemptionTypes}" th:value="${value}" th:text="${value}"></option></select></div>
+
+    <h3>Legal and Structural</h3>
+    <div><label>Seniority</label><br><select th:field="*{seniority}"><option value="">Select</option><option th:each="value : ${seniorityTypes}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Collateral</label><br><textarea th:field="*{collateral}" rows="2"></textarea></div>
+    <div><label>Covenants</label><br><textarea th:field="*{covenants}" rows="2"></textarea></div>
+    <div><label>Prospectus Reference</label><br><input type="text" th:field="*{prospectusReference}" maxlength="500"></div>
+    <div><label>Rating</label><br><input type="text" th:field="*{rating}" maxlength="50"></div>
+
+    <h3>Market and Trading</h3>
+    <div><label>Clean Price</label><br><input type="number" th:field="*{cleanPrice}" min="0" step="0.0001"></div>
+    <div><label>Dirty Price</label><br><input type="number" th:field="*{dirtyPrice}" min="0" step="0.0001"></div>
+    <div><label>Accrued Interest</label><br><input type="number" th:field="*{accruedInterest}" min="0" step="0.0001"></div>
+    <div><label>Trading Status</label><br><select th:field="*{tradingStatus}"><option value="">Select</option><option th:each="value : ${tradingStatuses}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Trading Venue</label><br><input type="text" th:field="*{tradingVenue}" maxlength="100"></div>
+    <div><label>Bid-Ask Spread</label><br><input type="number" th:field="*{bidAskSpread}" min="0" step="0.0001"></div>
+    <div><label>Trading Volume</label><br><input type="number" th:field="*{tradingVolume}" min="0" step="0.01"></div>
+    <div><label>Turnover</label><br><input type="number" th:field="*{turnover}" min="0" step="0.01"></div>
+
+    <h3>Assessment and Risk</h3>
+    <div><label>Risk Score</label><br><input type="number" th:field="*{riskScore}" min="0" max="100" step="0.01"></div>
+    <div><label>Macaulay Duration</label><br><input type="number" th:field="*{durationMacaulay}" min="0" step="0.0001"></div>
+    <div><label>Modified Duration</label><br><input type="number" th:field="*{durationModified}" min="0" step="0.0001"></div>
+    <div><label>Convexity</label><br><input type="number" th:field="*{convexity}" step="0.000001"></div>
+    <div><label>Probability of Default</label><br><input type="number" th:field="*{probabilityOfDefault}" min="0" max="100" step="0.01"></div>
+    <div><label>Loss Given Default</label><br><input type="number" th:field="*{lossGivenDefault}" min="0" max="100" step="0.01"></div>
+    <div><label>Value at Risk</label><br><input type="number" th:field="*{valueAtRisk}" step="0.0001"></div>
+    <div><label>Stress Test Results</label><br><textarea th:field="*{stressTestResults}" rows="2"></textarea></div>
+    <div><label>ESG Score</label><br><input type="number" th:field="*{esgScore}" min="0" max="100" step="0.01"></div>
+
+    <h3>Metadata</h3>
+    <div><label>Portfolio Reference</label><br><input type="text" th:field="*{portfolioReference}" maxlength="255"></div>
+    <div><label>Assessment History</label><br><textarea th:field="*{assessmentHistory}" rows="3"></textarea></div>
+    <div><label>Documents</label><br><textarea th:field="*{documents}" rows="2"></textarea></div>
+    <div><label>Tags</label><br><input type="text" th:field="*{tags}" maxlength="500"></div>
+    <div><label>Analyst Notes</label><br><textarea th:field="*{analystNotes}" rows="3"></textarea></div>
+    <div><label>Data Source *</label><br><input type="text" th:field="*{dataSource}" required maxlength="100"><div style="color:#b00020" th:errors="*{dataSource}"></div></div>
+    <div><label>Responsible Agent</label><br><input type="text" th:field="*{responsibleAgent}" maxlength="100"></div>
+    <div><label>Notes</label><br><textarea th:field="*{notes}" rows="3"></textarea></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${bond.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${bond.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${bond.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${bond.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
         <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
-        <a th:href="@{|${basePath}|}">Cancel</a>
+        <a th:href="@{/bonds}">Cancel</a>
     </div>
 </form>
 </body>
 </html>
-
-

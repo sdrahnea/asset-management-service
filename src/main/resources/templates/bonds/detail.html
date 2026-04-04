@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bond Details</title>
+</head>
+<body>
+<h1>Bond Details</h1>
+<p>
+    <a th:href="@{/bonds}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/bonds/{id}/edit(id=${bond.id})}">Edit</a>
+</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Bond ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.bondId}">BOND-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Title</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.title}">Romania Government Bond 2032</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">ISIN</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.isin}">RO1234567890</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">CUSIP / SEDOL</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.cusipSedol}">123456AB</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Issuer</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.issuer}">Issuer</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Issuer Country</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.issuerCountry}">RO</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Bond Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.bondType}">GOVERNMENT</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Face Value</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.faceValue}">1000.00</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Coupon</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.couponType + ' / ' + bond.couponRate + ' / ' + bond.couponFrequency}">FIXED / 5 / ANNUAL</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Yields</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.currentYield + ' / ' + bond.yieldToMaturity + ' / ' + bond.yieldToCall}">4.2 / 4.4 / 4.3</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Currency</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.currency}">EUR</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Issue Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.issueDate}">2024-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Maturity Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.maturityDate}">2032-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Call / Put Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.callDate + ' / ' + bond.putDate}">2029-01-01 / 2030-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Redemption Type</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.redemptionType}">BULLET</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Seniority</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.seniority}">SENIOR_UNSECURED</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Collateral</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.collateral}">N/A</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Covenants</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.covenants}">Covenants</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Prospectus Reference</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.prospectusReference}">PR-001</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Rating</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.rating}">BBB+</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Clean / Dirty Price</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.cleanPrice + ' / ' + bond.dirtyPrice}">98.10 / 99.40</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Accrued Interest</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.accruedInterest}">1.30</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Trading Status</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.tradingStatus}">ACTIVE</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Venue / Spread</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.tradingVenue + ' / ' + bond.bidAskSpread}">BVB / 0.10</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Volume / Turnover</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.tradingVolume + ' / ' + bond.turnover}">120000 / 3000000</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Risk Score</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.riskScore}">60</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Duration (Mac/Mod)</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.durationMacaulay + ' / ' + bond.durationModified}">5.80 / 5.40</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Convexity</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.convexity}">12.3</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Credit Indicators</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.probabilityOfDefault + ' / ' + bond.lossGivenDefault}">2.2 / 45</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">VaR / ESG</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.valueAtRisk + ' / ' + bond.esgScore}">12000 / 71</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Stress Test Results</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.stressTestResults}">Stress notes</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Portfolio Reference</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.portfolioReference}">Portfolio A</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Assessment History</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.assessmentHistory}">History</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Documents</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.documents}">Docs</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Tags</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.tags}">tag1,tag2</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Analyst Notes</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.analystNotes}">Notes</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Data Source</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.dataSource}">manual-entry</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Responsible Agent</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.responsibleAgent}">agent</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Notes</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.notes}">Notes</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.createdAt}">2026-01-01</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${bond.updatedAt}">2026-01-02</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+
