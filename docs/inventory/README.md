@@ -14,7 +14,7 @@
 
 **Domain**: Tangible Assets | **Entity**: `Inventory` (`com.sdr.ams.model.tangible`) | **Route**: `/inventories` | **Status**: ✅ Implemented (v1)
 
-**Sources**: [`docs/inventory.md`](../inventory-info/inventory.md) (high-level overview) · `Inventory.java` · `InventoryService.java` · `InventoryRepository.java` · `InventoryController.java` · `templates/inventories/`
+**Sources**: [`docs/inventory.md`](inventory-info.md) (high-level overview) · `Inventory.java` · `InventoryService.java` · `InventoryRepository.java` · `InventoryController.java` · `templates/inventories/`
 
 ---
 
