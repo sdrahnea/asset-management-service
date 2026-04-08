@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
     <title th:text="${isEdit ? 'Edit ' + singularTitle : 'Create ' + singularTitle}">Entity Form</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
