@@ -18,3 +18,8 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+app:
+  demo-data:
+    enabled: true
+
