@@ -29,6 +29,7 @@ import com.sdr.ams.repository.ReputationRepository;
 import com.sdr.ams.repository.StockRepository;
 import com.sdr.ams.repository.TrademarkRepository;
 import com.sdr.ams.repository.VehicleRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 public class DemoDataSeeder {
 
-    private static final int DEMO_RECORDS = 25;
+    private final int demoRecordCount;
+
+    public DemoDataSeeder(@Value("${app.demo-data.record-count:25}") int demoRecordCount) {
+        this.demoRecordCount = Math.max(0, demoRecordCount);
+    }
 
     @Bean
     @ConditionalOnProperty(name = "app.demo-data.enabled", havingValue = "true", matchIfMissing = true)
@@ -80,7 +85,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newBankAccount(i));
         }
     }
@@ -91,7 +96,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newBond(i));
         }
     }
@@ -102,7 +107,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newStock(i));
         }
     }
@@ -113,7 +118,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newRealEstate(i));
         }
     }
@@ -124,7 +129,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newVehicle(i));
         }
     }
@@ -135,7 +140,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newTrademark(i));
         }
     }
@@ -146,7 +151,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newCash(i));
         }
     }
@@ -157,7 +162,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newInventory(i));
         }
     }
@@ -168,7 +173,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newMachinery(i));
         }
     }
@@ -179,7 +184,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newBrand(i));
         }
     }
@@ -190,7 +195,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newCopyright(i));
         }
     }
@@ -201,7 +206,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newPatent(i));
         }
     }
@@ -212,7 +217,7 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= DEMO_RECORDS; i++) {
+        for (int i = 1; i <= demoRecordCount; i++) {
             repository.save(newReputation(i));
         }
     }

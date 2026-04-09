@@ -22,4 +22,5 @@ spring:
 app:
   demo-data:
     enabled: true
+    record-count: 25
 
