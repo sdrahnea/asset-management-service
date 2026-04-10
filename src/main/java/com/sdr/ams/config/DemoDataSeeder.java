@@ -29,20 +29,21 @@ import com.sdr.ams.repository.ReputationRepository;
 import com.sdr.ams.repository.StockRepository;
 import com.sdr.ams.repository.TrademarkRepository;
 import com.sdr.ams.repository.VehicleRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
+@EnableConfigurationProperties(DemoDataProperties.class)
 public class DemoDataSeeder {
 
-    private final int demoRecordCount;
+    private final DemoDataProperties demoDataProperties;
 
-    public DemoDataSeeder(@Value("${app.demo-data.record-count:25}") int demoRecordCount) {
-        this.demoRecordCount = Math.max(0, demoRecordCount);
+    public DemoDataSeeder(DemoDataProperties demoDataProperties) {
+        this.demoDataProperties = demoDataProperties;
     }
 
     @Bean
@@ -85,7 +86,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("bank-accounts");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newBankAccount(i));
         }
     }
@@ -96,7 +98,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("bonds");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newBond(i));
         }
     }
@@ -107,7 +110,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("stocks");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newStock(i));
         }
     }
@@ -118,7 +122,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("real-estates");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newRealEstate(i));
         }
     }
@@ -129,7 +134,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("vehicles");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newVehicle(i));
         }
     }
@@ -140,7 +146,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("trademarks");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newTrademark(i));
         }
     }
@@ -151,7 +158,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("cash");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newCash(i));
         }
     }
@@ -162,7 +170,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("inventories");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newInventory(i));
         }
     }
@@ -173,7 +182,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("machineries");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newMachinery(i));
         }
     }
@@ -184,7 +194,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("brands");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newBrand(i));
         }
     }
@@ -195,7 +206,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("copyrights");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newCopyright(i));
         }
     }
@@ -206,7 +218,8 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("patents");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newPatent(i));
         }
     }
@@ -217,9 +230,14 @@ public class DemoDataSeeder {
             return;
         }
 
-        for (int i = 1; i <= demoRecordCount; i++) {
+        int recordCount = recordCountFor("reputations");
+        for (int i = 1; i <= recordCount; i++) {
             repository.save(newReputation(i));
         }
+    }
+
+    private int recordCountFor(String entityKey) {
+        return demoDataProperties.recordCountFor(entityKey);
     }
 
     private BankAccount newBankAccount(int i) {

@@ -23,4 +23,18 @@ app:
   demo-data:
     enabled: true
     record-count: 25
+    max-records:
+      bank-accounts: 25
+      bonds: 25
+      stocks: 25
+      real-estates: 25
+      vehicles: 25
+      trademarks: 25
+      cash: 25
+      inventories: 25
+      machineries: 25
+      brands: 25
+      copyrights: 25
+      patents: 25
+      reputations: 25
 
