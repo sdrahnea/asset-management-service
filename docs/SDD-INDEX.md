@@ -11,6 +11,7 @@ Central navigation for all Specification-Driven Development folders under `docs/
 | Brand | `docs/brand/` | [README](brand/README.md) |
 | Cash | `docs/cash/` | [README](cash/README.md) |
 | Copyright | `docs/copyright/` | [README](copyright/README.md) |
+| Invoice | `docs/invoice/` | [README](invoice/README.md) |
 | Inventory | `docs/inventory/` | [README](inventory/README.md) |
 | Machinery | `docs/machinery/` | [README](machinery/README.md) |
 | Patent | `docs/patent/` | [README](patent/README.md) |
