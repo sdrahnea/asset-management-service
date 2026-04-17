@@ -26,6 +26,7 @@ app:
     max-records:
       bank-accounts: 25
       bonds: 25
+      invoices: 25
       stocks: 25
       real-estates: 25
       vehicles: 25

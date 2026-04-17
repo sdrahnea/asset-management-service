@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
+    <title th:text="${isEdit} ? 'Edit Invoice' : 'Create Invoice'">Invoice Form</title>
+</head>
+<body>
+<h1 th:text="${isEdit} ? 'Edit Invoice' : 'Create Invoice'">Invoice Form</h1>
+<p>
+    <a th:href="@{/invoices}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
+
+<form th:action="${isEdit} ? @{/invoices/{id}(id=${invoice.id})} : @{/invoices}" th:object="${invoice}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}" style="color: #b00020; margin-bottom: 10px;">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">Validation error</p>
+    </div>
+
+    <h3>Header</h3>
+    <div><label>Invoice ID *</label><br><input type="text" th:field="*{invoiceId}" required maxlength="36"><div style="color:#b00020" th:errors="*{invoiceId}"></div></div>
+    <div><label>Invoice Number *</label><br><input type="text" th:field="*{invoiceNumber}" required maxlength="50"><div style="color:#b00020" th:errors="*{invoiceNumber}"></div></div>
+    <div><label>Issue Date *</label><br><input type="date" th:field="*{issueDate}" required><div style="color:#b00020" th:errors="*{issueDate}"></div></div>
+    <div><label>Due Date *</label><br><input type="date" th:field="*{dueDate}" required><div style="color:#b00020" th:errors="*{dueDate}"></div></div>
+    <div><label>Currency *</label><br><input type="text" th:field="*{currency}" required maxlength="3"><div style="color:#b00020" th:errors="*{currency}"></div></div>
+    <div><label>Status *</label><br><select th:field="*{status}" required><option value="">Select</option><option th:each="value : ${statuses}" th:value="${value}" th:text="${value}"></option></select><div style="color:#b00020" th:errors="*{status}"></div></div>
+
+    <h3>Seller</h3>
+    <div><label>Seller ID *</label><br><input type="text" th:field="*{seller.partyId}" required maxlength="100"><div style="color:#b00020" th:errors="*{seller.partyId}"></div></div>
+    <div><label>Seller Name *</label><br><input type="text" th:field="*{seller.name}" required maxlength="255"><div style="color:#b00020" th:errors="*{seller.name}"></div></div>
+    <div><label>Seller Tax ID *</label><br><input type="text" th:field="*{seller.taxId}" required maxlength="100"><div style="color:#b00020" th:errors="*{seller.taxId}"></div></div>
+    <div><label>Seller Address *</label><br><input type="text" th:field="*{seller.address}" required maxlength="500"><div style="color:#b00020" th:errors="*{seller.address}"></div></div>
+    <div><label>Seller Contact</label><br><input type="text" th:field="*{seller.contactInfo}" maxlength="255"><div style="color:#b00020" th:errors="*{seller.contactInfo}"></div></div>
+
+    <h3>Buyer</h3>
+    <div><label>Buyer ID *</label><br><input type="text" th:field="*{buyer.partyId}" required maxlength="100"><div style="color:#b00020" th:errors="*{buyer.partyId}"></div></div>
+    <div><label>Buyer Name *</label><br><input type="text" th:field="*{buyer.name}" required maxlength="255"><div style="color:#b00020" th:errors="*{buyer.name}"></div></div>
+    <div><label>Buyer Tax ID *</label><br><input type="text" th:field="*{buyer.taxId}" required maxlength="100"><div style="color:#b00020" th:errors="*{buyer.taxId}"></div></div>
+    <div><label>Buyer Address *</label><br><input type="text" th:field="*{buyer.address}" required maxlength="500"><div style="color:#b00020" th:errors="*{buyer.address}"></div></div>
+    <div><label>Buyer Contact</label><br><input type="text" th:field="*{buyer.contactInfo}" maxlength="255"><div style="color:#b00020" th:errors="*{buyer.contactInfo}"></div></div>
+
+    <h3>Items (first non-empty row is required)</h3>
+    <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px;">
+        <thead>
+        <tr>
+            <th style="border: 1px solid #ccc; padding: 6px;">Item ID</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Description</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Quantity</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Unit Price</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Unit</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Tax Rate</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Tax Amount</th>
+            <th style="border: 1px solid #ccc; padding: 6px;">Line Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item, iter : *{items}">
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="text" th:field="*{items[__${iter.index}__].itemId}" maxlength="100"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="text" th:field="*{items[__${iter.index}__].description}" maxlength="500"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="number" th:field="*{items[__${iter.index}__].quantity}" min="0" step="0.0001"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="number" th:field="*{items[__${iter.index}__].unitPrice}" min="0" step="0.0001"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="text" th:field="*{items[__${iter.index}__].unitOfMeasure}" maxlength="50"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="number" th:field="*{items[__${iter.index}__].taxRate}" min="0" max="100" step="0.0001"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="number" th:field="*{items[__${iter.index}__].taxAmount}" min="0" step="0.0001"></td>
+            <td style="border: 1px solid #ccc; padding: 6px;"><input type="number" th:field="*{items[__${iter.index}__].lineTotal}" min="0" step="0.0001"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>Totals and Payment</h3>
+    <div><label>Subtotal *</label><br><input type="number" th:field="*{subtotal}" required min="0" step="0.0001"><div style="color:#b00020" th:errors="*{subtotal}"></div></div>
+    <div><label>Total Tax *</label><br><input type="number" th:field="*{totalTax}" required min="0" step="0.0001"><div style="color:#b00020" th:errors="*{totalTax}"></div></div>
+    <div><label>Total Amount *</label><br><input type="number" th:field="*{totalAmount}" required min="0" step="0.0001"><div style="color:#b00020" th:errors="*{totalAmount}"></div></div>
+    <div><label>Amount Paid *</label><br><input type="number" th:field="*{amountPaid}" required min="0" step="0.0001"><div style="color:#b00020" th:errors="*{amountPaid}"></div></div>
+    <div><label>Balance Due *</label><br><input type="number" th:field="*{balanceDue}" required min="0" step="0.0001"><div style="color:#b00020" th:errors="*{balanceDue}"></div></div>
+    <div><label>Payment Terms</label><br><input type="text" th:field="*{paymentTerms}" maxlength="100"></div>
+    <div><label>Payment Method</label><br><select th:field="*{paymentMethod}"><option value="">Select</option><option th:each="value : ${paymentMethods}" th:value="${value}" th:text="${value}"></option></select></div>
+    <div><label>Bank Account IBAN</label><br><input type="text" th:field="*{bankAccountIban}" maxlength="34"><div style="color:#b00020" th:errors="*{bankAccountIban}"></div></div>
+
+    <h3>Audit (Read-only)</h3>
+    <div><label>Created At</label><br><input type="text" th:value="${invoice.createdAt}" readonly></div>
+    <div><label>Created By</label><br><input type="text" th:value="${invoice.createdBy}" readonly></div>
+    <div><label>Updated At</label><br><input type="text" th:value="${invoice.updatedAt}" readonly></div>
+    <div><label>Updated By</label><br><input type="text" th:value="${invoice.updatedBy}" readonly></div>
+
+    <div style="margin-top: 12px;">
+        <button type="submit" th:text="${isEdit} ? 'Update' : 'Create'">Save</button>
+        <a th:href="@{/invoices}">Cancel</a>
+    </div>
+</form>
+</body>
+</html>
+

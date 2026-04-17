@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
+    <title>Invoices</title>
+</head>
+<body>
+<h1>Invoices</h1>
+<p>
+    <a th:href="@{/invoices/new}">Create Invoice</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+</p>
+
+<form th:action="@{/invoices}" method="get" style="margin-bottom: 12px;">
+    <label for="invoiceNumber">Invoice Number</label>
+    <input id="invoiceNumber" name="invoiceNumber" type="text" th:value="${selectedInvoiceNumber}" maxlength="50">
+
+    <label for="status">Status</label>
+    <select id="status" name="status">
+        <option value="">All</option>
+        <option th:each="value : ${statuses}" th:value="${value}" th:text="${value}" th:selected="${selectedStatus == value}">ISSUED</option>
+    </select>
+
+    <label for="sellerName">Seller</label>
+    <input id="sellerName" name="sellerName" type="text" th:value="${selectedSellerName}" maxlength="255">
+
+    <label for="buyerName">Buyer</label>
+    <input id="buyerName" name="buyerName" type="text" th:value="${selectedBuyerName}" maxlength="255">
+
+    <label for="issueDateFrom">Issue From</label>
+    <input id="issueDateFrom" name="issueDateFrom" type="date" th:value="${selectedIssueDateFrom}">
+
+    <label for="issueDateTo">Issue To</label>
+    <input id="issueDateTo" name="issueDateTo" type="date" th:value="${selectedIssueDateTo}">
+
+    <button type="submit">Filter</button>
+    <a th:href="@{/invoices}">Reset</a>
+</form>
+
+<table style="border-collapse: collapse; width: 100%;">
+    <thead>
+    <tr>
+        <th style="border: 1px solid #ccc; padding: 6px;">Invoice ID</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Invoice Number</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Issue Date</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Due Date</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Currency</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Seller</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Buyer</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Total</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Balance</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Status</th>
+        <th style="border: 1px solid #ccc; padding: 6px;">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(invoices)}">
+        <td colspan="11" style="border: 1px solid #ccc; padding: 6px;">No invoices found.</td>
+    </tr>
+    <tr th:each="invoice : ${invoices}">
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.invoiceId}">UUID</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.invoiceNumber}">INV-2026-00123</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.issueDate}">2026-04-15</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.dueDate}">2026-05-15</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.currency}">EUR</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.seller.name}">ABC SRL</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.buyer.name}">XYZ LTD</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.totalAmount}">1190.0000</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.balanceDue}">1190.0000</td>
+        <td style="border: 1px solid #ccc; padding: 6px;" th:text="${invoice.status}">ISSUED</td>
+        <td style="border: 1px solid #ccc; padding: 6px;">
+            <a th:href="@{/invoices/{id}(id=${invoice.id})}">View</a>
+            |
+            <a th:href="@{/invoices/{id}/edit(id=${invoice.id})}">Edit</a>
+            |
+            <form th:action="@{/invoices/{id}/delete(id=${invoice.id})}" method="post" style="display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+

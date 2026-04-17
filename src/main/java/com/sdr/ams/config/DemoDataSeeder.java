@@ -5,6 +5,9 @@ import java.time.LocalDate;
 
 import com.sdr.ams.model.financial.BankAccount;
 import com.sdr.ams.model.financial.Bond;
+import com.sdr.ams.model.financial.Invoice;
+import com.sdr.ams.model.financial.InvoiceItem;
+import com.sdr.ams.model.financial.InvoiceParty;
 import com.sdr.ams.model.financial.Stock;
 import com.sdr.ams.model.intangible.Brand;
 import com.sdr.ams.model.intangible.Copyright;
@@ -22,6 +25,7 @@ import com.sdr.ams.repository.BrandRepository;
 import com.sdr.ams.repository.CashRepository;
 import com.sdr.ams.repository.CopyrightRepository;
 import com.sdr.ams.repository.InventoryRepository;
+import com.sdr.ams.repository.InvoiceRepository;
 import com.sdr.ams.repository.MachineryRepository;
 import com.sdr.ams.repository.PatentRepository;
 import com.sdr.ams.repository.RealEstateRepository;
@@ -51,6 +55,7 @@ public class DemoDataSeeder {
     ApplicationRunner seedDemoData(
         BankAccountRepository bankAccountRepository,
         BondRepository bondRepository,
+        InvoiceRepository invoiceRepository,
         StockRepository stockRepository,
         RealEstateRepository realEstateRepository,
         VehicleRepository vehicleRepository,
@@ -66,6 +71,7 @@ public class DemoDataSeeder {
         return ignored -> {
             seedBankAccounts(bankAccountRepository);
             seedBonds(bondRepository);
+            seedInvoices(invoiceRepository);
             seedStocks(stockRepository);
             seedRealEstates(realEstateRepository);
             seedVehicles(vehicleRepository);
@@ -101,6 +107,18 @@ public class DemoDataSeeder {
         int recordCount = recordCountFor("bonds");
         for (int i = 1; i <= recordCount; i++) {
             repository.save(newBond(i));
+        }
+    }
+
+    @Transactional
+    void seedInvoices(InvoiceRepository repository) {
+        if (repository.count() > 0) {
+            return;
+        }
+
+        int recordCount = recordCountFor("invoices");
+        for (int i = 1; i <= recordCount; i++) {
+            repository.save(newInvoice(i));
         }
     }
 
@@ -279,6 +297,54 @@ public class DemoDataSeeder {
         stock.setCompanyName("Demo Technologies " + suffix);
         stock.setDataSource("DEMO_SEED");
         return stock;
+    }
+
+    private Invoice newInvoice(int i) {
+        String suffix = String.format("%05d", i);
+
+        InvoiceParty seller = new InvoiceParty();
+        seller.setPartyId("SEL-" + suffix);
+        seller.setName("Demo Seller " + suffix + " SRL");
+        seller.setTaxId("RO12345" + suffix);
+        seller.setAddress("Bucharest, Romania");
+        seller.setContactInfo("seller" + suffix + "@demo.local");
+
+        InvoiceParty buyer = new InvoiceParty();
+        buyer.setPartyId("BUY-" + suffix);
+        buyer.setName("Demo Buyer " + suffix + " LTD");
+        buyer.setTaxId("GB54321" + suffix);
+        buyer.setAddress("London, UK");
+        buyer.setContactInfo("buyer" + suffix + "@demo.local");
+
+        InvoiceItem item = new InvoiceItem();
+        item.setItemId("ITEM-" + suffix);
+        item.setDescription("Consulting services " + suffix);
+        item.setQuantity(new BigDecimal("10.0000"));
+        item.setUnitPrice(new BigDecimal("100.0000"));
+        item.setUnitOfMeasure("hours");
+        item.setTaxRate(new BigDecimal("19.0000"));
+        item.setTaxAmount(new BigDecimal("190.0000"));
+        item.setLineTotal(new BigDecimal("1190.0000"));
+
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceId("c6d7b8a9-1000-4000-8000-" + String.format("%012d", i));
+        invoice.setInvoiceNumber("INV-2026-" + suffix);
+        invoice.setIssueDate(LocalDate.now().minusDays(i));
+        invoice.setDueDate(LocalDate.now().plusDays(30 - (i % 10)));
+        invoice.setCurrency("EUR");
+        invoice.setSeller(seller);
+        invoice.setBuyer(buyer);
+        invoice.getItems().add(item);
+        invoice.setSubtotal(new BigDecimal("1000.0000"));
+        invoice.setTotalTax(new BigDecimal("190.0000"));
+        invoice.setTotalAmount(new BigDecimal("1190.0000"));
+        invoice.setAmountPaid(new BigDecimal("0.0000"));
+        invoice.setBalanceDue(new BigDecimal("1190.0000"));
+        invoice.setPaymentTerms("Net 30");
+        invoice.setPaymentMethod(Invoice.PaymentMethod.BANK_TRANSFER);
+        invoice.setBankAccountIban("RO49AAAA1B3100759384" + String.format("%04d", i));
+        invoice.setStatus(Invoice.InvoiceStatus.ISSUED);
+        return invoice;
     }
 
     private RealEstate newRealEstate(int i) {

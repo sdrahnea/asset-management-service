@@ -16,14 +16,18 @@ This folder contains specification, requirements, and task documents for the **I
 
 ## Feature Summary
 
-**Domain**: Financial Documents  
-**Entity**: `Invoice`  
-**Route prefix**: `/invoices` (Planned)  
-**Status**: Planned (spec completed, implementation pending)
+**Domain**: Financial Documents
+**Entity**: `Invoice` (package `com.sdr.ams.model.financial`)
+**Route prefix**: `/invoices`
+**Status**: ✅ Implemented (v1 — rich tier)
 
 ## Source of Truth
 
 - Domain specification: [`invoice.md`](invoice.md)
-- Input model source: user-provided JSON contract (2026-04-15)
-- Reference pattern: `docs/bond/` SDD structure
+- Entity: `src/main/java/com/sdr/ams/model/financial/Invoice.java`
+- Supporting types: `InvoiceParty.java`, `InvoiceItem.java`
+- Service: `src/main/java/com/sdr/ams/service/InvoiceService.java`
+- Repository: `src/main/java/com/sdr/ams/repository/InvoiceRepository.java`
+- Controller: `src/main/java/com/sdr/ams/controller/InvoiceController.java`
+- Templates: `src/main/resources/templates/invoices/`
 

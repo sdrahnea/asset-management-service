@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
+    <title>Invoice Details</title>
+</head>
+<body>
+<h1>Invoice Details</h1>
+<p>
+    <a th:href="@{/invoices}">Back to List</a>
+    |
+    <a th:href="@{/}">Back to Home</a>
+    |
+    <a th:href="@{/invoices/{id}/edit(id=${invoice.id})}">Edit</a>
+</p>
+
+<h3>Header</h3>
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px; margin-bottom: 12px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Invoice ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.invoiceId}">UUID</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Invoice Number</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.invoiceNumber}">INV-2026-00123</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Issue Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.issueDate}">2026-04-15</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Due Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.dueDate}">2026-05-15</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Currency</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.currency}">EUR</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Status</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.status}">ISSUED</td></tr>
+    </tbody>
+</table>
+
+<h3>Seller</h3>
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px; margin-bottom: 12px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Seller ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.seller.partyId}">123</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Name</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.seller.name}">ABC SRL</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Tax ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.seller.taxId}">RO12345678</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Address</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.seller.address}">Bucharest</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Contact</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.seller.contactInfo}">office@abc.ro</td></tr>
+    </tbody>
+</table>
+
+<h3>Buyer</h3>
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px; margin-bottom: 12px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Buyer ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.buyer.partyId}">456</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Name</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.buyer.name}">XYZ LTD</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Tax ID</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.buyer.taxId}">GB987654321</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Address</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.buyer.address}">London</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Contact</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.buyer.contactInfo}">contact@xyz.com</td></tr>
+    </tbody>
+</table>
+
+<h3>Items</h3>
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px; margin-bottom: 12px;">
+    <thead>
+    <tr>
+        <th style="border:1px solid #ccc; padding:6px;">Item ID</th>
+        <th style="border:1px solid #ccc; padding:6px;">Description</th>
+        <th style="border:1px solid #ccc; padding:6px;">Qty</th>
+        <th style="border:1px solid #ccc; padding:6px;">Unit Price</th>
+        <th style="border:1px solid #ccc; padding:6px;">Tax Rate</th>
+        <th style="border:1px solid #ccc; padding:6px;">Tax Amount</th>
+        <th style="border:1px solid #ccc; padding:6px;">Line Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${invoice.items}">
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.itemId}">1</td>
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.description}">Consulting services</td>
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.quantity}">10</td>
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.unitPrice}">100</td>
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.taxRate}">19</td>
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.taxAmount}">190</td>
+        <td style="border:1px solid #ccc; padding:6px;" th:text="${item.lineTotal}">1190</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>Totals and Payment</h3>
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px; margin-bottom: 12px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Subtotal</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.subtotal}">1000</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Total Tax</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.totalTax}">190</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Total Amount</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.totalAmount}">1190</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Amount Paid</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.amountPaid}">0</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Balance Due</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.balanceDue}">1190</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Payment Terms</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.paymentTerms}">Net 30</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Payment Method</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.paymentMethod}">BANK_TRANSFER</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Bank Account IBAN</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.bankAccountIban}">RO49AAAA1B31007593840000</td></tr>
+    </tbody>
+</table>
+
+<h3>Audit</h3>
+<table style="border-collapse: collapse; width: 100%; max-width: 1100px;">
+    <tbody>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.createdAt}">2026-04-15T06:32:00Z</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Created By</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.createdBy}">system</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated At</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.updatedAt}">2026-04-15T06:32:00Z</td></tr>
+    <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Updated By</th><td style="border:1px solid #ccc; padding:6px;" th:text="${invoice.updatedBy}">system</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+
