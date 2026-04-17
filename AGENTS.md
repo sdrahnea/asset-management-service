@@ -1,7 +1,7 @@
 # AGENTS.md
 
-## Repo snapshot (as of 2026-04-14)
-- Full CRUD for all 13 asset types under `com.sdr.ams` with server-rendered Thymeleaf UI.
+## Repo snapshot (as of 2026-04-15)
+- Full CRUD for all 13 asset types + **Invoice** (14 total) under `com.sdr.ams` with server-rendered Thymeleaf UI.
 - Stack: Spring Boot 4.0.5, Java 25, Spring MVC, Spring Data JPA, Thymeleaf, H2, `jakarta.validation-api`.
 - Persistence: H2 in-memory (`jdbc:h2:mem:assetdb`), `spring.jpa.hibernate.ddl-auto: update`, H2 console at `/h2-console`.
 - `CoreEntity` (`com.sdr.ams.model.core`) is the `@MappedSuperclass` base for all entities; provides `id`, `name`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy` with `@PrePersist`/`@PreUpdate` auto-fill defaulting to `"system"`.
@@ -11,7 +11,7 @@
 ## Entity inventory
 
 ### Financial (`com.sdr.ams.model.financial`)
-- **Rich**: `BankAccount`, `Stock`, `Bond`
+- **Rich**: `BankAccount`, `Stock`, `Bond`, `Invoice`
 - Generic+full spec: _(none)_
 
 ### Tangible (`com.sdr.ams.model.tangible`)
@@ -46,14 +46,14 @@
 All of the following remap the inherited `name` column to a domain-specific ID column:
 `Bond` (bondId), `BankAccount`* , `Cash` (cashId), `Copyright` (copyrightId), `Brand` (brandId),
 `Inventory` (inventoryId), `Machinery` (machineId), `Patent` (patentId), `Reputation` (reputationId),
-`Stock` (stockId), `Trademark` (trademarkId), `Vehicle` (vehicleId).
+`Stock` (stockId), `Trademark` (trademarkId), `Vehicle` (vehicleId), `Invoice` (invoiceId).
 (*`BankAccount` uses `name` for `holderName`, not a domain ID.)
 
 ## Service-layer conventions
 
 | Update style | Services |
 |---|---|
-| `BeanUtils.copyProperties(input, existing, "id","createdAt","createdBy","updatedAt","updatedBy")` | `VehicleService`, `TrademarkService`, `StockService`, `BondService`, `PatentService`, `ReputationService`, `CashService`, `InventoryService`, `BrandService`, `CopyrightService` |
+| `BeanUtils.copyProperties(input, existing, "id","createdAt","createdBy","updatedAt","updatedBy")` | `VehicleService`, `TrademarkService`, `StockService`, `BondService`, `PatentService`, `ReputationService`, `CashService`, `InventoryService`, `BrandService`, `CopyrightService`, `InvoiceService` |
 | Explicit manual field copy | `BankAccountService`, `RealEstateService` |
 
 - Rich services: do NOT extend `CoreEntityCrudService`; own full transaction + validation lifecycle.
@@ -63,7 +63,7 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 
 | Tier | Routes |
 |---|---|
-| Rich | `/bank-accounts`, `/bonds`, `/patents`, `/real-estates`, `/reputations`, `/stocks`, `/trademarks`, `/vehicles` |
+| Rich | `/bank-accounts`, `/bonds`, `/invoices`, `/patents`, `/real-estates`, `/reputations`, `/stocks`, `/trademarks`, `/vehicles` |
 | Generic | `/cash`, `/copyrights`, `/inventories`, `/machineries`, `/brands` |
 
 - `/` → `HomeController`
@@ -74,6 +74,7 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 |---|---|---|---|
 | `bank-accounts/` | ✓ | ✓ | ✓ |
 | `bonds/` | ✓ | ✓ | ✓ |
+| `invoices/` | ✓ | ✓ | ✓ |
 | `patents/` | ✓ | ✓ | ✓ |
 | `real-estates/` | ✓ | ✓ | ✓ |
 | `reputations/` | ✓ | ✓ | ✓ |
@@ -95,6 +96,7 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 - **Trademark**: applicationNumber + registrationNumber uniqueness; lifecycle date ordering; `@AttributeOverride` for trademarkId.
 - **Stock**: filtering + detail page; uniqueness on stockId, tickerSymbol-per-exchange, ISIN, CUSIP; `@AttributeOverride` for stockId.
 - **Bond**: date-ordering rules (issueDate ≤ maturityDate, callDate ≤ maturityDate, putDate ≤ maturityDate); uniqueness on bondId + ISIN + CUSIP/SEDOL; filtering by issuer, bondType, tradingStatus, currency; `@AttributeOverride` for bondId.
+- **Invoice**: aggregate entity with embedded `InvoiceParty` (seller/buyer) and `@ElementCollection` of `InvoiceItem`; uniqueness on invoiceId + invoiceNumber; dueDate ≥ issueDate; arithmetic consistency enforced in service (lineTotal, subtotal, totalTax, totalAmount, balanceDue); PAID status requires zero balanceDue; IBAN checksum on bankAccountIban; filter by invoiceNumber, status, sellerName, buyerName, issueDateFrom/To, dueDateFrom/To; controller pre-fills 5 blank item rows; service strips empty helper rows before validation; `@AttributeOverride` for invoiceId.
 - **Patent**: applicationDate ≤ publicationDate ≤ grantDate ≤ expiryDate; GRANTED status requires grantNumber + grantDate; uniqueness on patentId + applicationNumber + publicationNumber + grantNumber; filtering by patentType, legalStatus, technologyField, assigneeOwner; `@AttributeOverride` for patentId.
 - **Reputation**: uniqueness on reputationId + composite (entityType, entityId); filtering by entityId, entityType, trendDirection, competitivePosition; `@AttributeOverride` for reputationId.
 - **Cash**: cash-position model (amount, currency, valuationDate, cashType, holderOwner, etc.); `@AttributeOverride` for cashId; uniqueness on cashId.
@@ -105,7 +107,7 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 
 ## Demo Data
 
-- `DemoDataSeeder` (`com.sdr.ams.config`) seeds all 13 entities at application startup.
+- `DemoDataSeeder` (`com.sdr.ams.config`) seeds all 14 entities at application startup.
 - Only seeds when table is empty (idempotent).
 - Controlled by `application.yaml`:
   ```yaml
@@ -116,6 +118,7 @@ All of the following remap the inherited `name` column to a domain-specific ID c
       max-records:
         bank-accounts: 20    # per-entity override keys match route path segments
         bonds: 10
+        invoices: 25
   ```
 - `DemoDataProperties` resolves per-entity count via `recordCountFor(entityKey)`, falling back to `record-count`.
 
