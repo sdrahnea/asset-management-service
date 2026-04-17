@@ -1,0 +1,177 @@
+{
+  "version": "2026-04-17",
+  "defaultAgent": "engineering-senior-developer.md",
+  "fallbackOrder": [
+    "engineering-codebase-onboarding-engineer.md",
+    "engineering-backend-architect.md",
+    "engineering-senior-developer.md",
+    "engineering-code-reviewer.md"
+  ],
+  "routes": [
+    {
+      "matchAny": ["understand codebase", "onboarding", "trace code path", "analyze existing code"],
+      "agent": "engineering-codebase-onboarding-engineer.md"
+    },
+    {
+      "matchAny": ["architecture", "service boundaries", "domain design", "refactor design", "system design"],
+      "agent": "engineering-backend-architect.md"
+    },
+    {
+      "matchAny": ["ddd", "bounded context", "architectural decision", "technical strategy"],
+      "agent": "engineering-software-architect.md"
+    },
+    {
+      "matchAny": ["implement feature", "build crud", "controller service repository", "thymeleaf page"],
+      "agent": "engineering-senior-developer.md"
+    },
+    {
+      "matchAny": ["small fix", "minimal diff", "hotfix", "regression patch"],
+      "agent": "engineering-minimal-change-engineer.md"
+    },
+    {
+      "matchAny": ["code review", "review pr", "find bugs", "security risks", "performance risks"],
+      "agent": "engineering-code-reviewer.md"
+    },
+    {
+      "matchAny": ["slow query", "index", "hibernate performance", "database tuning"],
+      "agent": "engineering-database-optimizer.md"
+    },
+    {
+      "matchAny": ["security", "threat model", "vulnerability", "hardening", "secure upload"],
+      "agent": "engineering-security-engineer.md"
+    },
+    {
+      "matchAny": ["ci/cd", "pipeline", "automation", "deployment workflow"],
+      "agent": "engineering-devops-automator.md"
+    },
+    {
+      "matchAny": ["incident", "outage", "postmortem", "slo", "observability", "reliability"],
+      "agent": "engineering-sre.md"
+    },
+    {
+      "matchAny": ["readme", "documentation", "release notes", "developer guide"],
+      "agent": "engineering-technical-writer.md"
+    },
+    {
+      "matchAny": ["git workflow", "rebase", "branch strategy", "conventional commits"],
+      "agent": "engineering-git-workflow-master.md"
+    },
+    {
+      "matchAny": ["prototype", "poc", "mvp spike"],
+      "agent": "engineering-rapid-prototyper.md"
+    },
+    {
+      "matchAny": ["frontend", "react", "vue", "angular", "ui performance"],
+      "agent": "engineering-frontend-developer.md"
+    },
+    {
+      "matchAny": ["mobile", "ios", "android", "react native", "flutter"],
+      "agent": "engineering-mobile-app-builder.md"
+    },
+    {
+      "matchAny": ["ai feature", "ml model", "inference pipeline"],
+      "agent": "engineering-ai-engineer.md"
+    },
+    {
+      "matchAny": ["etl", "elt", "data pipeline", "analytics data"],
+      "agent": "engineering-data-engineer.md"
+    },
+    {
+      "matchAny": ["data remediation", "self-healing data", "data anomaly fix"],
+      "agent": "engineering-ai-data-remediation-engineer.md"
+    },
+    {
+      "matchAny": ["optimization governance", "cost guardrail", "api shadow test"],
+      "agent": "engineering-autonomous-optimization-architect.md"
+    },
+    {
+      "matchAny": ["incident command", "war room", "incident coordination"],
+      "agent": "engineering-incident-response-commander.md"
+    },
+    {
+      "matchAny": ["siem", "detection rule", "mitre attack", "threat hunting"],
+      "agent": "engineering-threat-detection-engineer.md"
+    },
+    {
+      "matchAny": ["email parsing", "email intelligence", "extract from email"],
+      "agent": "engineering-email-intelligence-engineer.md"
+    },
+    {
+      "matchAny": ["speech to text", "transcription", "whisper", "diarization"],
+      "agent": "engineering-voice-ai-integration-engineer.md"
+    },
+    {
+      "matchAny": ["wordpress", "drupal", "cms"],
+      "agent": "engineering-cms-developer.md"
+    },
+    {
+      "matchAny": ["filament", "php admin"],
+      "agent": "engineering-filament-optimization-specialist.md"
+    },
+    {
+      "matchAny": ["feishu", "lark", "bitable"],
+      "agent": "engineering-feishu-integration-developer.md"
+    },
+    {
+      "matchAny": ["wechat", "mini program"],
+      "agent": "engineering-wechat-mini-program-developer.md"
+    },
+    {
+      "matchAny": ["solidity", "smart contract", "evm", "defi"],
+      "agent": "engineering-solidity-smart-contract-engineer.md"
+    },
+    {
+      "matchAny": ["firmware", "rtos", "stm32", "esp32", "embedded"],
+      "agent": "engineering-embedded-firmware-engineer.md"
+    },
+    {
+      "matchAny": ["product strategy", "roadmap", "feature prioritization"],
+      "agent": "product-manager.md"
+    },
+    {
+      "matchAny": ["sprint planning", "prioritize backlog", "sprint scope"],
+      "agent": "product-sprint-prioritizer.md"
+    },
+    {
+      "matchAny": ["synthesize feedback", "user feedback", "voice of customer"],
+      "agent": "product-feedback-synthesizer.md"
+    },
+    {
+      "matchAny": ["trend analysis", "market research", "competitive research"],
+      "agent": "product-trend-researcher.md"
+    },
+    {
+      "matchAny": ["project plan", "convert spec to tasks", "execution plan"],
+      "agent": "project-manager-senior.md"
+    },
+    {
+      "matchAny": ["jira workflow", "traceability", "release governance"],
+      "agent": "project-management-jira-workflow-steward.md"
+    },
+    {
+      "matchAny": ["ux architecture", "interaction model"],
+      "agent": "design-ux-architect.md"
+    },
+    {
+      "matchAny": ["ui design", "design system", "visual consistency"],
+      "agent": "design-ui-designer.md"
+    },
+    {
+      "matchAny": ["ux research", "usability testing"],
+      "agent": "design-ux-researcher.md"
+    },
+    {
+      "matchAny": ["brand", "visual identity"],
+      "agent": "design-brand-guardian.md"
+    },
+    {
+      "matchAny": ["sales engineering", "technical demo"],
+      "agent": "sales-engineer.md"
+    },
+    {
+      "matchAny": ["deal strategy", "meddpicc"],
+      "agent": "sales-deal-strategist.md"
+    }
+  ]
+}
+
