@@ -2,10 +2,13 @@ package com.sdr.ams.controller;
 import java.time.LocalDate;
 import java.util.List;
 import com.sdr.ams.model.tangible.RealEstate;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.RealEstateService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,8 +26,10 @@ public class RealEstateController {
     private static final List<String> UTILITY_OPTIONS = List.of("Electricity", "Water", "Gas", "Sewage", "Internet");
     private static final List<String> AMENITY_OPTIONS = List.of("Elevator", "Storage", "Security", "Garden", "Pool");
     private final RealEstateService realEstateService;
-    public RealEstateController(RealEstateService realEstateService) {
+    private final ExportService exportService;
+    public RealEstateController(RealEstateService realEstateService, ExportService exportService) {
         this.realEstateService = realEstateService;
+        this.exportService = exportService;
     }
     @GetMapping
     public String list(
@@ -46,6 +51,31 @@ public class RealEstateController {
         model.addAttribute("selectedMaintenanceStatus", maintenanceStatus);
         populateOptions(model);
         return "real-estates/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) RealEstate.PropertyType propertyType,
+        @RequestParam(required = false) RealEstate.OwnershipType ownershipType,
+        @RequestParam(required = false) RealEstate.NeighborhoodType neighborhoodType,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate valuationDate,
+        @RequestParam(required = false) RealEstate.MaintenanceStatus maintenanceStatus
+    ) throws Exception {
+        var items = realEstateService.findAll(propertyType, ownershipType, neighborhoodType, valuationDate, maintenanceStatus);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "RealEstate");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"real-estates.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "RealEstate");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"real-estates.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
     @GetMapping("/new")
     public String createForm(Model model) {

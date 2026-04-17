@@ -1,8 +1,12 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Trademark;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.TrademarkService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,9 +27,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class TrademarkController {
 
     private final TrademarkService trademarkService;
+    private final ExportService exportService;
 
-    public TrademarkController(TrademarkService trademarkService) {
+    public TrademarkController(TrademarkService trademarkService, ExportService exportService) {
         this.trademarkService = trademarkService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -43,6 +49,30 @@ public class TrademarkController {
         model.addAttribute("selectedLicensingStatus", licensingStatus);
         populateEnums(model);
         return "trademarks/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) Trademark.MarkType markType,
+        @RequestParam(required = false) Trademark.LegalStatus legalStatus,
+        @RequestParam(required = false) Trademark.OwnerType ownerType,
+        @RequestParam(required = false) Trademark.LicensingStatus licensingStatus
+    ) throws Exception {
+        var items = trademarkService.findAll(markType, legalStatus, ownerType, licensingStatus);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Trademark");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"trademarks.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Trademark");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"trademarks.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")

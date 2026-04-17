@@ -20,6 +20,10 @@ public class PatentService {
     }
 
     @Transactional(readOnly = true)
+    public List<Patent> findAll() {
+        return patentRepository.findAll();
+    }
+
     public List<Patent> findAll(
         Patent.PatentType patentType,
         Patent.LegalStatus legalStatus,

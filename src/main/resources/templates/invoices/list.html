@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/invoices/new}">Create Invoice</a>
     |
+    <a th:href="@{/invoices/export(format='csv',invoiceNumber=${selectedInvoiceNumber},status=${selectedStatus},sellerName=${selectedSellerName},buyerName=${selectedBuyerName},issueDateFrom=${selectedIssueDateFrom},issueDateTo=${selectedIssueDateTo},dueDateFrom=${selectedDueDateFrom},dueDateTo=${selectedDueDateTo})}">Export CSV</a>
+    |
+    <a th:href="@{/invoices/export(format='excel',invoiceNumber=${selectedInvoiceNumber},status=${selectedStatus},sellerName=${selectedSellerName},buyerName=${selectedBuyerName},issueDateFrom=${selectedIssueDateFrom},issueDateTo=${selectedIssueDateTo},dueDateFrom=${selectedDueDateFrom},dueDateTo=${selectedDueDateTo})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

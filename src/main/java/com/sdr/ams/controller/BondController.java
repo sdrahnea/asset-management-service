@@ -2,7 +2,11 @@ package com.sdr.ams.controller;
 
 import com.sdr.ams.model.financial.Bond;
 import com.sdr.ams.service.BondService;
+import com.sdr.ams.service.ExportService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,9 +25,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class BondController {
 
     private final BondService bondService;
+    private final ExportService exportService;
 
-    public BondController(BondService bondService) {
+    public BondController(BondService bondService, ExportService exportService) {
         this.bondService = bondService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -41,6 +47,30 @@ public class BondController {
         model.addAttribute("selectedCurrency", currency);
         populateEnums(model);
         return "bonds/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) String issuer,
+        @RequestParam(required = false) Bond.BondType bondType,
+        @RequestParam(required = false) Bond.TradingStatus tradingStatus,
+        @RequestParam(required = false) String currency
+    ) throws Exception {
+        var items = bondService.findAll(issuer, bondType, tradingStatus, currency);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Bond");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bonds.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Bond");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bonds.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")

@@ -7,8 +7,12 @@ import java.util.UUID;
 import com.sdr.ams.model.financial.Invoice;
 import com.sdr.ams.model.financial.InvoiceItem;
 import com.sdr.ams.model.financial.InvoiceParty;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.InvoiceService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,9 +33,11 @@ public class InvoiceController {
     private static final int ITEM_ROWS = 5;
 
     private final InvoiceService invoiceService;
+    private final ExportService exportService;
 
-    public InvoiceController(InvoiceService invoiceService) {
+    public InvoiceController(InvoiceService invoiceService, ExportService exportService) {
         this.invoiceService = invoiceService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -67,6 +73,43 @@ public class InvoiceController {
         model.addAttribute("selectedDueDateTo", dueDateTo);
         populateEnums(model);
         return "invoices/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) String invoiceNumber,
+        @RequestParam(required = false) Invoice.InvoiceStatus status,
+        @RequestParam(required = false) String sellerName,
+        @RequestParam(required = false) String buyerName,
+        @RequestParam(required = false) LocalDate issueDateFrom,
+        @RequestParam(required = false) LocalDate issueDateTo,
+        @RequestParam(required = false) LocalDate dueDateFrom,
+        @RequestParam(required = false) LocalDate dueDateTo
+    ) throws Exception {
+        var items = invoiceService.findAll(
+            invoiceNumber,
+            status,
+            sellerName,
+            buyerName,
+            issueDateFrom,
+            issueDateTo,
+            dueDateFrom,
+            dueDateTo
+        );
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Invoice");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"invoices.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Invoice");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"invoices.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")

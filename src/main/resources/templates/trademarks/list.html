@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/trademarks/new}">Create Trademark</a>
     |
+    <a th:href="@{/trademarks/export(format='csv',markType=${selectedMarkType},legalStatus=${selectedLegalStatus},ownerType=${selectedOwnerType},licensingStatus=${selectedLicensingStatus})}">Export CSV</a>
+    |
+    <a th:href="@{/trademarks/export(format='excel',markType=${selectedMarkType},legalStatus=${selectedLegalStatus},ownerType=${selectedOwnerType},licensingStatus=${selectedLicensingStatus})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

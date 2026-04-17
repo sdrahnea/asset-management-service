@@ -2,6 +2,7 @@ package com.sdr.ams.controller;
 
 import com.sdr.ams.model.tangible.Inventory;
 import com.sdr.ams.service.InventoryService;
+import com.sdr.ams.service.ExportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/inventories")
 public class InventoryController extends CoreEntityCrudController<Inventory> {
 
-    public InventoryController(InventoryService service) {
-        super(service, "Inventory", "Inventories", "/inventories");
+    public InventoryController(InventoryService service, ExportService exportService) {
+        super(service, exportService, "Inventory", "Inventories", "/inventories");
     }
 
     @Override
@@ -18,4 +19,3 @@ public class InventoryController extends CoreEntityCrudController<Inventory> {
         return new Inventory();
     }
 }
-

@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/bonds/new}">Create Bond</a>
     |
+    <a th:href="@{/bonds/export(format='csv',issuer=${selectedIssuer},bondType=${selectedBondType},tradingStatus=${selectedTradingStatus},currency=${selectedCurrency})}">Export CSV</a>
+    |
+    <a th:href="@{/bonds/export(format='excel',issuer=${selectedIssuer},bondType=${selectedBondType},tradingStatus=${selectedTradingStatus},currency=${selectedCurrency})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

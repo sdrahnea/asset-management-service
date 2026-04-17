@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/reputations/new}">Create Reputation</a>
     |
+    <a th:href="@{/reputations/export(format='csv',entityId=${selectedEntityId},entityType=${selectedEntityType},trendDirection=${selectedTrendDirection},competitivePosition=${selectedCompetitivePosition})}">Export CSV</a>
+    |
+    <a th:href="@{/reputations/export(format='excel',entityId=${selectedEntityId},entityType=${selectedEntityType},trendDirection=${selectedTrendDirection},competitivePosition=${selectedCompetitivePosition})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

@@ -2,6 +2,7 @@ package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Copyright;
 import com.sdr.ams.service.CopyrightService;
+import com.sdr.ams.service.ExportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/copyrights")
 public class CopyrightController extends CoreEntityCrudController<Copyright> {
 
-    public CopyrightController(CopyrightService service) {
-        super(service, "Copyright", "Copyrights", "/copyrights");
+    public CopyrightController(CopyrightService service, ExportService exportService) {
+        super(service, exportService, "Copyright", "Copyrights", "/copyrights");
     }
 
     @Override
@@ -18,4 +19,3 @@ public class CopyrightController extends CoreEntityCrudController<Copyright> {
         return new Copyright();
     }
 }
-

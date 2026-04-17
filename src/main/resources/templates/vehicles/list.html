@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/vehicles/new}">Create Vehicle</a>
     |
+    <a th:href="@{/vehicles/export(format='csv',vehicleType=${selectedVehicleType},registrationStatus=${selectedRegistrationStatus},ownershipType=${selectedOwnershipType})}">Export CSV</a>
+    |
+    <a th:href="@{/vehicles/export(format='excel',vehicleType=${selectedVehicleType},registrationStatus=${selectedRegistrationStatus},ownershipType=${selectedOwnershipType})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

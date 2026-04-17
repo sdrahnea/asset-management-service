@@ -20,6 +20,10 @@ public class BondService {
     }
 
     @Transactional(readOnly = true)
+    public List<Bond> findAll() {
+        return bondRepository.findAll();
+    }
+
     public List<Bond> findAll(
         String issuer,
         Bond.BondType bondType,

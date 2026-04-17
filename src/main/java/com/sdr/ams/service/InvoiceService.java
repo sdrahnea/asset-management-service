@@ -30,6 +30,10 @@ public class InvoiceService {
     }
 
     @Transactional(readOnly = true)
+    public List<Invoice> findAll() {
+        return invoiceRepository.findAll();
+    }
+
     public List<Invoice> findAll(
         String invoiceNumber,
         Invoice.InvoiceStatus status,

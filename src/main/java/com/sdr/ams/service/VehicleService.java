@@ -22,6 +22,11 @@ public class VehicleService {
     }
 
     @Transactional(readOnly = true)
+    public List<Vehicle> findAll() {
+        return vehicleRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public List<Vehicle> findAll(
         Vehicle.VehicleType vehicleType,
         Vehicle.RegistrationStatus registrationStatus,

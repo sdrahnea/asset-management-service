@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/stocks/new}">Create Stock</a>
     |
+    <a th:href="@{/stocks/export(format='csv',tickerSymbol=${selectedTickerSymbol},exchange=${selectedExchange},sector=${selectedSector},companyType=${selectedCompanyType})}">Export CSV</a>
+    |
+    <a th:href="@{/stocks/export(format='excel',tickerSymbol=${selectedTickerSymbol},exchange=${selectedExchange},sector=${selectedSector},companyType=${selectedCompanyType})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

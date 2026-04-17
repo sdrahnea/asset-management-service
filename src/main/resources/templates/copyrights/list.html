@@ -14,6 +14,10 @@
     <a th:href="@{/}">Back to Home</a>
 </p>
 
+    |
+    <a th:href="@{|${basePath}/export?format=csv|}">Export CSV</a>
+    |
+    <a th:href="@{|${basePath}/export?format=excel|}">Export Excel</a>
 <table style="border-collapse: collapse; width: 100%;">
     <thead>
     <tr>

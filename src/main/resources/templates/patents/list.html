@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/patents/new}">Create Patent</a>
     |
+    <a th:href="@{/patents/export(format='csv',patentType=${selectedPatentType},legalStatus=${selectedLegalStatus},technologyField=${selectedTechnologyField},assigneeOwner=${selectedAssigneeOwner})}">Export CSV</a>
+    |
+    <a th:href="@{/patents/export(format='excel',patentType=${selectedPatentType},legalStatus=${selectedLegalStatus},technologyField=${selectedTechnologyField},assigneeOwner=${selectedAssigneeOwner})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 

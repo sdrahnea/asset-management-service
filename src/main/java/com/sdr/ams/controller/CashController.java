@@ -2,6 +2,7 @@ package com.sdr.ams.controller;
 
 import com.sdr.ams.model.tangible.Cash;
 import com.sdr.ams.service.CashService;
+import com.sdr.ams.service.ExportService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/cash")
 public class CashController extends CoreEntityCrudController<Cash> {
 
-    public CashController(CashService service) {
-        super(service, "Cash", "Cash", "/cash");
+    public CashController(CashService service, ExportService exportService) {
+        super(service, exportService, "Cash", "Cash", "/cash");
     }
 
     @Override
@@ -18,4 +19,3 @@ public class CashController extends CoreEntityCrudController<Cash> {
         return new Cash();
     }
 }
-

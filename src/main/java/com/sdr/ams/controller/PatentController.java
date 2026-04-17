@@ -1,8 +1,12 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Patent;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.PatentService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,9 +27,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class PatentController {
 
     private final PatentService patentService;
+    private final ExportService exportService;
 
-    public PatentController(PatentService patentService) {
+    public PatentController(PatentService patentService, ExportService exportService) {
         this.patentService = patentService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -43,6 +49,30 @@ public class PatentController {
         model.addAttribute("selectedAssigneeOwner", assigneeOwner);
         populateEnums(model);
         return "patents/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) Patent.PatentType patentType,
+        @RequestParam(required = false) Patent.LegalStatus legalStatus,
+        @RequestParam(required = false) String technologyField,
+        @RequestParam(required = false) String assigneeOwner
+    ) throws Exception {
+        var items = patentService.findAll(patentType, legalStatus, technologyField, assigneeOwner);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Patent");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"patents.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Patent");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"patents.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")

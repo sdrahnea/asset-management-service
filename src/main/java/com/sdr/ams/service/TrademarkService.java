@@ -20,6 +20,11 @@ public class TrademarkService {
     }
 
     @Transactional(readOnly = true)
+    public List<Trademark> findAll() {
+        return trademarkRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public List<Trademark> findAll(
         Trademark.MarkType markType,
         Trademark.LegalStatus legalStatus,

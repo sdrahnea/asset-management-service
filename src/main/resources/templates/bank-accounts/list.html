@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/bank-accounts/new}">Create Bank Account</a>
     |
+    <a th:href="@{/bank-accounts/export(format='csv')}">Export CSV</a>
+    |
+    <a th:href="@{/bank-accounts/export(format='excel')}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 <table style="border-collapse: collapse; width: 100%;">

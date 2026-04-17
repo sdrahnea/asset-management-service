@@ -1,8 +1,12 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.financial.Stock;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.StockService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,9 +25,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class StockController {
 
     private final StockService stockService;
+    private final ExportService exportService;
 
-    public StockController(StockService stockService) {
+    public StockController(StockService stockService, ExportService exportService) {
         this.stockService = stockService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -41,6 +47,30 @@ public class StockController {
         model.addAttribute("selectedCompanyType", companyType);
         populateEnums(model);
         return "stocks/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) String tickerSymbol,
+        @RequestParam(required = false) String exchange,
+        @RequestParam(required = false) String sector,
+        @RequestParam(required = false) Stock.CompanyType companyType
+    ) throws Exception {
+        var items = stockService.findAll(tickerSymbol, exchange, sector, companyType);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Stock");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"stocks.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Stock");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"stocks.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")

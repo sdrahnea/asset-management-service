@@ -1,8 +1,12 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.tangible.Vehicle;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.VehicleService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,9 +27,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class VehicleController {
 
     private final VehicleService vehicleService;
+    private final ExportService exportService;
 
-    public VehicleController(VehicleService vehicleService) {
+    public VehicleController(VehicleService vehicleService, ExportService exportService) {
         this.vehicleService = vehicleService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -41,6 +47,29 @@ public class VehicleController {
         model.addAttribute("selectedOwnershipType", ownershipType);
         populateEnums(model);
         return "vehicles/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) Vehicle.VehicleType vehicleType,
+        @RequestParam(required = false) Vehicle.RegistrationStatus registrationStatus,
+        @RequestParam(required = false) Vehicle.OwnershipType ownershipType
+    ) throws Exception {
+        var items = vehicleService.findAll(vehicleType, registrationStatus, ownershipType);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Vehicle");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"vehicles.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Vehicle");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"vehicles.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")

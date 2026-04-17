@@ -21,6 +21,10 @@ public class ReputationService {
     }
 
     @Transactional(readOnly = true)
+    public List<Reputation> findAll() {
+        return reputationRepository.findAll();
+    }
+
     public List<Reputation> findAll(
         String entityId,
         Reputation.EntityType entityType,

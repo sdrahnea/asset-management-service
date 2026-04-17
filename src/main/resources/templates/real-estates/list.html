@@ -10,6 +10,10 @@
 <p>
     <a th:href="@{/real-estates/new}">Create Real Estate</a>
     |
+    <a th:href="@{/real-estates/export(format='csv',propertyType=${selectedPropertyType},ownershipType=${selectedOwnershipType},neighborhoodType=${selectedNeighborhoodType},valuationDate=${selectedValuationDate},maintenanceStatus=${selectedMaintenanceStatus})}">Export CSV</a>
+    |
+    <a th:href="@{/real-estates/export(format='excel',propertyType=${selectedPropertyType},ownershipType=${selectedOwnershipType},neighborhoodType=${selectedNeighborhoodType},valuationDate=${selectedValuationDate},maintenanceStatus=${selectedMaintenanceStatus})}">Export Excel</a>
+    |
     <a th:href="@{/}">Back to Home</a>
 </p>
 <form method="get" th:action="@{/real-estates}" style="margin-bottom: 16px;">

@@ -20,6 +20,10 @@ public class StockService {
     }
 
     @Transactional(readOnly = true)
+    public List<Stock> findAll() {
+        return stockRepository.findAll();
+    }
+
     public List<Stock> findAll(
         String tickerSymbol,
         String exchange,

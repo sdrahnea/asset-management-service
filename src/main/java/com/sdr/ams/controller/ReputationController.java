@@ -1,8 +1,12 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Reputation;
+import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.ReputationService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,9 +25,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ReputationController {
 
     private final ReputationService reputationService;
+    private final ExportService exportService;
 
-    public ReputationController(ReputationService reputationService) {
+    public ReputationController(ReputationService reputationService, ExportService exportService) {
         this.reputationService = reputationService;
+        this.exportService = exportService;
     }
 
     @GetMapping
@@ -41,6 +47,30 @@ public class ReputationController {
         model.addAttribute("selectedCompetitivePosition", competitivePosition);
         populateEnums(model);
         return "reputations/list";
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(
+        @RequestParam(defaultValue = "csv") String format,
+        @RequestParam(required = false) String entityId,
+        @RequestParam(required = false) Reputation.EntityType entityType,
+        @RequestParam(required = false) Reputation.TrendDirection trendDirection,
+        @RequestParam(required = false) Reputation.CompetitivePosition competitivePosition
+    ) throws Exception {
+        var items = reputationService.findAll(entityId, entityType, trendDirection, competitivePosition);
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            byte[] data = exportService.toExcel(items, "Reputation");
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"reputations.xlsx\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(data);
+        }
+
+        byte[] data = exportService.toCsv(items, "Reputation");
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"reputations.csv\"")
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+            .body(data);
     }
 
     @GetMapping("/new")
