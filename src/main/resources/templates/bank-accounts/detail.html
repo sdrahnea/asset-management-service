@@ -13,6 +13,8 @@
     <a th:href="@{/}">Back to Home</a>
     |
     <a th:href="@{/bank-accounts/{id}/edit(id=${bankAccount.id})}">Edit</a>
+    |
+    <a th:href="@{/bank-accounts/{id}/pdf(id=${bankAccount.id})}">Download PDF</a>
 </p>
 <table style="border-collapse: collapse; width: 100%; max-width: 900px;">
     <tbody>

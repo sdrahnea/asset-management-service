@@ -2,6 +2,7 @@ package com.sdr.ams.controller;
 
 import com.sdr.ams.model.financial.Bond;
 import com.sdr.ams.service.BondService;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -26,10 +27,12 @@ public class BondController {
 
     private final BondService bondService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public BondController(BondService bondService, ExportService exportService) {
+    public BondController(BondService bondService, ExportService exportService, DetailPdfReportService detailPdfReportService) {
         this.bondService = bondService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -113,6 +116,16 @@ public class BondController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("bond", getOr404(id));
         return "bonds/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        Bond bond = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Bond", bond);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bond-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")

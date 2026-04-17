@@ -1,6 +1,7 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Patent;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.PatentService;
 import jakarta.validation.Valid;
@@ -28,10 +29,12 @@ public class PatentController {
 
     private final PatentService patentService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public PatentController(PatentService patentService, ExportService exportService) {
+    public PatentController(PatentService patentService, ExportService exportService, DetailPdfReportService detailPdfReportService) {
         this.patentService = patentService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -115,6 +118,16 @@ public class PatentController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("patent", getOr404(id));
         return "patents/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        Patent patent = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Patent", patent);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"patent-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")

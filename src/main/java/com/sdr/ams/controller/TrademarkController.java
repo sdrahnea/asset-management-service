@@ -1,6 +1,7 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Trademark;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.TrademarkService;
 import jakarta.validation.Valid;
@@ -28,10 +29,16 @@ public class TrademarkController {
 
     private final TrademarkService trademarkService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public TrademarkController(TrademarkService trademarkService, ExportService exportService) {
+    public TrademarkController(
+        TrademarkService trademarkService,
+        ExportService exportService,
+        DetailPdfReportService detailPdfReportService
+    ) {
         this.trademarkService = trademarkService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -116,6 +123,16 @@ public class TrademarkController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("trademark", getOr404(id));
         return "trademarks/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        Trademark trademark = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Trademark", trademark);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"trademark-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")

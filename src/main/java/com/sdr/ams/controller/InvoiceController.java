@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.sdr.ams.model.financial.Invoice;
 import com.sdr.ams.model.financial.InvoiceItem;
 import com.sdr.ams.model.financial.InvoiceParty;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.InvoiceService;
 import jakarta.validation.Valid;
@@ -34,10 +35,16 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public InvoiceController(InvoiceService invoiceService, ExportService exportService) {
+    public InvoiceController(
+        InvoiceService invoiceService,
+        ExportService exportService,
+        DetailPdfReportService detailPdfReportService
+    ) {
         this.invoiceService = invoiceService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -162,6 +169,16 @@ public class InvoiceController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("invoice", getOr404(id));
         return "invoices/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        Invoice invoice = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Invoice", invoice);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"invoice-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")

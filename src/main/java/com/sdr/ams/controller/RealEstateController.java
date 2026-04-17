@@ -2,6 +2,7 @@ package com.sdr.ams.controller;
 import java.time.LocalDate;
 import java.util.List;
 import com.sdr.ams.model.tangible.RealEstate;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.RealEstateService;
 import jakarta.validation.Valid;
@@ -27,9 +28,15 @@ public class RealEstateController {
     private static final List<String> AMENITY_OPTIONS = List.of("Elevator", "Storage", "Security", "Garden", "Pool");
     private final RealEstateService realEstateService;
     private final ExportService exportService;
-    public RealEstateController(RealEstateService realEstateService, ExportService exportService) {
+    private final DetailPdfReportService detailPdfReportService;
+    public RealEstateController(
+        RealEstateService realEstateService,
+        ExportService exportService,
+        DetailPdfReportService detailPdfReportService
+    ) {
         this.realEstateService = realEstateService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
     @GetMapping
     public String list(
@@ -113,6 +120,16 @@ public class RealEstateController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("realEstate", getOr404(id));
         return "real-estates/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        RealEstate realEstate = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Real Estate", realEstate);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"real-estate-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {

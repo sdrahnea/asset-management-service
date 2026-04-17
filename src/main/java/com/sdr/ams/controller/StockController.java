@@ -1,6 +1,7 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.financial.Stock;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.StockService;
 import jakarta.validation.Valid;
@@ -26,10 +27,16 @@ public class StockController {
 
     private final StockService stockService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public StockController(StockService stockService, ExportService exportService) {
+    public StockController(
+        StockService stockService,
+        ExportService exportService,
+        DetailPdfReportService detailPdfReportService
+    ) {
         this.stockService = stockService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -111,6 +118,16 @@ public class StockController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("stock", getOr404(id));
         return "stocks/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        Stock stock = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Stock", stock);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"stock-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")

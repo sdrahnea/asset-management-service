@@ -1,6 +1,7 @@
 package com.sdr.ams.controller;
 
 import com.sdr.ams.model.intangible.Reputation;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import com.sdr.ams.service.ReputationService;
 import jakarta.validation.Valid;
@@ -26,10 +27,16 @@ public class ReputationController {
 
     private final ReputationService reputationService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public ReputationController(ReputationService reputationService, ExportService exportService) {
+    public ReputationController(
+        ReputationService reputationService,
+        ExportService exportService,
+        DetailPdfReportService detailPdfReportService
+    ) {
         this.reputationService = reputationService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -111,6 +118,16 @@ public class ReputationController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("reputation", getOr404(id));
         return "reputations/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        Reputation reputation = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Reputation", reputation);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"reputation-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")

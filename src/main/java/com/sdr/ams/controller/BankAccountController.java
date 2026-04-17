@@ -2,6 +2,7 @@ package com.sdr.ams.controller;
 
 import com.sdr.ams.model.financial.BankAccount;
 import com.sdr.ams.service.BankAccountService;
+import com.sdr.ams.service.DetailPdfReportService;
 import com.sdr.ams.service.ExportService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -26,10 +27,16 @@ public class BankAccountController {
 
     private final BankAccountService bankAccountService;
     private final ExportService exportService;
+    private final DetailPdfReportService detailPdfReportService;
 
-    public BankAccountController(BankAccountService bankAccountService, ExportService exportService) {
+    public BankAccountController(
+        BankAccountService bankAccountService,
+        ExportService exportService,
+        DetailPdfReportService detailPdfReportService
+    ) {
         this.bankAccountService = bankAccountService;
         this.exportService = exportService;
+        this.detailPdfReportService = detailPdfReportService;
     }
 
     @GetMapping
@@ -95,6 +102,16 @@ public class BankAccountController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("bankAccount", getOr404(id));
         return "bank-accounts/detail";
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> detailPdf(@PathVariable Long id) {
+        BankAccount bankAccount = getOr404(id);
+        byte[] data = detailPdfReportService.buildEntityDetailPdf("Bank Account", bankAccount);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bank-account-" + id + ".pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(data);
     }
 
     @GetMapping("/{id}/edit")
