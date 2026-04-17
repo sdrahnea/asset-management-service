@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Stream;
 
 @Service
 public class DashboardService {
@@ -21,6 +22,8 @@ public class DashboardService {
         }
     }
 
+    public record AlertItem(String severity, String category, String message, String link) {}
+
     public record CategoryStats(String name, long count, BigDecimal value, String color, String icon) {}
 
     public record DashboardStats(
@@ -28,7 +31,9 @@ public class DashboardService {
         BigDecimal totalPortfolioValue,
         List<CategoryStats> categories,
         Map<String, Long> entityCounts,
-        List<RecentActivity> recentActivity
+        Map<String, BigDecimal> entityValues,
+        List<RecentActivity> recentActivity,
+        List<AlertItem> alerts
     ) {}
 
     private final BankAccountRepository bankAccountRepo;
@@ -94,26 +99,22 @@ public class DashboardService {
         long totalAssets = financialCount + tangibleCount + intangibleCount;
 
         // --- Portfolio Values ---
-        BigDecimal financialValue = sum(
-            bondRepo.findAll().stream().map(Bond::getFaceValue),
-            stockRepo.findAll().stream().map(Stock::getMarketCap),
-            invoiceRepo.findAll().stream().map(Invoice::getTotalAmount)
-        );
+        BigDecimal bondValue      = sum(bondRepo.findAll().stream().map(Bond::getFaceValue));
+        BigDecimal stockValue     = sum(stockRepo.findAll().stream().map(Stock::getMarketCap));
+        BigDecimal invoiceValue   = sum(invoiceRepo.findAll().stream().map(Invoice::getTotalAmount));
+        BigDecimal realEstateValue= sum(realEstateRepo.findAll().stream().map(RealEstate::getCurrentMarketValue));
+        BigDecimal vehicleValue   = sum(vehicleRepo.findAll().stream().map(Vehicle::getCurrentMarketValue));
+        BigDecimal cashValue      = sum(cashRepo.findAll().stream().map(Cash::getAmount));
+        BigDecimal inventoryValue = sum(inventoryRepo.findAll().stream().map(Inventory::getBookValue));
+        BigDecimal machineryValue = sum(machineryRepo.findAll().stream().map(Machinery::getBookValue));
+        BigDecimal brandValue     = sum(brandRepo.findAll().stream().map(Brand::getBrandValuation));
+        BigDecimal copyrightValue = sum(copyrightRepo.findAll().stream().map(Copyright::getValuation));
+        BigDecimal patentValue    = sum(patentRepo.findAll().stream().map(Patent::getValuation));
+        BigDecimal trademarkValue = sum(trademarkRepo.findAll().stream().map(Trademark::getValuation));
 
-        BigDecimal tangibleValue = sum(
-            realEstateRepo.findAll().stream().map(RealEstate::getCurrentMarketValue),
-            vehicleRepo.findAll().stream().map(Vehicle::getCurrentMarketValue),
-            cashRepo.findAll().stream().map(Cash::getAmount),
-            inventoryRepo.findAll().stream().map(Inventory::getBookValue),
-            machineryRepo.findAll().stream().map(Machinery::getBookValue)
-        );
-
-        BigDecimal intangibleValue = sum(
-            brandRepo.findAll().stream().map(Brand::getBrandValuation),
-            copyrightRepo.findAll().stream().map(Copyright::getValuation),
-            patentRepo.findAll().stream().map(Patent::getValuation),
-            trademarkRepo.findAll().stream().map(Trademark::getValuation)
-        );
+        BigDecimal financialValue  = bondValue.add(stockValue).add(invoiceValue);
+        BigDecimal tangibleValue   = realEstateValue.add(vehicleValue).add(cashValue).add(inventoryValue).add(machineryValue);
+        BigDecimal intangibleValue = brandValue.add(copyrightValue).add(patentValue).add(trademarkValue);
 
         BigDecimal totalPortfolioValue = financialValue.add(tangibleValue).add(intangibleValue);
 
@@ -141,6 +142,23 @@ public class DashboardService {
         entityCounts.put("Reputations", reputationCount);
         entityCounts.put("Trademarks", trademarkCount);
 
+        // --- Entity values map ---
+        Map<String, BigDecimal> entityValues = new LinkedHashMap<>();
+        entityValues.put("Bank Accounts", BigDecimal.ZERO);
+        entityValues.put("Bonds", bondValue);
+        entityValues.put("Invoices", invoiceValue);
+        entityValues.put("Stocks", stockValue);
+        entityValues.put("Cash", cashValue);
+        entityValues.put("Inventory", inventoryValue);
+        entityValues.put("Machinery", machineryValue);
+        entityValues.put("Real Estate", realEstateValue);
+        entityValues.put("Vehicles", vehicleValue);
+        entityValues.put("Brands", brandValue);
+        entityValues.put("Copyrights", copyrightValue);
+        entityValues.put("Patents", patentValue);
+        entityValues.put("Reputations", BigDecimal.ZERO);
+        entityValues.put("Trademarks", trademarkValue);
+
         // --- Recent Activity (last 10 by updatedAt across all entities) ---
         List<RecentActivity> recent = new ArrayList<>();
         bankAccountRepo.findAll().forEach(e -> recent.add(new RecentActivity("Bank Account", "Financial", e.getName(), e.getUpdatedAt(), "/bank-accounts/" + e.getId())));
@@ -161,15 +179,37 @@ public class DashboardService {
         recent.sort(Comparator.comparing(RecentActivity::timestamp, Comparator.nullsLast(Comparator.reverseOrder())));
         List<RecentActivity> top10 = recent.stream().limit(10).toList();
 
-        return new DashboardStats(totalAssets, totalPortfolioValue, categories, entityCounts, top10);
+        // --- Alerts ---
+        LocalDate today = LocalDate.now();
+        List<AlertItem> alerts = new ArrayList<>();
+
+        invoiceRepo.findOverdue(today).forEach(i ->
+            alerts.add(new AlertItem("danger", "Invoice",
+                "Invoice " + i.getInvoiceNumber() + " was due on " + i.getDueDate() + " and is unpaid",
+                "/invoices/" + i.getId())));
+
+        patentRepo.findExpiringBefore(today.plusDays(90)).forEach(p ->
+            alerts.add(new AlertItem(p.getExpiryDate().isBefore(today) ? "danger" : "warning", "Patent",
+                "Patent " + p.getPatentId() + " expires on " + p.getExpiryDate(),
+                "/patents/" + p.getId())));
+
+        trademarkRepo.findExpiringBefore(today.plusDays(90)).forEach(t ->
+            alerts.add(new AlertItem(t.getExpirationDate().isBefore(today) ? "danger" : "warning", "Trademark",
+                "Trademark " + t.getTrademarkId() + " expires on " + t.getExpirationDate(),
+                "/trademarks/" + t.getId())));
+
+        vehicleRepo.findInspectionDueBefore(today.plusDays(30)).forEach(v ->
+            alerts.add(new AlertItem(v.getInspectionExpiryDate().isBefore(today) ? "danger" : "warning", "Vehicle",
+                "Vehicle " + v.getVehicleId() + " inspection expires on " + v.getInspectionExpiryDate(),
+                "/vehicles/" + v.getId())));
+
+        alerts.sort(Comparator.comparing(a -> a.severity().equals("danger") ? 0 : 1));
+
+        return new DashboardStats(totalAssets, totalPortfolioValue, categories, entityCounts, entityValues, top10, alerts);
     }
 
-    @SafeVarargs
-    private BigDecimal sum(Stream<BigDecimal>... streams) {
-        return Arrays.stream(streams)
-            .flatMap(s -> s)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    private BigDecimal sum(Stream<BigDecimal> stream) {
+        return stream.filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
 

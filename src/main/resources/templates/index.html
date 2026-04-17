@@ -44,7 +44,16 @@
         .cat-intangible { background: #d1fae5; color: #065f46; }
         .activity-link { color: #4f46e5; text-decoration: none; font-weight: 500; }
         .activity-link:hover { text-decoration: underline; }
-        .quicknav { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 28px; }
+        .alert-panel { margin-bottom: 28px; }
+        .alert-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; font-size: .875rem; }
+        .alert-row.danger  { background: #fef2f2; border-left: 4px solid #ef4444; }
+        .alert-row.warning { background: #fffbeb; border-left: 4px solid #f59e0b; }
+        .alert-icon { font-size: 1.1rem; }
+        .alert-cat  { font-weight: 700; min-width: 80px; }
+        .alert-msg  { flex: 1; color: #374151; }
+        .alert-link { color: #4f46e5; text-decoration: none; font-weight: 500; white-space: nowrap; }
+        .alert-link:hover { text-decoration: underline; }
+        .value-chart-wrap { position: relative; height: 280px; }
         .qn-btn { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; text-decoration: none; color: #1e293b; font-size: .875rem; font-weight: 500; transition: box-shadow .15s, border-color .15s; }
         .qn-btn:hover { box-shadow: 0 3px 10px rgba(0,0,0,.1); border-color: #cbd5e1; }
         .qn-btn .qn-icon { font-size: 1.3rem; }
@@ -131,6 +140,28 @@
         </table>
     </div>
 
+    <!-- Alerts Panel -->
+    <div class="panel alert-panel">
+        <p class="section-title" style="margin-bottom:14px">⚠️ Active Alerts</p>
+        <div th:if="${#lists.isEmpty(stats.alerts)}" style="color:#94a3b8;font-size:.9rem;padding:8px 0">
+            ✅ No active alerts — all assets are in good standing.
+        </div>
+        <div th:each="a : ${stats.alerts}" th:classappend="${a.severity()}" class="alert-row">
+            <span class="alert-icon" th:text="${a.severity() == 'danger'} ? '🔴' : '🟡'">🔴</span>
+            <span class="alert-cat" th:text="${a.category()}">Category</span>
+            <span class="alert-msg"  th:text="${a.message()}">Message</span>
+            <a class="alert-link" th:href="${a.link()}">View →</a>
+        </div>
+    </div>
+
+    <!-- Value Distribution Chart -->
+    <div class="panel" style="margin-bottom:28px">
+        <p class="section-title" style="margin-bottom:14px">Portfolio Value by Asset Type</p>
+        <div class="value-chart-wrap">
+            <canvas id="valueChart"></canvas>
+        </div>
+    </div>
+
     <!-- Quick Navigation -->
     <p class="section-title">Quick Navigation</p>
     <div class="quicknav">
@@ -181,6 +212,42 @@
                         label: ctx => ` ${ctx.label}: ${ctx.parsed} assets`
                     }
                 }
+            }
+        }
+    });
+
+    const entityValuesMap = /*[[${stats.entityValues}]]*/ {};
+    const evLabels = Object.keys(entityValuesMap);
+    const evData   = Object.values(entityValuesMap).map(Number);
+
+    function fmtValue(v) {
+        if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
+        if (v >= 1_000)     return (v / 1_000).toFixed(1) + 'K';
+        return v.toFixed(0);
+    }
+
+    new Chart(document.getElementById('valueChart'), {
+        type: 'bar',
+        data: {
+            labels: evLabels,
+            datasets: [{
+                label: 'Value (USD)',
+                data: evData,
+                backgroundColor: '#4f46e5',
+                borderRadius: 4,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ' USD ' + fmtValue(ctx.parsed.y) } }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+                y: { ticks: { callback: v => fmtValue(v) }, grid: { color: '#f1f5f9' } }
             }
         }
     });

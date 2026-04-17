@@ -5,9 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
+
+    @Query("select v from Vehicle v where v.inspectionExpiryDate is not null and v.inspectionExpiryDate <= :cutoff order by v.inspectionExpiryDate asc")
+    List<Vehicle> findInspectionDueBefore(@Param("cutoff") LocalDate cutoff);
 
     @Query("""
         select v

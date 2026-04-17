@@ -10,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
+    @Query("select i from Invoice i where i.dueDate < :today and i.status <> com.sdr.ams.model.financial.Invoice.InvoiceStatus.PAID and i.status <> com.sdr.ams.model.financial.Invoice.InvoiceStatus.CANCELLED order by i.dueDate asc")
+    List<Invoice> findOverdue(@Param("today") LocalDate today);
+
     @Query("""
         select i
         from Invoice i

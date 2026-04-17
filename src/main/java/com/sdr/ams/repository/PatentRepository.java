@@ -5,9 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PatentRepository extends JpaRepository<Patent, Long> {
+
+    @Query("select p from Patent p where p.expiryDate is not null and p.expiryDate <= :cutoff order by p.expiryDate asc")
+    List<Patent> findExpiringBefore(@Param("cutoff") LocalDate cutoff);
 
     @Query("""
         select p

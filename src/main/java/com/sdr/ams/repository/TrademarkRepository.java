@@ -5,9 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TrademarkRepository extends JpaRepository<Trademark, Long> {
+
+    @Query("select t from Trademark t where t.expirationDate is not null and t.expirationDate <= :cutoff order by t.expirationDate asc")
+    List<Trademark> findExpiringBefore(@Param("cutoff") LocalDate cutoff);
 
     @Query("""
         select t
