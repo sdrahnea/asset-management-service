@@ -164,7 +164,7 @@ public class RealEstateController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id) {
         realEstateService.delete(id);
-        return "redirect:/bank-accounts";
+        return "redirect:/real-estates";
     }
 
     private void populateOptions(Model model) {

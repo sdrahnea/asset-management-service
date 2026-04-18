@@ -19,6 +19,7 @@ It provides a unified, server-rendered user experience for CRUD operations, vali
   - **Intangible**: brands, copyrights, patents, reputations, trademarks
 - CRUD web pages across all listed modules
 - Shared base entity with audit fields via `CoreEntity`
+- Provider-backed Bean Validation for `@Valid` form handling
 - H2 in-memory persistence with schema auto-update for local development
 - Mixed architecture patterns:
   - generic CRUD pattern for simpler entities
@@ -30,9 +31,9 @@ It provides a unified, server-rendered user experience for CRUD operations, vali
 - **Spring Boot 4.0.5**
 - **Spring MVC + Thymeleaf**
 - **Spring Data JPA**
+- **Spring Boot Validation / Hibernate Validator**
 - **H2 Database (in-memory)**
 - **Maven Wrapper**
-- **jakarta.validation-api**
 
 ## Architecture
 
@@ -163,10 +164,11 @@ id,name,createdBy,updatedBy
 ### Fixed
 
 - File upload fields were removed from real-estate model/UI; active flows no longer rely on upload handling
+- `RealEstateController#delete` now redirects correctly to `/real-estates`
+- Bean Validation now uses a provider-backed runtime so `@Valid` form submissions produce real validation errors
 
 ### Known Issues
 
-- `RealEstateController#delete` currently redirects to `/bank-accounts` instead of `/real-estates`
 - Test suite in local shells requires correct `JAVA_HOME` (JDK 25)
 
 ## Contributing

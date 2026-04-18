@@ -30,7 +30,7 @@
 | TS-C-007 | unknown id detail/edit | 404 |
 | TS-C-008 | valid update POST | redirect `/real-estates` |
 | TS-C-009 | invalid update POST | form with errors |
-| TS-C-010 | delete POST | currently redirects `/bank-accounts` |
+| TS-C-010 | delete POST | redirect `/real-estates` |
 
 ## UI Tests
 | ID | Scenario | Expected |

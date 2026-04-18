@@ -1,8 +1,8 @@
 # AGENTS.md
 
-## Repo snapshot (as of 2026-04-15)
+## Repo snapshot (as of 2026-04-18)
 - Full CRUD for all 13 asset types + **Invoice** (14 total) under `com.sdr.ams` with server-rendered Thymeleaf UI.
-- Stack: Spring Boot 4.0.5, Java 25, Spring MVC, Spring Data JPA, Thymeleaf, H2, `jakarta.validation-api`.
+- Stack: Spring Boot 4.0.5, Java 25, Spring MVC, Spring Data JPA, Thymeleaf, H2, provider-backed Bean Validation via `spring-boot-starter-validation`.
 - Persistence: H2 in-memory (`jdbc:h2:mem:assetdb`), `spring.jpa.hibernate.ddl-auto: update`, H2 console at `/h2-console`.
 - `CoreEntity` (`com.sdr.ams.model.core`) is the `@MappedSuperclass` base for all entities; provides `id`, `name`, `createdAt`, `createdBy`, `updatedAt`, `updatedBy` with `@PrePersist`/`@PreUpdate` auto-fill defaulting to `"system"`.
 - Domain specs in `docs/<entity>/` folders are the source of truth for field-level behavior.
@@ -129,7 +129,6 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 - Domain specs are the source of truth when enriching an entity — read the relevant `docs/<entity>/` before modifying a model.
 
 ## Known codebase caveats
-- `RealEstateController#delete` currently redirects to `/bank-accounts` (bug — should redirect to `/real-estates`).
 - `CopyrightController` extends `CoreEntityCrudController` (generic tier) but `copyrights/form.html` and `copyrights/list.html` are custom-built rich templates; they do **not** follow the shared generic `items`/`basePath` model-attribute contract.
 - `entities/` template folder contains unused generic stubs (`list.html`, `form.html`) not wired to any active controller.
 - `application.yaml` has multipart limits commented out; no active file-upload functionality.
@@ -142,4 +141,4 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 ```
 - `JAVA_HOME` must point to JDK 25.
 - H2 console: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:assetdb`).
-- Existing tests: `AssetManagementServiceApplicationTests`, `HomeControllerWebMvcTest` — add focused controller/service tests when promoting a generic entity to rich tier.
+- Existing tests: `AssetManagementServiceApplicationTests`, `HomeControllerWebMvcTest`, `RealEstateControllerWebMvcTest` — add focused controller/service tests when promoting a generic entity to rich tier.
