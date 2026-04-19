@@ -18,6 +18,8 @@
     <a th:href="@{|${basePath}/export?format=csv|}">Export CSV</a>
     |
     <a th:href="@{|${basePath}/export?format=excel|}">Export Excel</a>
+    |
+    <a th:href="@{/import/{entity}(entity=${#strings.substring(basePath,1)})}">Import</a>
 <table style="border-collapse: collapse; width: 100%;">
     <thead>
     <tr>

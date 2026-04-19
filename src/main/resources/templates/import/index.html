@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
+    <title>Bulk Import Wizard</title>
+    <style>
+        .container { max-width: 980px; margin: 26px auto; padding: 0 16px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+        .card { border: 1px solid #d0d7de; border-radius: 8px; background: #fff; padding: 12px 14px; }
+        .card a { color: #0969da; text-decoration: none; font-weight: 600; }
+        .card small { color: #57606a; display: block; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bulk Import Wizard</h1>
+    <p>Select an entity module to import records from CSV/Excel.</p>
+    <p><a th:href="@{/}">Back to Home</a></p>
+
+    <div class="grid">
+        <div class="card" th:each="entry : ${entities}">
+            <a th:href="@{/import/{entity}(entity=${entry.key})}" th:text="${entry.value.entityTitle}">Entity</a>
+            <small th:text="${entry.value.listPath}">/path</small>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

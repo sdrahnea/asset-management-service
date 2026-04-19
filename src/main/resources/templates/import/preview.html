@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
+    <title th:text="'Import Preview - ' + ${entityTitle}">Import Preview</title>
+    <style>
+        .container { max-width: 1200px; margin: 22px auto; padding: 0 16px; }
+        .summary { display: flex; gap: 12px; margin: 12px 0 16px; }
+        .card { border: 1px solid #d0d7de; border-radius: 6px; padding: 10px 12px; background: #fff; }
+        .ok { border-color: #2da44e; color: #1a7f37; }
+        .warn { border-color: #d1242f; color: #a40e26; }
+        .table-wrap { overflow-x: auto; border: 1px solid #d0d7de; border-radius: 8px; }
+        table { border-collapse: collapse; width: 100%; min-width: 900px; }
+        th, td { border: 1px solid #d0d7de; padding: 6px; font-size: 0.92rem; vertical-align: top; }
+        th { background: #f6f8fa; text-align: left; }
+        tr.invalid { background: #fff8f8; }
+        .error-cell { color: #a40e26; font-weight: 600; min-width: 220px; }
+        .actions { margin: 14px 0 12px; }
+        .btn-primary { background: #0969da; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; }
+        .btn-secondary { margin-left: 8px; padding: 10px 18px; border-radius: 6px; text-decoration: none; border: 1px solid #d0d7de; color: #24292f; background: #fff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="'Bulk Import Preview - ' + ${entityTitle}">Bulk Import Preview</h1>
+
+    <div class="summary">
+        <div class="card"><strong>Total:</strong> <span th:text="${totalCount}">0</span></div>
+        <div class="card ok"><strong>Valid:</strong> <span th:text="${validCount}">0</span></div>
+        <div class="card warn"><strong>Errors:</strong> <span th:text="${errorCount}">0</span></div>
+    </div>
+
+    <div class="actions">
+        <form th:action="@{/import/{e}/commit(e=${entityPath})}" method="post" style="display: inline;">
+            <button type="submit" class="btn-primary">Commit Import</button>
+        </form>
+        <a th:href="@{/import/{e}(e=${entityPath})}" class="btn-secondary">Back</a>
+        <a th:href="${listPath}" class="btn-secondary">Cancel</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>Row</th>
+                <th th:each="col : ${columns}" th:text="${col}">Column</th>
+                <th>Error</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(rows)}">
+                <td colspan="99">No rows loaded.</td>
+            </tr>
+            <tr th:each="row : ${rows}" th:classappend="${!row.valid} ? 'invalid'">
+                <td th:text="${row.rowNumber}">2</td>
+                <td th:each="col : ${columns}" th:text="${row.data[col]}"></td>
+                <td class="error-cell" th:text="${row.error}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
+

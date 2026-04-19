@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/templates.css}" href="/css/templates.css">
+    <title th:text="'Import ' + ${entityTitle}">Import</title>
+    <style>
+        .import-card { max-width: 680px; margin: 30px auto; padding: 28px 32px; border: 1px solid #d0d7de; border-radius: 8px; background: #fff; }
+        .import-card h1 { margin-top: 0; font-size: 1.4rem; }
+        .template-links { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 14px 18px; margin-bottom: 20px; }
+        .template-links strong { display: block; margin-bottom: 8px; }
+        .upload-zone { border: 2px dashed #0969da; border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 16px; background: #f0f6ff; }
+        .upload-zone input[type=file] { font-size: 1rem; }
+        .btn-primary { background: #0969da; color: #fff; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+        .btn-primary:hover { background: #0757ba; }
+        .btn-secondary { background: #eaeef2; color: #24292f; border: 1px solid #d0d7de; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 1rem; text-decoration: none; display: inline-block; }
+        .alert-error { background: #ffeef0; border: 1px solid #f9826c; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; color: #86181d; }
+        .columns-hint { font-size: 0.82rem; color: #57606a; }
+        .columns-hint summary { cursor: pointer; color: #0969da; margin-bottom: 6px; }
+        .col-tag { display: inline-block; background: #eaeef2; border-radius: 4px; padding: 2px 8px; margin: 2px; font-size: 0.78rem; }
+        .breadcrumb { font-size: 0.9rem; margin-bottom: 16px; color: #57606a; }
+        .breadcrumb a { color: #0969da; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="import-card">
+    <div class="breadcrumb">
+        <a th:href="@{/}">Home</a> &rsaquo;
+        <a th:href="${listPath}" th:text="${entityTitle + 's'}">Entities</a> &rsaquo;
+        Bulk Import
+    </div>
+
+    <h1 th:text="'Bulk Import — ' + ${entityTitle}">Bulk Import</h1>
+
+    <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
+
+    <div class="template-links">
+        <strong>📥 Step 1 — Download a template</strong>
+        <a th:href="@{/import/{e}/template(e=${entityPath})}">CSV Template</a>
+        &nbsp;|&nbsp;
+        <a th:href="@{/import/{e}/template-xlsx(e=${entityPath})}">Excel Template</a>
+        <br><small style="color:#57606a;">Fill in the template, then upload it below.</small>
+    </div>
+
+    <form th:action="@{/import/{e}/preview(e=${entityPath})}" method="post" enctype="multipart/form-data">
+        <p><strong>📤 Step 2 — Upload your filled file</strong></p>
+        <div class="upload-zone">
+            <input type="file" name="file" accept=".csv,.xlsx,.xls" required>
+            <br><small style="color:#57606a; margin-top: 8px; display:block;">Supported formats: .csv, .xlsx</small>
+        </div>
+        <button type="submit" class="btn-primary">Preview Import</button>
+        &nbsp;
+        <a th:href="${listPath}" class="btn-secondary">Cancel</a>
+    </form>
+
+    <details class="columns-hint" style="margin-top: 20px;">
+        <summary>View expected columns (<span th:text="${#lists.size(columns)}">0</span> fields)</summary>
+        <div style="margin-top: 8px;">
+            <span th:each="col : ${columns}" class="col-tag" th:text="${col}">Column</span>
+        </div>
+    </details>
+
+    <p style="margin-top: 20px; font-size: 0.85rem; color: #57606a;">
+        💡 <strong>Tips:</strong> Leave ID and audit fields (Id, Created At, Updated At, etc.) blank — they are assigned automatically.
+        Enum fields accept the exact enum name (e.g. <code>ACTIVE</code>, <code>EUR</code>).
+        Dates must be in <code>YYYY-MM-DD</code> format.
+    </p>
+</div>
+</body>
+</html>
+
