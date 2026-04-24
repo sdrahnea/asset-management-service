@@ -80,12 +80,7 @@
     </table>
     <div>
         <h3>Property Documents</h3>
-        <ul>
-            <li th:if="${realEstate.propertyDocuments.isEmpty()}">No property documents uploaded.</li>
-            <li th:each="doc : ${realEstate.propertyDocuments}">
-                <a th:href="@{/real-estates/files/{fileName}(fileName=${doc})}" th:text="${doc}">document.pdf</a>
-            </li>
-        </ul>
+        <p>Document uploads are not enabled in this module.</p>
     </div>
 </section>
 <section>
@@ -94,7 +89,7 @@
         <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Current Market Value</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.currentMarketValue}">0.00</td></tr>
         <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Valuation Date</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.valuationDate}">2026-03-30</td></tr>
         <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Purchase Price</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.purchasePrice}">0.00</td></tr>
-        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Rental Income</t h><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.rentalIncome}">0.00</td></tr>
+        <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Rental Income</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.rentalIncome}">0.00</td></tr>
         <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Operating Costs</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.operatingCosts}">0.00</td></tr>
         <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Taxes</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.taxes}">0.00</td></tr>
         <tr><th style="text-align:left; border:1px solid #ccc; padding:6px;">Insurance Value</th><td style="border:1px solid #ccc; padding:6px;" th:text="${realEstate.insuranceValue}">0.00</td></tr>
