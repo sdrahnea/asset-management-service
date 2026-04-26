@@ -31,6 +31,7 @@ public final class StaticSiteExportLauncher {
             System.out.println("Static demo export completed.");
             System.out.println("Output directory: " + summary.outputDirectory().toAbsolutePath());
             System.out.println("Pages exported: " + summary.pageCount());
+            System.out.println("CSV files exported: " + summary.csvFileCount());
             System.out.println("Generated at: " + summary.generatedAt());
         }
     }

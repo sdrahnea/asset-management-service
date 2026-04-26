@@ -133,6 +133,72 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 - `entities/` template folder contains unused generic stubs (`list.html`, `form.html`) not wired to any active controller.
 - `application.yaml` has multipart limits commented out; no active file-upload functionality.
 
+## Static Export with CSV (v4.0.5+)
+
+The project includes a **static HTML exporter** that generates a complete read-only demo bundle with CSV data exports:
+
+### Components
+- `StaticSiteExportService` — orchestrates HTML page rendering + CSV generation
+- `ExportService` — handles CSV/Excel generation from entity lists
+- `StaticSiteExportLauncher` — CLI entry point
+
+### Features
+- Renders all list, detail, and dashboard pages as static HTML
+- **Generates CSV exports for all 14 entity types** into `data/` subdirectory
+- Rewrites export links to point to static CSV files (no server needed)
+- Copies all static assets (CSS, JS, images)
+- Generates `README.md` with CSV file listing
+
+### Usage
+```powershell
+# Standard export to target/static-export/
+./mvnw.cmd spring-boot:run "-Dspring-boot.run.main-class=com.sdr.ams.export.StaticSiteExportLauncher"
+
+# Custom output directory
+./mvnw.cmd spring-boot:run "-Dspring-boot.run.main-class=com.sdr.ams.export.StaticSiteExportLauncher" `
+  "-Dspring-boot.run.arguments=--app.static-export.output-dir=target/my-export"
+```
+
+### Output Structure
+```
+target/static-export/
+├── index.html                           # Dashboard
+├── bank-accounts/, bonds/, etc.         # Entity list pages + detail pages
+├── assets/                              # CSS, JS, images
+├── data/                                # CSV EXPORTS (NEW)
+│   ├── bank-accounts.csv
+│   ├── bonds.csv
+│   ├── invoices.csv
+│   ├── stocks.csv
+│   ├── cash.csv
+│   ├── inventories.csv
+│   ├── machineries.csv
+│   ├── real-estates.csv
+│   ├── vehicles.csv
+│   ├── brands.csv
+│   ├── copyrights.csv
+│   ├── patents.csv
+│   ├── reputations.csv
+│   └── trademarks.csv
+└── README.md
+```
+
+### Key Implementation Details
+- **Link Rewriting**: Export links (e.g., `/bonds/export?format=csv`) are rewritten to relative paths (e.g., `../../data/bonds.csv`) during post-processing
+- **CSV Generation**: All entity records are converted using `ExportService.toCsv()`, which reflects on entity fields and generates properly-escaped CSV
+- **Error Resilience**: If CSV generation fails for one entity, export continues; failed exports are logged as warnings
+- **Count Tracking**: `ExportSummary` includes both `pageCount` and `csvFileCount` for verification
+
+### Developer Notes
+- All 14 repositories must be injected into `StaticSiteExportService`
+- The `isInteractiveOnlyPath()` regex now allows `/entity/export` paths for CSV mapping
+- Tests verify CSV files are generated and contain valid data
+- Static bundle is intended for demos, distribution, and offline analysis
+
+### See Also
+- `docs/static-export.md` — User guide for static export feature
+- `docs/STATIC-EXPORT-CSV-FEATURE.md` — Technical deep dive on CSV integration
+
 ## Developer workflow (Windows)
 ```powershell
 ./mvnw.cmd test             # run tests
@@ -142,3 +208,4 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 - `JAVA_HOME` must point to JDK 25.
 - H2 console: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:assetdb`).
 - Existing tests: `AssetManagementServiceApplicationTests`, `HomeControllerWebMvcTest`, `RealEstateControllerWebMvcTest` — add focused controller/service tests when promoting a generic entity to rich tier.
+- Static export test: `StaticSiteExportServiceTest` — run with `./mvnw.cmd test -Dtest=StaticSiteExportServiceTest`.
