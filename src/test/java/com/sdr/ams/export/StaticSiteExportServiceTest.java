@@ -31,11 +31,13 @@ class StaticSiteExportServiceTest {
 
         assertThat(summary.pageCount()).isGreaterThan(10);
         assertThat(summary.csvFileCount()).isGreaterThan(0);
+        assertThat(summary.xlsxFileCount()).isGreaterThan(0);
         assertThat(Files.exists(tempDir.resolve("index.html"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("bank-accounts/index.html"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("assets/css/templates.css"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("README.md"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("data/bank-accounts.csv"))).isTrue();
+        assertThat(Files.exists(tempDir.resolve("data/bank-accounts.xlsx"))).isTrue();
 
         Long firstBankAccountId = bankAccountRepository.findAll().stream()
             .map(account -> account.getId())
@@ -53,6 +55,7 @@ class StaticSiteExportServiceTest {
         assertThat(indexHtml).contains("bank-accounts/index.html");
         assertThat(listHtml).contains("../assets/css/templates.css");
         assertThat(listHtml).contains("Static demo snapshot generated");
+        assertThat(listHtml).contains("../data/bank-accounts.xlsx");
         assertThat(listHtml).doesNotContain("href=\"/bank-accounts/new\"");
         assertThat(csvContent).isNotBlank();
     }

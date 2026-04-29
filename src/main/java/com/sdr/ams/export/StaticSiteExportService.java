@@ -30,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -197,9 +198,15 @@ public class StaticSiteExportService {
             }
         }
 
-        int csvFileCount = generateCsvExports(outputDirectory);
-        writeBundleReadme(outputDirectory, exportedPageCount, csvFileCount, generatedAt);
-        return new ExportSummary(outputDirectory, exportedPageCount, csvFileCount, generatedAt);
+        DataExportSummary dataExportSummary = generateDataExports(outputDirectory);
+        writeBundleReadme(outputDirectory, exportedPageCount, dataExportSummary, generatedAt);
+        return new ExportSummary(
+            outputDirectory,
+            exportedPageCount,
+            dataExportSummary.csvFileCount(),
+            dataExportSummary.xlsxFileCount(),
+            generatedAt
+        );
     }
 
     private List<ExportPage> buildPages() {
@@ -218,51 +225,54 @@ public class StaticSiteExportService {
         return pages;
     }
 
-    /**
-     * Generate CSV exports for all entity types.
-     * Returns the count of generated CSV files.
-     */
-    private int generateCsvExports(Path outputDirectory) throws IOException {
-        int count = 0;
-        Path csvDir = outputDirectory.resolve("data");
-        Files.createDirectories(csvDir);
+    private DataExportSummary generateDataExports(Path outputDirectory) throws IOException {
+        int csvCount = 0;
+        int xlsxCount = 0;
+        Path exportDir = outputDirectory.resolve("data");
+        Files.createDirectories(exportDir);
 
-        Map<String, Object> csvExports = Map.ofEntries(
-            Map.entry("bank-accounts", List.of("BankAccount", bankAccountRepository.findAll())),
-            Map.entry("bonds", List.of("Bond", bondRepository.findAll())),
-            Map.entry("invoices", List.of("Invoice", invoiceRepository.findAll())),
-            Map.entry("stocks", List.of("Stock", stockRepository.findAll())),
-            Map.entry("cash", List.of("Cash", cashRepository.findAll())),
-            Map.entry("inventories", List.of("Inventory", inventoryRepository.findAll())),
-            Map.entry("machineries", List.of("Machinery", machineryRepository.findAll())),
-            Map.entry("real-estates", List.of("RealEstate", realEstateRepository.findAll())),
-            Map.entry("vehicles", List.of("Vehicle", vehicleRepository.findAll())),
-            Map.entry("brands", List.of("Brand", brandRepository.findAll())),
-            Map.entry("copyrights", List.of("Copyright", copyrightRepository.findAll())),
-            Map.entry("patents", List.of("Patent", patentRepository.findAll())),
-            Map.entry("reputations", List.of("Reputation", reputationRepository.findAll())),
-            Map.entry("trademarks", List.of("Trademark", trademarkRepository.findAll()))
-        );
-
-        for (Map.Entry<String, Object> entry : csvExports.entrySet()) {
+        for (EntityExportSource source : buildExportSources()) {
             try {
-                @SuppressWarnings("unchecked")
-                List<Object> items = (List<Object>) ((List<?>) entry.getValue()).get(1);
-                String entityName = (String) ((List<?>) entry.getValue()).get(0);
-
-                if (items != null && !items.isEmpty()) {
-                    byte[] csvData = exportService.toCsv(items, entityName);
-                    Path csvFile = csvDir.resolve(entry.getKey() + ".csv");
-                    Files.write(csvFile, csvData);
-                    count++;
-                    log.debug("Generated CSV export: {}", csvFile.getFileName());
-                }
+                byte[] csvData = exportService.toCsv(source.items(), source.entityName());
+                Path csvFile = exportDir.resolve(source.entityKey() + ".csv");
+                Files.write(csvFile, csvData);
+                csvCount++;
+                log.debug("Generated CSV export: {}", csvFile.getFileName());
             } catch (Exception ex) {
-                log.warn("Failed to generate CSV export for {}", entry.getKey(), ex);
+                log.warn("Failed to generate CSV export for {}", source.entityKey(), ex);
+            }
+
+            try {
+                byte[] xlsxData = exportService.toExcel(source.items(), source.entityName());
+                Path xlsxFile = exportDir.resolve(source.entityKey() + ".xlsx");
+                Files.write(xlsxFile, xlsxData);
+                xlsxCount++;
+                log.debug("Generated Excel export: {}", xlsxFile.getFileName());
+            } catch (Exception ex) {
+                log.warn("Failed to generate Excel export for {}", source.entityKey(), ex);
             }
         }
 
-        return count;
+        return new DataExportSummary(csvCount, xlsxCount);
+    }
+
+    private List<EntityExportSource> buildExportSources() {
+        return List.of(
+            new EntityExportSource("bank-accounts", "BankAccount", bankAccountRepository.findAll()),
+            new EntityExportSource("bonds", "Bond", bondRepository.findAll()),
+            new EntityExportSource("invoices", "Invoice", invoiceRepository.findAll()),
+            new EntityExportSource("stocks", "Stock", stockRepository.findAll()),
+            new EntityExportSource("cash", "Cash", cashRepository.findAll()),
+            new EntityExportSource("inventories", "Inventory", inventoryRepository.findAll()),
+            new EntityExportSource("machineries", "Machinery", machineryRepository.findAll()),
+            new EntityExportSource("real-estates", "RealEstate", realEstateRepository.findAll()),
+            new EntityExportSource("vehicles", "Vehicle", vehicleRepository.findAll()),
+            new EntityExportSource("brands", "Brand", brandRepository.findAll()),
+            new EntityExportSource("copyrights", "Copyright", copyrightRepository.findAll()),
+            new EntityExportSource("patents", "Patent", patentRepository.findAll()),
+            new EntityExportSource("reputations", "Reputation", reputationRepository.findAll()),
+            new EntityExportSource("trademarks", "Trademark", trademarkRepository.findAll())
+        );
     }
 
     private <T extends CoreEntity> void addDetailPages(
@@ -328,10 +338,10 @@ public class StaticSiteExportService {
                 continue;
             }
 
-            // Check if this is a CSV export link from a list page
-            String csvTarget = mapExportToCsvFile(href, currentPage);
-            if (csvTarget != null) {
-                anchor.attr("href", relativize(currentPage.outputPath(), csvTarget));
+            // Keep export links functional in static bundle by remapping to generated files.
+            String exportTarget = mapExportToDataFile(href);
+            if (exportTarget != null) {
+                anchor.attr("href", relativize(currentPage.outputPath(), exportTarget));
                 continue;
             }
 
@@ -349,22 +359,46 @@ public class StaticSiteExportService {
         }
     }
 
-    /**
-     * Map export links to generated CSV files.
-     * E.g., /bonds/export or /bonds/export?format=csv -> data/bonds.csv
-     */
-    private String mapExportToCsvFile(String href, ExportPage currentPage) {
+    private String mapExportToDataFile(String href) {
         URI uri = URI.create(href);
         String path = uri.getPath();
-        String query = uri.getRawQuery();
+        if (path == null || !path.matches("^/[^/]+/export$")) {
+            return null;
+        }
 
-        // Match paths like /entity-type/export or /entity-type/export?format=csv
-        if (path != null && path.matches("^/[^/]+/export$")) {
-            // Only convert if it's CSV format or no format specified
-            if (query == null || query.isBlank() || query.contains("format=csv")) {
-                String entityType = path.substring(1, path.lastIndexOf("/"));
-                return "data/" + entityType + ".csv";
+        String format = resolveExportFormat(uri.getRawQuery());
+        if (format == null) {
+            return null;
+        }
+
+        String entityType = path.substring(1, path.lastIndexOf('/'));
+        return "data/" + entityType + "." + format;
+    }
+
+    private String resolveExportFormat(String rawQuery) {
+        if (rawQuery == null || rawQuery.isBlank()) {
+            return "csv";
+        }
+
+        String formatValue = null;
+        for (String pair : rawQuery.split("&")) {
+            int eqIndex = pair.indexOf('=');
+            if (eqIndex <= 0) {
+                continue;
             }
+            String key = URLDecoder.decode(pair.substring(0, eqIndex), StandardCharsets.UTF_8);
+            if (!"format".equalsIgnoreCase(key)) {
+                continue;
+            }
+            formatValue = URLDecoder.decode(pair.substring(eqIndex + 1), StandardCharsets.UTF_8);
+            break;
+        }
+
+        if (formatValue == null || formatValue.isBlank() || "csv".equalsIgnoreCase(formatValue)) {
+            return "csv";
+        }
+        if ("excel".equalsIgnoreCase(formatValue) || "xlsx".equalsIgnoreCase(formatValue)) {
+            return "xlsx";
         }
 
         return null;
@@ -534,7 +568,7 @@ public class StaticSiteExportService {
         Files.writeString(outputDirectory.resolve(".nojekyll"), "", StandardCharsets.UTF_8);
     }
 
-    private void writeBundleReadme(Path outputDirectory, int exportedPageCount, int csvFileCount, OffsetDateTime generatedAt) throws IOException {
+    private void writeBundleReadme(Path outputDirectory, int exportedPageCount, DataExportSummary dataExportSummary, OffsetDateTime generatedAt) throws IOException {
         String content = """
             # Static Demo Bundle
             
@@ -545,31 +579,21 @@ public class StaticSiteExportService {
             - Entity list pages for all asset modules
             - Detail pages for modules that currently have `detail.html` templates
             - Static assets copied under `assets/`
-            - CSV exports under `data/` for all entity types
+            - CSV and Excel exports under `data/` for all entity types
             
             ## Generated Snapshot
             - Generated at: %s
             - Exported pages: %d
             - CSV files exported: %d
+            - Excel files exported: %d
             
             ## Data Export
-            All entity data is available as CSV files in the `data/` directory:
+            All entity data is available in the `data/` directory as both `.csv` and `.xlsx` files.
+            For each module (for example `bank-accounts`), both of these are generated:
             - `data/bank-accounts.csv`
-            - `data/bonds.csv`
-            - `data/invoices.csv`
-            - `data/stocks.csv`
-            - `data/cash.csv`
-            - `data/inventories.csv`
-            - `data/machineries.csv`
-            - `data/real-estates.csv`
-            - `data/vehicles.csv`
-            - `data/brands.csv`
-            - `data/copyrights.csv`
-            - `data/patents.csv`
-            - `data/reputations.csv`
-            - `data/trademarks.csv`
+            - `data/bank-accounts.xlsx`
             
-            These CSV files can be imported into Excel, Google Sheets, or other data analysis tools.
+            Use CSV for lightweight data exchange and Excel for native spreadsheet workflows.
             
             ## Deploy
             Upload the contents of this directory to any standard web server, including Apache, Nginx, IIS, GitHub Pages, or PHP-oriented shared hosting.
@@ -577,17 +601,24 @@ public class StaticSiteExportService {
             ## Notes
             - This bundle is read-only by design.
             - Create/edit/delete/import actions are intentionally disabled.
-            - CSV export links are functional and point to the generated data files.
+            - CSV/Excel export links are functional and point to the generated data files.
             - Demo charts use the CDN version of Chart.js when available; the pages still load if the CDN is unavailable.
             """.formatted(
             generatedAt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             exportedPageCount,
-            csvFileCount
+            dataExportSummary.csvFileCount(),
+            dataExportSummary.xlsxFileCount()
         );
         Files.writeString(outputDirectory.resolve("README.md"), content, StandardCharsets.UTF_8);
     }
 
-    public record ExportSummary(Path outputDirectory, int pageCount, int csvFileCount, OffsetDateTime generatedAt) {
+    public record ExportSummary(Path outputDirectory, int pageCount, int csvFileCount, int xlsxFileCount, OffsetDateTime generatedAt) {
+    }
+
+    private record DataExportSummary(int csvFileCount, int xlsxFileCount) {
+    }
+
+    private record EntityExportSource(String entityKey, String entityName, List<?> items) {
     }
 
     private record ExportPage(String requestPath, String outputPath) {

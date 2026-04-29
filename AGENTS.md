@@ -133,19 +133,19 @@ All of the following remap the inherited `name` column to a domain-specific ID c
 - `entities/` template folder contains unused generic stubs (`list.html`, `form.html`) not wired to any active controller.
 - `application.yaml` has multipart limits commented out; no active file-upload functionality.
 
-## Static Export with CSV (v4.0.5+)
+## Static Export with CSV/Excel (v4.0.5+)
 
-The project includes a **static HTML exporter** that generates a complete read-only demo bundle with CSV data exports:
+The project includes a **static HTML exporter** that generates a complete read-only demo bundle with CSV/Excel data exports:
 
 ### Components
-- `StaticSiteExportService` — orchestrates HTML page rendering + CSV generation
+- `StaticSiteExportService` — orchestrates HTML page rendering + CSV/XLSX generation
 - `ExportService` — handles CSV/Excel generation from entity lists
 - `StaticSiteExportLauncher` — CLI entry point
 
 ### Features
 - Renders all list, detail, and dashboard pages as static HTML
-- **Generates CSV exports for all 14 entity types** into `data/` subdirectory
-- Rewrites export links to point to static CSV files (no server needed)
+- **Generates CSV and XLSX exports for all 14 entity types** into `data/` subdirectory
+- Rewrites export links to point to static CSV/XLSX files (no server needed)
 - Copies all static assets (CSS, JS, images)
 - Generates `README.md` with CSV file listing
 
@@ -165,34 +165,34 @@ target/static-export/
 ├── index.html                           # Dashboard
 ├── bank-accounts/, bonds/, etc.         # Entity list pages + detail pages
 ├── assets/                              # CSS, JS, images
-├── data/                                # CSV EXPORTS (NEW)
-│   ├── bank-accounts.csv
-│   ├── bonds.csv
-│   ├── invoices.csv
-│   ├── stocks.csv
-│   ├── cash.csv
-│   ├── inventories.csv
-│   ├── machineries.csv
-│   ├── real-estates.csv
-│   ├── vehicles.csv
-│   ├── brands.csv
-│   ├── copyrights.csv
-│   ├── patents.csv
-│   ├── reputations.csv
-│   └── trademarks.csv
+├── data/                                # CSV + XLSX EXPORTS
+│   ├── bank-accounts.csv/.xlsx
+│   ├── bonds.csv/.xlsx
+│   ├── invoices.csv/.xlsx
+│   ├── stocks.csv/.xlsx
+│   ├── cash.csv/.xlsx
+│   ├── inventories.csv/.xlsx
+│   ├── machineries.csv/.xlsx
+│   ├── real-estates.csv/.xlsx
+│   ├── vehicles.csv/.xlsx
+│   ├── brands.csv/.xlsx
+│   ├── copyrights.csv/.xlsx
+│   ├── patents.csv/.xlsx
+│   ├── reputations.csv/.xlsx
+│   └── trademarks.csv/.xlsx
 └── README.md
 ```
 
 ### Key Implementation Details
-- **Link Rewriting**: Export links (e.g., `/bonds/export?format=csv`) are rewritten to relative paths (e.g., `../../data/bonds.csv`) during post-processing
-- **CSV Generation**: All entity records are converted using `ExportService.toCsv()`, which reflects on entity fields and generates properly-escaped CSV
-- **Error Resilience**: If CSV generation fails for one entity, export continues; failed exports are logged as warnings
-- **Count Tracking**: `ExportSummary` includes both `pageCount` and `csvFileCount` for verification
+- **Link Rewriting**: Export links (e.g., `/bonds/export?format=excel`) are rewritten to relative paths (e.g., `../../data/bonds.xlsx`) during post-processing
+- **Data Generation**: CSV uses `ExportService.toCsv()` and Excel uses `ExportService.toExcel()`
+- **Error Resilience**: If one format fails for one entity, export continues; failures are logged as warnings
+- **Count Tracking**: `ExportSummary` includes `pageCount`, `csvFileCount`, and `xlsxFileCount`
 
 ### Developer Notes
 - All 14 repositories must be injected into `StaticSiteExportService`
-- The `isInteractiveOnlyPath()` regex now allows `/entity/export` paths for CSV mapping
-- Tests verify CSV files are generated and contain valid data
+- The `isInteractiveOnlyPath()` regex allows `/entity/export` paths so CSV/Excel links can be mapped
+- Tests verify both CSV and XLSX files are generated and link rewriting works
 - Static bundle is intended for demos, distribution, and offline analysis
 
 ### See Also
